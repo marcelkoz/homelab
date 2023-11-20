@@ -1,0 +1,32 @@
+- name: Pihole setup
+  hosts: servers
+  # root
+  become: true
+  vars:
+    home: /root/docker/pihole
+
+  tasks:
+    - name: Create pihole directory
+      ansible.builtin.file:
+        path: '{{ home }}'
+        state: directory
+
+    - name: Copy pihole configuration
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '{{ home }}'
+        owner: root
+        group: root
+        mode: '0400'
+      loop:
+        - ../runtime/pihole_vars.env
+        - ../config/pihole/docker-compose.yml
+
+    - name: Run docker compose
+      ansible.builtin.command:
+        cmd: docker
+        chdir: '{{ home }}'
+        argv:
+          - up
+          - --build
+          - --detach

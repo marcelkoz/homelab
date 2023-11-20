@@ -1,0 +1,84 @@
+- name: Update and install packages
+  hosts: servers
+  # root
+  become: true
+
+  tasks:
+    - name: Update all packages # noqa: package-latest
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+    - name: Add docker gpg key
+      ansible.builtin.rpm_key:
+        key: https://download.docker.com/linux/fedora/gpg
+        state: present
+
+    - name: Add docker repository
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/fedora/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Install essential packages
+      ansible.builtin.dnf:
+        name:
+          - openssh
+          - firewalld
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+- name: Enable automatic package updates
+  hosts: servers
+  # root
+  become: true
+
+  tasks:
+    - name: Install auto-update packages
+      ansible.builtin.dnf:
+        name:
+          - dnf-automatic
+          - dnf-plugins-core
+        state: present
+
+    - name: Copy auto-update configuration
+      ansible.builtin.copy:
+        src: ../config/fedora/automatic.conf
+        dest: /etc/dnf/automatic.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable auto-update service
+      ansible.builtin.systemd:
+        name: dnf-automatic-install.timer
+        state: started
+        enabled: true
+
+- name: Configure firewalld
+  hosts: servers
+  # root
+  become: true
+
+  tasks:
+    - name: Install firewalld package
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present
+
+    - name: Enable services
+      ansible.posix.firewalld:
+        zone: FedoraServer
+        service: '{{ item }}'
+        permanent: true
+        state: enabled
+      loop:
+        - https
+        - http
+        - dns
