@@ -1,3 +1,4 @@
 
 cp -r templates runtime
-ansible-playbook -kK -i runtime/inventory.ini playbooks/fedora.yml playbooks/docker.yml
+Password auth: ansible-playbook -kK -i runtime/inventory.ini fedora.yml docker.yml
+SSH key auth: ansible-playbook -K -i runtime/inventory.ini fedora.yml docker.yml

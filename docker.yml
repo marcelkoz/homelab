@@ -1,0 +1,45 @@
+- name: Docker setup
+  hosts: servers
+  # root
+  become: true
+  vars:
+    docker: /root/docker
+    pihole: /root/docker/pihole
+    daisy: /root/docker/daisy
+
+  tasks:
+    - name: Create directories for docker containers
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: '0400'
+        state: directory
+      loop:
+        - '{{ pihole }}'
+        - '{{ daisy }}'
+
+    - name: Copy docker configuration
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '{{ docker }}'
+        mode: '0400'
+      loop:
+        - runtime/docker.env
+        - config/docker/docker-compose.yml
+
+    - name: Copy pihole configuration
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '{{ pihole }}'
+        mode: '0400'
+      loop:
+        - runtime/pihole.env
+        - config/docker/etc-resolv.conf
+
+    - name: Run docker compose
+      ansible.builtin.command:
+        cmd: docker
+        chdir: '{{ docker }}'
+        argv:
+          - up
+          - --build
+          - --detach

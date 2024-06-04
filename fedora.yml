@@ -49,7 +49,7 @@
 
     - name: Copy auto-update configuration
       ansible.builtin.copy:
-        src: ../config/fedora/automatic.conf
+        src: config/fedora/automatic.conf
         dest: /etc/dnf/automatic.conf
         owner: root
         group: root

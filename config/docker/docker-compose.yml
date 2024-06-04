@@ -7,8 +7,8 @@ services:
     networks:
       - internal
     ports:
-      - '80:80'
-      - '8080:8080'
+      - 80:80
+      - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
@@ -20,17 +20,18 @@ services:
     networks:
       - internal
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "67:67/udp"
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp
     dns:
-      - "127.0.0.1"
+      - 127.0.0.1
     env_file:
-      - pihole_vars.env
+      - pihole.env
+      - docker.env
     volumes:
-      - './../../runtime/etc-pihole:/etc/pihole'
-      - './../../runtime/etc-dnsmasq.d:/etc/dnsmasq.d'
-      - './etc-resolv.conf:/etc/resolv.conf'
+      - ./pihole/etc-pihole:/etc/pihole
+      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+      - ./pihole/etc-resolv.conf:/etc/resolv.conf
     cap_add:
       - NET_ADMIN
     labels:
@@ -47,6 +48,8 @@ services:
     image: daisy-web
     networks:
       - internal
+    env_file:
+      - docker.env
     labels:
       - 'traefik.http.routers.daisy.rule=Host(`daisy`) || Host(`daisy.${DOMAIN}`)'
       - 'traefik.http.services.daisy.loadbalancer.server.port=80'
