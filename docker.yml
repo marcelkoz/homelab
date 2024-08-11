@@ -7,6 +7,14 @@
     pihole: /root/docker/pihole
     daisy: /root/docker/daisy
 
+  vars_prompt:
+    - name: "git_user"
+      prompt: "Enter your git username"
+      private: false
+    - name: "git_password"
+      prompt: "Enter your git password"
+      private: true
+
   tasks:
     - name: Create directories for docker containers
       ansible.builtin.file:
@@ -16,6 +24,7 @@
       loop:
         - '{{ pihole }}'
         - '{{ daisy }}'
+      tags: setup
 
     - name: Copy docker configuration
       ansible.builtin.copy:
@@ -23,8 +32,9 @@
         dest: '{{ docker }}'
         mode: '0400'
       loop:
-        - runtime/docker.env
+        - runtime/.env
         - config/docker/docker-compose.yml
+      tags: setup
 
     - name: Copy pihole configuration
       ansible.builtin.copy:
@@ -34,12 +44,57 @@
       loop:
         - runtime/pihole.env
         - config/docker/etc-resolv.conf
+      tags: setup
+
+    - name: Clone daisy git repo
+      expect:
+        command: git clone https://github.com/marcelkoz/daisy .
+        chdir: '{{ daisy }}'
+        responses:
+          (.*)Username(.*): "{{ git_user }}"
+          (.*)Password(.*): "{{ git_password }}"
+      no_log: true
+      tags: clone
+
+    - name: Pull daisy git repo (update)
+      expect:
+        command: git pull
+        chdir: '{{ daisy }}'
+        responses:
+          (.*)Username(.*): "{{ git_user }}"
+          (.*)Password(.*): "{{ git_password }}"
+      no_log: true
+      tags: update
+
+    - name: Update container images
+      ansible.builtin.command:
+        cmd: 'docker pull {{ item }}'
+        chdir: '{{ docker }}'
+      loop:
+        - 'pihole/pihole:latest'
+        - 'traefik'
+      tags: update
+
+    - name: Build daisy frontend
+      ansible.builtin.command:
+        cmd: docker build . --tag daisy-web
+        chdir: '{{ daisy }}/web'
+      tags: build
+
+    - name: Build daisy backend
+      ansible.builtin.command:
+        cmd: docker build . --tag daisy-app
+        chdir: '{{ daisy }}/app'
+      tags: build
 
     - name: Run docker compose
       ansible.builtin.command:
-        cmd: docker
+        cmd: docker compose up --build --detach
         chdir: '{{ docker }}'
-        argv:
-          - up
-          - --build
-          - --detach
+      tags: run
+
+    - name: Delete all unused docker images and containers
+      ansible.builtin.command:
+        cmd: docker system prune -f
+        chdir: '{{ docker }}'
+      tags: run
