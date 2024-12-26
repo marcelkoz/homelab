@@ -4,8 +4,10 @@
   become: true
   vars:
     docker: /root/docker
+    traefik: /root/docker/traefik
     pihole: /root/docker/pihole
     daisy: /root/docker/daisy
+    homarr: /root/docker/homarr
 
   vars_prompt:
     - name: "git_user"
@@ -22,8 +24,17 @@
         mode: '0400'
         state: directory
       loop:
+        - '{{ traefik }}'
         - '{{ pihole }}'
         - '{{ daisy }}'
+        - '{{ homarr }}'
+      tags: setup
+
+    - name: Create blank acme file for proxy tls traffic
+      ansible.builtin.file:
+        path: "{{ traefik }}/certs/acme.json"
+        mode: '0600'
+        state: file
       tags: setup
 
     - name: Copy docker configuration
@@ -46,8 +57,17 @@
         - config/docker/etc-resolv.conf
       tags: setup
 
+    - name: Copy traefik configuration
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '{{ traefik }}'
+        mode: '0400'
+      loop:
+        - runtime/traefik.yml
+      tags: setup
+
     - name: Clone daisy git repo
-      expect:
+      ansible.builtin.expect:
         command: git clone https://github.com/marcelkoz/daisy .
         chdir: '{{ daisy }}'
         responses:
@@ -57,7 +77,7 @@
       tags: clone
 
     - name: Pull daisy git repo (update)
-      expect:
+      ansible.builtin.expect:
         command: git pull
         chdir: '{{ daisy }}'
         responses:

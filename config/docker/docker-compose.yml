@@ -3,14 +3,47 @@ services:
   proxy:
     container_name: proxy
     image: traefik
-    command: --api.insecure=true --providers.docker
     networks:
-      - internal
+      - proxy
     ports:
       - 80:80
+      - 443:443
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik:/etc/traefik
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
+      - 'traefik.http.routers.dashboard.entryPoints=https'
+      - 'traefik.http.routers.dashboard.tls=true'
+      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.dashboard.service=api@internal'
+    environment:
+      - 'CF_DNS_API_TOKEN=${CF_API_TOKEN}'
+    restart: unless-stopped
+
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./homarr/config:/app/data/configs
+      - ./homarr/icons:/app/public/icons
+      - ./homarr/data:/data
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
+      - 'traefik.http.routers.home.entryPoints=https'
+      - 'traefik.http.routers.home.tls=true'
+      - 'traefik.http.routers.home.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.home.loadbalancer.server.port=80'
+    environment:
+      - 'PORT=80'
+    depends_on:
+      - proxy
     restart: unless-stopped
 
   # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
@@ -18,24 +51,28 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     networks:
-      - internal
+      - proxy
     ports:
       - 53:53/tcp
       - 53:53/udp
       - 67:67/udp
     dns:
       - 127.0.0.1
-    env_file:
-      - ./pihole/pihole.env
+    cap_add:
+      - NET_ADMIN
     volumes:
       - ./pihole/etc-pihole:/etc/pihole
       - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
       - ./pihole/etc-resolv.conf:/etc/resolv.conf
-    cap_add:
-      - NET_ADMIN
     labels:
-      - 'traefik.http.routers.pihole.rule=Host(`pihole`) || Host(`pihole.${DOMAIN}`)'
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
+      - 'traefik.http.routers.pihole.entryPoints=https'
+      - 'traefik.http.routers.pihole.tls=true'
+      - 'traefik.http.routers.pihole.tls.certresolver=letsencrypt'
       - 'traefik.http.services.pihole.loadbalancer.server.port=80'
+    env_file:
+      - ./pihole/pihole.env
     depends_on:
       - proxy
     restart: unless-stopped
@@ -44,19 +81,26 @@ services:
     container_name: daisy-web
     image: daisy-web
     networks:
-      - internal
+      - proxy
     labels:
-      - 'traefik.http.routers.daisy.rule=Host(`daisy`) || Host(`daisy.${DOMAIN}`)'
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
+      - 'traefik.http.routers.daisy.entryPoints=https'
+      - 'traefik.http.routers.daisy.tls=true'
+      - 'traefik.http.routers.daisy.tls.certresolver=letsencrypt'
       - 'traefik.http.services.daisy.loadbalancer.server.port=80'
+    depends_on:
+      - proxy
     restart: unless-stopped
 
   daisy-app:
     container_name: daisy-app
     image: daisy-app
     networks:
-      - internal
+      - proxy
     restart: unless-stopped
 
 networks:
-  internal:
-    name: internal_network
+  proxy:
+    name: proxy_network
+
