@@ -16,7 +16,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: EMAIL
+      email: <<EMAIL>>
       storage: '/etc/traefik/certs/acme.json'
       dnsChallenge:
         provider: cloudflare
