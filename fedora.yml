@@ -57,7 +57,7 @@
 
     - name: Enable auto-update service
       ansible.builtin.systemd:
-        name: dnf-automatic-install.timer
+        name: dnf-automatic.timer
         state: started
         enabled: true
 

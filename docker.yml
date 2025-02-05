@@ -18,6 +18,13 @@
       private: true
 
   tasks:
+    - name: Enable and start docker service
+      ansible.builtin.service:
+        name: docker
+        enabled: yes
+        state: started
+      tags: setup
+
     - name: Create directories for docker containers
       ansible.builtin.file:
         path: "{{ item }}"
@@ -34,7 +41,7 @@
       ansible.builtin.file:
         path: "{{ traefik }}/certs/acme.json"
         mode: '0600'
-        state: file
+        state: touch
       tags: setup
 
     - name: Copy docker configuration
@@ -45,6 +52,19 @@
       loop:
         - runtime/.env
         - config/docker/docker-compose.yml
+      tags: setup
+
+    - name: Disable systemd resolved default dns stub listener
+      ansible.builtin.copy:
+        src: 'config/docker/etc-systemd-resolved.conf'
+        dest: '/etc/systemd/resolved.conf'
+        mode: '0644'
+      tags: setup
+
+    - name: Reload systemd resolved to apply changes
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: restarted
       tags: setup
 
     - name: Copy pihole configuration
@@ -73,7 +93,6 @@
         responses:
           (.*)Username(.*): "{{ git_user }}"
           (.*)Password(.*): "{{ git_password }}"
-      no_log: true
       tags: clone
 
     - name: Pull daisy git repo (update)
@@ -83,7 +102,6 @@
         responses:
           (.*)Username(.*): "{{ git_user }}"
           (.*)Password(.*): "{{ git_password }}"
-      no_log: true
       tags: update
 
     - name: Update container images
