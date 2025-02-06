@@ -15,7 +15,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
-      - 'traefik.http.routers.dashboard.entryPoints=https'
+      - 'traefik.http.routers.dashboard.entryPoints=websecure'
       - 'traefik.http.routers.dashboard.tls=true'
       - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.dashboard.service=api@internal'
@@ -36,7 +36,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
-      - 'traefik.http.routers.home.entryPoints=https'
+      - 'traefik.http.routers.home.entryPoints=websecure'
       - 'traefik.http.routers.home.tls=true'
       - 'traefik.http.routers.home.tls.certresolver=letsencrypt'
       - 'traefik.http.services.home.loadbalancer.server.port=80'
@@ -61,7 +61,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.keycloak.rule=Host(`keycloak.${DOMAIN}`)'
-      - 'traefik.http.routers.keycloak.entryPoints=https,http'
+      - 'traefik.http.routers.keycloak.entryPoints=websecure'
       - 'traefik.http.routers.keycloak.tls=true'
       - 'traefik.http.routers.keycloak.tls.certresolver=letsencrypt'
       - 'traefik.http.services.keycloak.loadbalancer.server.port=8080'
@@ -90,7 +90,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
-      - 'traefik.http.routers.pihole.entryPoints=https'
+      - 'traefik.http.routers.pihole.entryPoints=websecure'
       - 'traefik.http.routers.pihole.tls=true'
       - 'traefik.http.routers.pihole.tls.certresolver=letsencrypt'
       - 'traefik.http.services.pihole.loadbalancer.server.port=80'
@@ -108,7 +108,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
-      - 'traefik.http.routers.daisy.entryPoints=https'
+      - 'traefik.http.routers.daisy.entryPoints=websecure'
       - 'traefik.http.routers.daisy.tls=true'
       - 'traefik.http.routers.daisy.tls.certresolver=letsencrypt'
       - 'traefik.http.services.daisy.loadbalancer.server.port=80'
