@@ -1,4 +1,8 @@
-path:
+local_path:
+  config: config/application_servers
+  runtime: runtime/application_servers
+
+server_path:
   docker: /home/ansible/docker
   traefik: /home/ansible/docker/traefik
   pihole: /home/ansible/docker/pihole

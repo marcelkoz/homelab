@@ -1,2 +1,6 @@
-path:
+local_path:
+  config: config/vpn_servers
+  runtime: runtime/vpn_servers
+
+server_path:
   netbird: /home/ansible/netbird
