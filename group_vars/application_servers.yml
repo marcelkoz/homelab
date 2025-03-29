@@ -1,0 +1,6 @@
+path:
+  docker: /home/ansible/docker
+  traefik: /home/ansible/docker/traefik
+  pihole: /home/ansible/docker/pihole
+  daisy: /home/ansible/docker/daisy
+  homarr: /home/ansible/docker/homarr
