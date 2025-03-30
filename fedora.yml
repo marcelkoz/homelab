@@ -1,5 +1,5 @@
 - name: Update and install packages
-  hosts: servers
+  hosts: application_servers
   # root
   become: true
 
@@ -35,7 +35,7 @@
         state: present
 
 - name: Enable automatic package updates
-  hosts: servers
+  hosts: application_servers
   # root
   become: true
 
@@ -62,7 +62,7 @@
         enabled: true
 
 - name: Configure firewalld
-  hosts: servers
+  hosts: application_servers
   # root
   become: true
 
