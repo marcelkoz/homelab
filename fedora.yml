@@ -4,9 +4,10 @@
   become: true
 
   tasks:
-    - name: Update all packages # noqa: package-latest
+    - name: Update all packages
+      # noqa package-latest
       ansible.builtin.dnf:
-        name: "*"
+        name: '*'
         state: latest
 
     - name: Add docker gpg key
