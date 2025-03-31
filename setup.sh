@@ -24,5 +24,6 @@ mkdir $HOMEDIR/.ssh
 echo "Creating empty authorized_keys SSH file for '$USERNAME'"
 touch $HOMEDIR/.ssh/authorized_keys
 
+echo
 echo 'Now create or copy an SSH key for ansible access'
-echo "Once that is complete, delete this script and $PASSWORD_file"
+echo "Once that is complete, delete this script and $PASSWORD_FILE"
