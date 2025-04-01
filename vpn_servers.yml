@@ -1,0 +1,26 @@
+# vars from group_vars/vpn_servers.yml
+
+- name: Install netbird apt repository and packages
+  hosts: vpn_servers
+  # root
+  become: true
+
+  # https://docs.netbird.io/how-to/installation
+  # keeping the key in asc format to avoid dearmor-ing it with gpg cli
+  tasks:
+    - name: Fetch netbird GPG key
+      ansible.builtin.get_url:
+        url: 'https://pkgs.netbird.io/debian/public.key'
+        dest: '/usr/share/keyrings/netbird-archive-keyring.asc'
+        mode: '0644'
+
+    - name: Add netbird apt repository
+      ansible.builtin.apt_repository:
+        repo: 'deb [signed-by=/usr/share/keyrings/netbird-archive-keyring.asc] https://pkgs.netbird.io/debian stable main'
+        state: present
+
+    - name: Install netbird package
+      ansible.builtin.apt:
+        name: netbird
+        state: present
+        update_cache: true
