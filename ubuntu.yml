@@ -86,9 +86,78 @@
       community.general.timezone:
         name: '{{ timezone }}'
 
-- name: Enable build hardening measures
+    - name: Create timesyncd.conf.d directory
+      ansible.builtin.file:
+        path: '/etc/systemd/timesyncd.conf.d'
+        state: directory
+        mode: '0644'
+
+    - name: Copy NTP servers config
+      ansible.builtin.copy:
+        src: '{{ ubuntu.local_path.config }}/00-ntp-servers.conf'
+        dest: '/etc/systemd/timesyncd.conf.d/00-ntp-servers.conf'
+        mode: '0644'
+      notify:
+        - NTP config changed
+
+  handlers:
+    - name: NTP config changed
+      ansible.builtin.service:
+        name: systemd-timesyncd
+        state: restarted
+
+
+- name: Enable general hardening measures
   hosts: vpn_servers
   # root
   become: true
 
-  # TODO
+  tasks:
+    - name: Disable apport service
+      ansible.builtin.service:
+        name: apport
+        state: stopped
+        enabled: false
+
+    - name: Uninstall unnecessary and insecure packages
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: absent
+      loop:
+        - ftp
+        - tnftp
+        - telnet
+        - rsync
+
+    - name: Copy SSH banner message (issue.net)
+      ansible.builtin.copy:
+        src: '{{ ubuntu.local_path.config }}/issue.net'
+        dest: '/etc/issue.net'
+        mode: '0644'
+
+    - name: Create sshd_config.d directory
+      ansible.builtin.file:
+        path: '/etc/ssh/sshd_config.d'
+        state: directory
+        mode: '0600'
+
+    - name: Copy hardened sshd config
+      ansible.builtin.copy:
+        src: '{{ ubuntu.local_path.config }}/00-hardened-sshd.conf'
+        dest: '/etc/ssh/sshd_config.d/00-hardened-sshd.conf'
+        mode: '0600'
+      notify:
+        - Sshd config changed
+
+    - name: Restrict sshd config file permissions
+      ansible.builtin.file:
+        path: '/etc/ssh/sshd_config'
+        mode: '0600'
+        owner: root
+        group: root
+
+  handlers:
+    - name: Sshd config changed
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
