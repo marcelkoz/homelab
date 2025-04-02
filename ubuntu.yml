@@ -113,6 +113,38 @@
   become: true
 
   tasks:
+    - name: Restrict grub config file permissions
+      ansible.builtin.file:
+        path: '/boot/grub/grub.cfg'
+        mode: '0600'
+        owner: root
+        group: root
+
+    - name: Disable uncommon filesystems and usb storage
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '/etc/modprobe.d'
+        mode: '0600'
+        owner: root
+        group: root
+      loop:
+        - '{{ ubuntu.local_path.config }}/disable-unusual-filesystems.conf'
+        - '{{ ubuntu.local_path.config }}/disable-usb-storage.conf'
+      notify:
+        - Modprobe config changed
+
+    - name: Copy hardened networking config
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '/etc/sysctl.d'
+        mode: '0600'
+        owner: root
+        group: root
+      loop:
+        - '{{ ubuntu.local_path.config }}/hardened-networking.conf'
+      notify:
+        - Sysctl config changed
+
     - name: Disable apport service
       ansible.builtin.service:
         name: apport
@@ -161,3 +193,11 @@
       ansible.builtin.service:
         name: ssh
         state: restarted
+
+    - name: Modprobe config changed
+      ansible.builtin.debug:
+        msg: Modprobe config has changed, a reboot is recommended
+
+    - name: Sysctl config changed
+      # noqa no-changed-when
+      ansible.builtin.command: 'sysctl --system'
