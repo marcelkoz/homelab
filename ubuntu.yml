@@ -113,6 +113,50 @@
   become: true
 
   tasks:
+    - name: Restrict shadow and gshadow file permissions
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: file
+        mode: '0640'
+      loop:
+        - '/etc/shadow'
+        - '/etc/gshadow'
+        - '/etc/shadow-'
+        - '/etc/gshadow-'
+
+    - name: Restrict cron directory permissions
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0700'
+      loop:
+        - '/etc/cron.d'
+        - '/etc/cron.daily'
+        - '/etc/cron.hourly'
+        - '/etc/cron.monthly'
+        - '/etc/cron.weekly'
+
+    - name: Restrict crontab permissions
+      ansible.builtin.file:
+        path: '/etc/crontab'
+        state: file
+        mode: '0600'
+
+    - name: Create blank at.allow and cron.allow files
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: touch
+        mode: '0600'
+      loop:
+        - '/etc/at.allow'
+        - '/etc/cron.allow'
+
+    - name: Set cron.allow group to crontab
+      ansible.builtin.file:
+        path: '/etc/cron.allow'
+        state: file
+        group: crontab
+
     - name: Restrict grub config file permissions
       ansible.builtin.file:
         path: '/boot/grub/grub.cfg'
@@ -120,7 +164,7 @@
         owner: root
         group: root
 
-    - name: Disable uncommon filesystems and usb storage
+    - name: Disable uncommon filesystems
       ansible.builtin.copy:
         src: '{{ item }}'
         dest: '/etc/modprobe.d'
@@ -129,11 +173,11 @@
         group: root
       loop:
         - '{{ ubuntu.local_path.config }}/disable-unusual-filesystems.conf'
-        - '{{ ubuntu.local_path.config }}/disable-usb-storage.conf'
+        # - '{{ ubuntu.local_path.config }}/disable-usb-storage.conf'
       notify:
         - Modprobe config changed
 
-    - name: Copy hardened networking config
+    - name: Copy hardened sysctl config
       ansible.builtin.copy:
         src: '{{ item }}'
         dest: '/etc/sysctl.d'
@@ -142,14 +186,17 @@
         group: root
       loop:
         - '{{ ubuntu.local_path.config }}/hardened-networking.conf'
+        - '{{ ubuntu.local_path.config }}/disable-suid-coredumps.conf'
+        - '{{ ubuntu.local_path.config }}/enable-aslr-memory.conf'
       notify:
         - Sysctl config changed
 
     - name: Disable apport service
-      ansible.builtin.service:
+      ansible.builtin.systemd_service:
         name: apport
         state: stopped
         enabled: false
+        masked: true
 
     - name: Uninstall unnecessary and insecure packages
       ansible.builtin.apt:
