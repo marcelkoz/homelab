@@ -76,6 +76,31 @@
         - 443 # https
         - 22 # ssh
 
+- name: Configure fail2ban
+  hosts: vpn_servers
+  # root
+  become: true
+
+  tasks:
+    - name: Install fail2ban package
+      ansible.builtin.apt:
+        name: fail2ban
+        state: present
+
+    - name: Copy fail2ban configuration
+      ansible.builtin.copy:
+        src: '{{ ubuntu.local_path.config }}/jail.local'
+        dest: '/etc/fail2ban/jail.local'
+        mode: '0644'
+      notify:
+        - Fail2ban config changed
+
+  handlers:
+    - name: Fail2ban config changed
+      ansible.builtin.service:
+        name: fail2ban
+        state: restarted
+
 - name: Miscellaneous configuration
   hosts: vpn_servers
   # root
