@@ -3,4 +3,4 @@ local_path:
   runtime: runtime/vpn_servers
 
 server_path:
-  netbird: /home/ansible/netbird
+  netbird: /opt/netbird

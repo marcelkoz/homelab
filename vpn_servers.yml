@@ -1,12 +1,12 @@
 # vars from group_vars/vpn_servers.yml
 
-- name: Install netbird apt repository and packages
+- name: Install netbird client apt repository and packages
   hosts: vpn_servers
   # root
   become: true
 
   # https://docs.netbird.io/how-to/installation
-  # keeping the key in asc format to avoid dearmor-ing it with gpg cli
+  # keeping the key in asc format to avoid dearmor-ing it with pgp cli
   tasks:
     - name: Fetch netbird GPG key
       ansible.builtin.get_url:
@@ -24,3 +24,50 @@
         name: netbird
         state: present
         update_cache: true
+
+- name: Setup firewall rules for netbird
+  hosts: vpn_servers
+  # root
+  become: true
+
+  # https://docs.netbird.io/selfhosted/selfhosted-guide
+  tasks:
+    - name: Enable netbird TCP ports
+      community.general.ufw:
+        rule: allow
+        port: '{{ item }}'
+        proto: tcp
+      loop:
+        - 443
+        - 33073
+        - 10000
+        - 33080
+
+    - name: Enable netbird UDP ports
+      community.general.ufw:
+        rule: allow
+        port: '{{ item }}'
+        proto: udp
+      loop:
+        - 3478
+        - '49152:65535'
+
+- name: Install netbird server
+  hosts: vpn_servers
+  # root
+  become: true
+
+  # https://docs.netbird.io/selfhosted/selfhosted-guide
+  tasks:
+    - name: Create netbird directory
+      ansible.builtin.file:
+        path: '{{ server_path.netbird }}'
+        state: directory
+        mode: '0700'
+        owner: root
+        group: root
+
+    - name: Run netbird repo script
+      ansible.builtin.script:
+        cmd: '{{ local_path.config }}/fetch-netbird-repo.sh'
+        chdir: '{{ server_path.netbird }}'
