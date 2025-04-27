@@ -1,7 +1,7 @@
 # vars from group_vars/vpn_servers.yml
 
 - name: Update and install packages
-  hosts: vpn_servers
+  hosts: all
   # root
   become: true
 
@@ -22,7 +22,7 @@
         update_cache: true
 
 - name: Enable automatic package updates
-  hosts: vpn_servers
+  hosts: all
   # root
   become: true
 
@@ -47,7 +47,7 @@
         state: restarted
 
 - name: Configure firewall
-  hosts: vpn_servers
+  hosts: all
   # root
   become: true
 
@@ -75,9 +75,18 @@
       loop:
         - 443 # https
         - 22 # ssh
+        - 53 # dns
+
+    - name: Enable UDP ports
+      community.general.ufw:
+        rule: allow
+        port: '{{ item }}'
+        proto: udp
+      loop:
+        - 53 # dns
 
 - name: Configure fail2ban
-  hosts: vpn_servers
+  hosts: all
   # root
   become: true
 
@@ -102,7 +111,7 @@
         state: restarted
 
 - name: Miscellaneous configuration
-  hosts: vpn_servers
+  hosts: all
   # root
   become: true
 
@@ -133,7 +142,7 @@
 
 
 - name: Enable general hardening measures
-  hosts: vpn_servers
+  hosts: all
   # root
   become: true
 
@@ -183,12 +192,18 @@
         state: file
         group: crontab
 
+    - name: Check grub config file exists
+      ansible.builtin.stat:
+        path: '/boot/grub/grub.cfg'
+      register: grub_config_file
+
     - name: Restrict grub config file permissions
       ansible.builtin.file:
         path: '/boot/grub/grub.cfg'
         mode: '0600'
         owner: root
         group: root
+      when: grub_config_file.exists
 
     - name: Disable uncommon filesystems
       ansible.builtin.copy:
