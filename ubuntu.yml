@@ -203,7 +203,7 @@
         mode: '0600'
         owner: root
         group: root
-      when: grub_config_file.exists
+      when: grub_config_file.stat.exists
 
     - name: Disable uncommon filesystems
       ansible.builtin.copy:
