@@ -1,0 +1,30 @@
+- name: Install docker apt repository and packages
+  hosts: all
+  # root
+  become: true
+
+  # https://docs.docker.com/engine/install/ubuntu
+  # keeping the key in asc format to avoid dearmor-ing it with pgp cli
+  tasks:
+    - name: Fetch docker GPG key
+      ansible.builtin.get_url:
+        url: 'https://download.docker.com/linux/ubuntu/gpg'
+        dest: '/usr/share/keyrings/docker.asc'
+        mode: '0644'
+
+    - name: Add docker apt repository
+      ansible.builtin.apt_repository:
+        repo: 'deb [signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable'
+        state: present
+
+    - name: Install docker packages
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: present
+        update_cache: true
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
