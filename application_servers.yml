@@ -16,7 +16,7 @@
     - name: Create directories for docker containers
       ansible.builtin.file:
         path: "{{ item }}"
-        mode: '0400'
+        mode: '0700'
         state: directory
       loop:
         - '{{ server_path.traefik }}'
