@@ -1,5 +1,3 @@
-# vars from group_vars/vpn_servers.yml
-
 - name: Update and install packages
   hosts: all
   # root
