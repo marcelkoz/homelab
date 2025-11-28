@@ -25,7 +25,7 @@ services:
 
   homarr:
     container_name: homarr
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr
     networks:
       - proxy
     volumes:
@@ -42,6 +42,7 @@ services:
       - 'traefik.http.services.home.loadbalancer.server.port=80'
     environment:
       - 'PORT=80'
+      - 'SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}'
     depends_on:
       - proxy
     restart: unless-stopped
