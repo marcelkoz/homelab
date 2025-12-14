@@ -23,6 +23,7 @@
         - '{{ server_path.pihole }}'
         - '{{ server_path.daisy }}'
         - '{{ server_path.homarr }}'
+        - '{{ server_path.authentik }}'
 
     - name: Copy docker configuration
       ansible.builtin.copy:
@@ -137,7 +138,6 @@
       loop:
         - 'ghcr.io/ajnart/homarr:latest'
         - 'pihole/pihole:latest'
-        - 'keycloak/keycloak:latest'
         - 'traefik:latest'
 
 - name: Run the docker environment

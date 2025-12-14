@@ -8,3 +8,4 @@ server_path:
   pihole: /home/ansible/docker/pihole
   daisy: /home/ansible/docker/daisy
   homarr: /home/ansible/docker/homarr
+  authentik: /home/ansible/docker/authentik

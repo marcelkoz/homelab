@@ -43,29 +43,7 @@ services:
     environment:
       - 'PORT=80'
       - 'SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}'
-    depends_on:
-      - proxy
-    restart: unless-stopped
 
-  keycloak:
-    container_name: keycloak
-    image: keycloak/keycloak
-    networks:
-      - proxy
-    environment:
-      - 'KC_PROXY_HEADERS=xforwarded'
-      - 'KC_HEALTH_ENABLED=true'
-      - 'KC_METRICS_ENABLED=true'
-      - 'KC_BOOTSTRAP_ADMIN_USERNAME=admin'
-      - 'KC_BOOTSTRAP_ADMIN_PASSWORD=admin'
-    command: start-dev --hostname-debug=true
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.keycloak.rule=Host(`keycloak.${DOMAIN}`)'
-      - 'traefik.http.routers.keycloak.entryPoints=websecure'
-      - 'traefik.http.routers.keycloak.tls=true'
-      - 'traefik.http.routers.keycloak.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.keycloak.loadbalancer.server.port=8080'
     depends_on:
       - proxy
     restart: unless-stopped
@@ -123,6 +101,81 @@ services:
     networks:
       - proxy
     restart: unless-stopped
+
+  authentik-db:
+    container_name: authentik-db
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${AUTHENTIK_DB_NAME:-authentik}
+      POSTGRES_PASSWORD: ${AUTHENTIK_DB_PASS:?database password required}
+      POSTGRES_USER: ${AUTHENTIK_DB_USER:-authentik}
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+      - CMD-SHELL
+      - pg_isready -d $${AUTHENTIK_DB_NAME} -U $${AUTHENTIK_DB_USER}
+      timeout: 5s
+    volumes:
+    - authentik-db:/var/lib/postgresql/data
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  authentik:
+    container_name: authentik
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
+    command: server
+    depends_on:
+      authentik-db:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik-db
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS}
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_ENCRYPTION_KEY:?secret key required}
+    volumes:
+    - './authentik/media:/media'
+    - './authentik/custom-templates:/templates'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.authentik.rule=Host(`authentik.${DOMAIN}`)'
+      - 'traefik.http.routers.authentik.entryPoints=websecure'
+      - 'traefik.http.routers.authentik.tls=true'
+      - 'traefik.http.routers.authentik.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.authentik.loadbalancer.server.port=9000'
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  authentik-worker:
+    container_name: authentik-worker
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
+    command: worker
+    depends_on:
+      authentik-db:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik-db
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS}
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_ENCRYPTION_KEY:?secret key required}
+    user: root
+    volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - './authentik/media:/media'
+    - './authentik/certs:/certs'
+    - './authentik/custom-templates:/templates'
+    networks:
+      - proxy
+    restart: unless-stopped
+
+volumes:
+  authentik-db:
+    driver: local
 
 networks:
   proxy:
