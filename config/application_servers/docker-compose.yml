@@ -43,7 +43,13 @@ services:
     environment:
       - 'PORT=80'
       - 'SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}'
-
+      - 'AUTH_PROVIDERS=oidc'
+      - 'AUTH_OIDC_ISSUER=${SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/'
+      - 'AUTH_OIDC_URI=${SSO_BASE_URL}/application/o/authorize'
+      - 'AUTH_OIDC_CLIENT_NAME=authentik'
+      - 'AUTH_OIDC_CLIENT_ID=${HOMARR_OIDC_CLIENT_ID}'
+      - 'AUTH_OIDC_CLIENT_SECRET=${HOMARR_OIDC_CLIENT_SECRET}'
+      - 'AUTH_OIDC_FORCE_USERINFO=true'
     depends_on:
       - proxy
     restart: unless-stopped
