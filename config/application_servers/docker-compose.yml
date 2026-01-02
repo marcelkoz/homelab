@@ -107,7 +107,7 @@ services:
 
   authentik-db:
     container_name: authentik-db
-    image: postgres:16-alpine
+    image: postgres:${POSTGRES_IMAGE_TAG}
     environment:
       POSTGRES_DB: ${AUTHENTIK_DB_NAME:-authentik}
       POSTGRES_PASSWORD: ${AUTHENTIK_DB_PASS:?database password required}
