@@ -29,10 +29,7 @@ services:
     networks:
       - proxy
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./homarr/config:/app/data/configs
-      - ./homarr/icons:/app/public/icons
-      - ./homarr/data:/data
+      - ./homarr/appdata:/appdata
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
