@@ -1,14 +1,28 @@
 
-`cp -r templates runtime`
+# Homelab
 
-**Password Auth**
-Password auth: `ansible-playbook -kK -i runtime/inventory.yml [PLAYBOOKS]`
+### Templates
+The directory `templates` contains config file templates essential to run the services in the ansible playbooks.
 
-**SSH Key Auth**
-SSH key auth: `ansible-playbook -K -i runtime/inventory.yml [PLAYBOOKS]`
+Copy the configs: `cp -r templates runtime`
 
-**Setup Repos and Docker**
-`ansible-playbook -K -i runtime/inventory.yml docker.yml --tags setup,clone`
+### Vault
+Create an ansible vault file to store secrets.
 
-**Update Docker Images and Restart**
-`ansible-playbook -K -i runtime/inventory.yml docker.yml --tags update,build,run`
+`ansible-vault create runtime/ansible_secrets.yml`
+
+Edit the become password variables in the `runtime/inventory.yml` file to match the secret names above.
+
+Run using vault secrets (with vault password file):
+
+```bash
+ANSIBLE_ARGS='-i runtime/inventory.yml --vault-password-file runtime/vault_pass.txt -e@runtime/ansible_secrets.yml'
+ansible-playbook $ANSIBLE_ARGS [PLAYBOOKS]
+```
+
+Run using vault secrets (with vault password prompt):
+
+```bash
+ANSIBLE_ARGS='-i runtime/inventory.yml --ask-vault-password -e@runtime/ansible_secrets.yml'
+ansible-playbook $ANSIBLE_ARGS [PLAYBOOKS]
+```

@@ -5,9 +5,11 @@ application_servers:
     SERVER1:
       ansible_host: FQDN
       ansible_ssh_private_key_file: ~/.ssh/ansible
+      anisble_become_pass: "{{ VAR1 }}"
     SERVER2:
       ansible_host: FQDN
       ansible_ssh_private_key_file: ~/.ssh/ansible
+      anisble_become_pass: "{{ VAR2 }}"
 
 vpn_servers:
   vars:
@@ -16,6 +18,8 @@ vpn_servers:
     SERVER1:
       ansible_host: FQDN
       ansible_ssh_private_key_file: ~/.ssh/ansible
+      anisble_become_pass: "{{ VAR1 }}"
     SERVER2:
       ansible_host: FQDN
       ansible_ssh_private_key_file: ~/.ssh/ansible
+      anisble_become_pass: "{{ VAR2 }}"
