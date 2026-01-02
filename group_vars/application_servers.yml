@@ -10,3 +10,5 @@ server_path:
   homarr: /home/ansible/docker/homarr
   authentik: /home/ansible/docker/authentik
   gitea: /home/ansible/docker/gitea
+  prometheus: /home/ansible/docker/prometheus
+  grafana: /home/ansible/docker/grafana

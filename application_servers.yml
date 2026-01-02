@@ -25,6 +25,8 @@
         - '{{ server_path.homarr }}'
         - '{{ server_path.authentik }}'
         - '{{ server_path.gitea }}'
+        - '{{ server_path.prometheus }}'
+        - '{{ server_path.grafana }}'
 
     - name: Copy docker configuration
       ansible.builtin.copy:

@@ -223,11 +223,61 @@ services:
       - proxy
     restart: unless-stopped
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:${PROMETHEUS_IMAGE_TAG}
+    volumes:
+      - 'prometheus-data:/prometheus'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)'
+      - 'traefik.http.routers.prometheus.entryPoints=websecure'
+      - 'traefik.http.routers.prometheus.tls=true'
+      - 'traefik.http.routers.prometheus.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
+    depends_on:
+      - proxy
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:${GRAFANA_IMAGE_TAG}
+    environment:
+      GF_AUTH_GENERIC_OAUTH_ENABLED: true
+      GF_AUTH_GENERIC_OAUTH_NAME: authentik
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: ${GRAFANA_OIDC_CLIENT_ID}
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: ${GRAFANA_OIDC_CLIENT_SECRET}
+      GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.${DOMAIN}/application/o/authorize/"
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.${DOMAIN}/application/o/token/"
+      GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.${DOMAIN}/application/o/userinfo/"
+      GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.${DOMAIN}/application/o/${GRAFANA_OIDC_SLUG}/end-session/"
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || contains(groups[*], 'grafana-viewers') && 'Viewer'"
+      GF_SERVER_ROOT_URL: https://grafana.${DOMAIN}
+    volumes:
+      - 'grafana-data:/var/lib/grafana'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)'
+      - 'traefik.http.routers.grafana.entryPoints=websecure'
+      - 'traefik.http.routers.grafana.tls=true'
+      - 'traefik.http.routers.grafana.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
+    depends_on:
+      - proxy
+    networks:
+      - proxy
+    restart: unless-stopped
+
 volumes:
   authentik-db:
     driver: local
   gitea-db:
     driver: local
+  prometheus-data: {}
+  grafana-data: {}
 
 networks:
   proxy:
