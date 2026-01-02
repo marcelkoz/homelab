@@ -13,7 +13,7 @@
         enabled: true
         state: started
 
-    - name: Create directories for docker containers
+    - name: Create directories for docker containers (root user)
       ansible.builtin.file:
         path: "{{ item }}"
         mode: '0700'
@@ -24,9 +24,18 @@
         - '{{ server_path.daisy }}'
         - '{{ server_path.homarr }}'
         - '{{ server_path.authentik }}'
-        - '{{ server_path.gitea }}'
         - '{{ server_path.prometheus }}'
         - '{{ server_path.grafana }}'
+
+    - name: Create directories for docker containers (rootless user)
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: '0700'
+        state: directory
+        owner: 1000
+        group: 1000
+      loop:
+        - '{{ server_path.gitea }}'
 
     - name: Copy docker configuration
       ansible.builtin.copy:
