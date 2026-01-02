@@ -1,147 +1,25 @@
-
 services:
-  proxy:
-    container_name: proxy
-    image: traefik
-    networks:
-      - proxy
-    ports:
-      - 80:80
-      - 443:443
-      - 8080:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik:/etc/traefik
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
-      - 'traefik.http.routers.dashboard.entryPoints=websecure'
-      - 'traefik.http.routers.dashboard.tls=true'
-      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
-      - 'traefik.http.routers.dashboard.service=api@internal'
-    environment:
-      - 'CF_DNS_API_TOKEN=${CF_API_TOKEN}'
-    restart: unless-stopped
 
-  homarr:
-    container_name: homarr
-    image: ghcr.io/homarr-labs/homarr
-    networks:
-      - proxy
-    volumes:
-      - ./homarr/appdata:/appdata
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
-      - 'traefik.http.routers.home.entryPoints=websecure'
-      - 'traefik.http.routers.home.tls=true'
-      - 'traefik.http.routers.home.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.home.loadbalancer.server.port=80'
-    environment:
-      - 'PORT=80'
-      - 'SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}'
-      - 'AUTH_PROVIDERS=oidc'
-      - 'AUTH_OIDC_ISSUER=${SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/'
-      - 'AUTH_OIDC_URI=${SSO_BASE_URL}/application/o/authorize'
-      - 'AUTH_OIDC_CLIENT_NAME=authentik'
-      - 'AUTH_OIDC_CLIENT_ID=${HOMARR_OIDC_CLIENT_ID}'
-      - 'AUTH_OIDC_CLIENT_SECRET=${HOMARR_OIDC_CLIENT_SECRET}'
-      - 'AUTH_OIDC_FORCE_USERINFO=true'
-    depends_on:
-      - proxy
-    restart: unless-stopped
-
-  # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
-  pihole:
-    container_name: pihole
-    image: pihole/pihole:latest
-    networks:
-      - proxy
-    ports:
-      - 53:53/tcp
-      - 53:53/udp
-      - 67:67/udp
-    dns:
-      - 127.0.0.1
-    cap_add:
-      - NET_ADMIN
-    volumes:
-      - ./pihole/etc-pihole:/etc/pihole
-      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
-      - ./pihole/etc-resolv.conf:/etc/resolv.conf
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
-      - 'traefik.http.routers.pihole.entryPoints=websecure'
-      - 'traefik.http.routers.pihole.tls=true'
-      - 'traefik.http.routers.pihole.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.pihole.loadbalancer.server.port=80'
-    env_file:
-      - ./pihole/pihole.env
-    depends_on:
-      - proxy
-    restart: unless-stopped
-
-  daisy-web:
-    container_name: daisy-web
-    image: daisy-web
-    networks:
-      - proxy
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
-      - 'traefik.http.routers.daisy.entryPoints=websecure'
-      - 'traefik.http.routers.daisy.tls=true'
-      - 'traefik.http.routers.daisy.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.daisy.loadbalancer.server.port=80'
-    depends_on:
-      - proxy
-    restart: unless-stopped
-
-  daisy-app:
-    container_name: daisy-app
-    image: daisy-app
-    networks:
-      - proxy
-    restart: unless-stopped
-
-  authentik-db:
-    container_name: authentik-db
-    image: postgres:${POSTGRES_IMAGE_TAG}
-    environment:
-      POSTGRES_DB: ${AUTHENTIK_DB_NAME:-authentik}
-      POSTGRES_PASSWORD: ${AUTHENTIK_DB_PASS:?database password required}
-      POSTGRES_USER: ${AUTHENTIK_DB_USER:-authentik}
-    healthcheck:
-      interval: 30s
-      retries: 5
-      start_period: 20s
-      test:
-      - CMD-SHELL
-      - pg_isready -d $${AUTHENTIK_DB_NAME} -U $${AUTHENTIK_DB_USER}
-      timeout: 5s
-    volumes:
-    - authentik-db:/var/lib/postgresql/data
-    networks:
-      - proxy
-    restart: unless-stopped
-
+  # https://docs.goauthentik.io/install-config/install/docker-compose/
   authentik:
-    container_name: authentik
     image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
-    command: server
+    container_name: authentik
     depends_on:
       authentik-db:
         condition: service_healthy
+    volumes:
+      - ./authentik/media:/media
+      - ./authentik/custom-templates:/templates
     environment:
       AUTHENTIK_POSTGRESQL__HOST: authentik-db
       AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_ENCRYPTION_KEY:?secret key required}
-    volumes:
-    - './authentik/media:/media'
-    - './authentik/custom-templates:/templates'
+    networks:
+      - proxy
+    command: server
+    restart: unless-stopped
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authentik.rule=Host(`authentik.${DOMAIN}`)'
@@ -149,67 +27,93 @@ services:
       - 'traefik.http.routers.authentik.tls=true'
       - 'traefik.http.routers.authentik.tls.certresolver=letsencrypt'
       - 'traefik.http.services.authentik.loadbalancer.server.port=9000'
+
+  authentik-db:
+    image: postgres:${POSTGRES_IMAGE_TAG}
+    container_name: authentik-db
+    volumes:
+      - authentik-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${AUTHENTIK_DB_NAME:-authentik}
+      POSTGRES_PASSWORD: ${AUTHENTIK_DB_PASS:?database password required}
+      POSTGRES_USER: ${AUTHENTIK_DB_USER:-authentik}
     networks:
       - proxy
     restart: unless-stopped
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${AUTHENTIK_DB_NAME} -U $${AUTHENTIK_DB_USER}
+      timeout: 5s
 
   authentik-worker:
-    container_name: authentik-worker
     image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
-    command: worker
+    container_name: authentik-worker
     depends_on:
       authentik-db:
         condition: service_healthy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./authentik/media:/media
+      - ./authentik/certs:/certs
+      - ./authentik/custom-templates:/templates
     environment:
       AUTHENTIK_POSTGRESQL__HOST: authentik-db
       AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_ENCRYPTION_KEY:?secret key required}
+    networks:
+      - proxy
+    command: worker
+    restart: unless-stopped
     user: root
-    volumes:
-    - '/var/run/docker.sock:/var/run/docker.sock'
-    - './authentik/media:/media'
-    - './authentik/certs:/certs'
-    - './authentik/custom-templates:/templates'
+
+  daisy-app:
+    image: daisy-app
+    container_name: daisy-app
     networks:
       - proxy
     restart: unless-stopped
 
-  gitea-db:
-    container_name: gitea-db
-    image: postgres:${POSTGRES_IMAGE_TAG}
-    environment:
-      POSTGRES_DB: ${GITEA_DB_NAME}
-      POSTGRES_PASSWORD: ${GITEA_DB_PASS}
-      POSTGRES_USER: ${GITEA_DB_USER}
-    healthcheck:
-      interval: 30s
-      retries: 5
-      start_period: 20s
-      test:
-      - CMD-SHELL
-      - pg_isready -d $${GITEA_DB_NAME} -U $${GITEA_DB_USER}
-      timeout: 5s
-    volumes:
-      - gitea-db:/var/lib/postgresql/data
+  daisy-web:
+    image: daisy-web
+    container_name: daisy-web
+    depends_on:
+      - proxy
     networks:
       - proxy
     restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
+      - 'traefik.http.routers.daisy.entryPoints=websecure'
+      - 'traefik.http.routers.daisy.tls=true'
+      - 'traefik.http.routers.daisy.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.daisy.loadbalancer.server.port=80'
 
+  # https://docs.gitea.com/installation/install-with-docker
   gitea:
-    container_name: gitea
     image: docker.gitea.com/gitea:${GITEA_IMAGE_TAG}
-    environment:
-      - GITEA__database__DB_TYPE=postgres
-      - GITEA__database__HOST=gitea-db
-      - GITEA__database__NAME=${GITEA_DB_NAME}
-      - GITEA__database__USER=${GITEA_DB_USER}
-      - GITEA__database__PASSWD=${GITEA_DB_PASS}
+    container_name: gitea
+    depends_on:
+      - gitea-db
     volumes:
-      - './gitea:/data'
-      - '/etc/timezone:/etc/timezone:ro'
-      - '/etc/localtime:/etc/localtime:ro'
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      GITEA__database__DB_TYPE: postgres
+      GITEA__database__HOST: gitea-db
+      GITEA__database__NAME: ${GITEA_DB_NAME}
+      GITEA__database__USER: ${GITEA_DB_USER}
+      GITEA__database__PASSWD: ${GITEA_DB_PASS}
+    networks:
+      - proxy
+    restart: unless-stopped
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.gitea.rule=Host(`git.${DOMAIN}`)'
@@ -217,33 +121,36 @@ services:
       - 'traefik.http.routers.gitea.tls=true'
       - 'traefik.http.routers.gitea.tls.certresolver=letsencrypt'
       - 'traefik.http.services.gitea.loadbalancer.server.port=3000'
-    depends_on:
-      - gitea-db
-    networks:
-      - proxy
-    restart: unless-stopped
 
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:${PROMETHEUS_IMAGE_TAG}
+  gitea-db:
+    image: postgres:${POSTGRES_IMAGE_TAG}
+    container_name: gitea-db
     volumes:
-      - 'prometheus-data:/prometheus'
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)'
-      - 'traefik.http.routers.prometheus.entryPoints=websecure'
-      - 'traefik.http.routers.prometheus.tls=true'
-      - 'traefik.http.routers.prometheus.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
-    depends_on:
-      - proxy
+      - gitea-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${GITEA_DB_NAME}
+      POSTGRES_PASSWORD: ${GITEA_DB_PASS}
+      POSTGRES_USER: ${GITEA_DB_USER}
     networks:
       - proxy
     restart: unless-stopped
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${GITEA_DB_NAME} -U $${GITEA_DB_USER}
+      timeout: 5s
 
+  # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
   grafana:
-    container_name: grafana
     image: grafana/grafana:${GRAFANA_IMAGE_TAG}
+    container_name: grafana
+    depends_on:
+      - proxy
+    volumes:
+      - grafana-data:/var/lib/grafana
     environment:
       GF_AUTH_GENERIC_OAUTH_ENABLED: true
       GF_AUTH_GENERIC_OAUTH_NAME: authentik
@@ -256,8 +163,9 @@ services:
       GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.${DOMAIN}/application/o/${GRAFANA_OIDC_SLUG}/end-session/"
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || contains(groups[*], 'grafana-viewers') && 'Viewer'"
       GF_SERVER_ROOT_URL: https://grafana.${DOMAIN}
-    volumes:
-      - 'grafana-data:/var/lib/grafana'
+    networks:
+      - proxy
+    restart: unless-stopped
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)'
@@ -265,11 +173,112 @@ services:
       - 'traefik.http.routers.grafana.tls=true'
       - 'traefik.http.routers.grafana.tls.certresolver=letsencrypt'
       - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
+
+  # https://homarr.dev/docs/getting-started/installation/docker/
+  homarr:
+    image: ghcr.io/homarr-labs/homarr
+    container_name: homarr
     depends_on:
       - proxy
+    volumes:
+      - ./homarr/appdata:/appdata
+    environment:
+      PORT: 80
+      SECRET_ENCRYPTION_KEY: ${HOMARR_ENCRYPTION_KEY}
+      AUTH_PROVIDERS: oidc
+      AUTH_OIDC_ISSUER: "${SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/"
+      AUTH_OIDC_URI: "${SSO_BASE_URL}/application/o/authorize"
+      AUTH_OIDC_CLIENT_NAME: authentik
+      AUTH_OIDC_CLIENT_ID: ${HOMARR_OIDC_CLIENT_ID}
+      AUTH_OIDC_CLIENT_SECRET: ${HOMARR_OIDC_CLIENT_SECRET}
+      AUTH_OIDC_FORCE_USERINFO: true
     networks:
       - proxy
     restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
+      - 'traefik.http.routers.home.entryPoints=websecure'
+      - 'traefik.http.routers.home.tls=true'
+      - 'traefik.http.routers.home.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.home.loadbalancer.server.port=80'
+
+  # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    depends_on:
+      - proxy
+    volumes:
+      - ./pihole/etc-pihole:/etc/pihole
+      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+      - ./pihole/etc-resolv.conf:/etc/resolv.conf
+    env_file:
+      - ./pihole/pihole.env
+    ports:
+      - '53:53/tcp'
+      - '53:53/udp'
+      - '67:67/udp'
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
+      - 'traefik.http.routers.pihole.entryPoints=websecure'
+      - 'traefik.http.routers.pihole.tls=true'
+      - 'traefik.http.routers.pihole.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.pihole.loadbalancer.server.port=80'
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 127.0.0.1
+
+  # https://prometheus.io/docs/prometheus/latest/installation/
+  prometheus:
+    image: prom/prometheus:${PROMETHEUS_IMAGE_TAG}
+    container_name: prometheus
+    depends_on:
+      - proxy
+    volumes:
+      - prometheus-data:/prometheus
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)'
+      - 'traefik.http.routers.prometheus.entryPoints=websecure'
+      - 'traefik.http.routers.prometheus.tls=true'
+      - 'traefik.http.routers.prometheus.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
+
+  proxy:
+    image: traefik
+    container_name: proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik:/etc/traefik
+    environment:
+      CF_DNS_API_TOKEN: ${CF_API_TOKEN}
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
+      - 'traefik.http.routers.dashboard.entryPoints=websecure'
+      - 'traefik.http.routers.dashboard.tls=true'
+      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.dashboard.service=api@internal'
+
+networks:
+  proxy:
+    name: proxy_network
 
 volumes:
   authentik-db:
@@ -278,8 +287,3 @@ volumes:
     driver: local
   prometheus-data: {}
   grafana-data: {}
-
-networks:
-  proxy:
-    name: proxy_network
-
