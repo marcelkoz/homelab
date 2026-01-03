@@ -234,6 +234,25 @@ services:
     dns:
       - 127.0.0.1
 
+  portainer:
+    image: portainer/portainer-ce:${PORTAINER_IMAGE_TAG}
+    container_name: portainer
+    depends_on:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)'
+      - 'traefik.http.routers.portainer.entryPoints=websecure'
+      - 'traefik.http.routers.portainer.tls=true'
+      - 'traefik.http.routers.portainer.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.portainer.loadbalancer.server.port=9000'
+
   # https://prometheus.io/docs/prometheus/latest/installation/
   prometheus:
     image: prom/prometheus:${PROMETHEUS_IMAGE_TAG}
@@ -294,5 +313,6 @@ volumes:
     driver: local
   gitea-db:
     driver: local
-  prometheus-data: {}
   grafana-data: {}
+  prometheus-data: {}
+  portainer-data: {}
