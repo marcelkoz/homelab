@@ -90,7 +90,7 @@
     - name: Copy prometheus configuration template
       ansible.builtin.template:
         src: '{{ item }}'
-        dest: '{{ server_path.prometheus }}'
+        dest: '{{ server_path.prometheus }}/prometheus.yml'
         mode: '0400'
         owner: nobody
         group: nogroup
