@@ -7,6 +7,15 @@ log:
   format: common
   level: INFO
 
+metrics:
+  prometheus:
+    manualRouting: true
+    buckets:
+      - 0.1
+      - 0.3
+      - 1.2
+      - 5.0
+
 entryPoints:
   web:
     address: ':80'

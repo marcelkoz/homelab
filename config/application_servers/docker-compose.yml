@@ -241,9 +241,13 @@ services:
     depends_on:
       - proxy
     volumes:
+      - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
     networks:
       - proxy
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.size=1GB'
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
@@ -270,11 +274,16 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
-      - 'traefik.http.routers.dashboard.entryPoints=websecure'
-      - 'traefik.http.routers.dashboard.tls=true'
-      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
-      - 'traefik.http.routers.dashboard.service=api@internal'
+      - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
+      - 'traefik.http.routers.traefik-dashboard.entryPoints=websecure'
+      - 'traefik.http.routers.traefik-dashboard.tls=true'
+      - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.traefik-dashboard.service=api@internal'
+      - 'traefik.http.routers.traefik-metrics.rule=Host(`proxy.${DOMAIN}`) && PathPrefix(`/metrics`)'
+      - 'traefik.http.routers.traefik-metrics.entryPoints=websecure'
+      - 'traefik.http.routers.traefik-metrics.tls=true'
+      - 'traefik.http.routers.traefik-metrics.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.traefik-metrics.service=prometheus@internal'
 
 networks:
   proxy:

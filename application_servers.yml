@@ -13,29 +13,31 @@
         enabled: true
         state: started
 
-    - name: Create directories for docker containers (root user)
+    - name: Create directories for docker containers
       ansible.builtin.file:
         path: "{{ item }}"
         mode: '0700'
         state: directory
+        owner: '{{ docker_user }}'
+        group: '{{ docker_group }}'
       loop:
         - '{{ server_path.traefik }}'
         - '{{ server_path.pihole }}'
         - '{{ server_path.daisy }}'
         - '{{ server_path.homarr }}'
         - '{{ server_path.authentik }}'
-        - '{{ server_path.prometheus }}'
+        - '{{ server_path.gitea }}'
         - '{{ server_path.grafana }}'
 
-    - name: Create directories for docker containers (rootless user)
+    - name: Create directory for prometheus docker container (which has different user/group)
       ansible.builtin.file:
         path: "{{ item }}"
         mode: '0700'
         state: directory
-        owner: 1000
-        group: 1000
+        owner: nobody
+        group: nogroup
       loop:
-        - '{{ server_path.gitea }}'
+        - '{{ server_path.prometheus }}'
 
     - name: Copy docker configuration
       ansible.builtin.copy:
@@ -84,6 +86,16 @@
         state: touch
         modification_time: preserve
         access_time: preserve
+
+    - name: Copy prometheus configuration
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '{{ server_path.prometheus }}'
+        mode: '0400'
+        owner: nobody
+        group: nogroup
+      loop:
+        - '{{ local_path.config }}/prometheus.yml'
 
   handlers:
     - name: Systemd resolved config changed
