@@ -87,15 +87,15 @@
         modification_time: preserve
         access_time: preserve
 
-    - name: Copy prometheus configuration
-      ansible.builtin.copy:
+    - name: Copy prometheus configuration template
+      ansible.builtin.template:
         src: '{{ item }}'
         dest: '{{ server_path.prometheus }}'
         mode: '0400'
         owner: nobody
         group: nogroup
       loop:
-        - '{{ local_path.config }}/prometheus.yml'
+        - '{{ local_path.config }}/prometheus.yml.j2'
 
   handlers:
     - name: Systemd resolved config changed

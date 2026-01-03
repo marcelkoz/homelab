@@ -7,6 +7,6 @@ scrape_configs:
   - job_name: traefik-metrics
     scheme: https
     static_configs:
-      - targets: ['FQDN']
+      - targets: ['{{ traefik_hostname }}']
         labels:
           app: 'traefik'

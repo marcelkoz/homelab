@@ -1,6 +1,7 @@
 application_servers:
   vars:
     ansible_user: USER
+    traefik_hostname: FQDN
   hosts:
     SERVER1:
       ansible_host: FQDN
