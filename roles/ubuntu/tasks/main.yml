@@ -1,0 +1,12 @@
+---
+- name: APT packaging configuration
+  ansible.builtin.include_tasks: apt-packages.yml
+
+- name: Firewall configuration
+  ansible.builtin.include_tasks: firewall.yml
+
+- name: General server configuration
+  ansible.builtin.include_tasks: general.yml
+
+- name: Server configuration hardening
+  ansible.builtin.include_tasks: hardening.yml

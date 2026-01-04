@@ -1,0 +1,27 @@
+- name: Update apt cache and all packages
+  # noqa package-latest
+  ansible.builtin.apt:
+    name: '*'
+    state: latest
+    update_cache: true
+
+- name: Install essential packages
+  ansible.builtin.apt:
+    name:
+      - openssh-server
+      - openssh-client
+    state: present
+    update_cache: true
+
+- name: Install unattended-upgrades package
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: present
+
+- name: Copy unattended-upgrades configuration
+  ansible.builtin.copy:
+    src: 'files/50unattended-upgrades'
+    dest: '/etc/apt/apt.conf.d/50unattended-upgrades'
+    mode: '0644'
+  notify:
+    - Unattended-upgrades config changed

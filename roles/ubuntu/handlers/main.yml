@@ -1,0 +1,27 @@
+- name: Unattended-upgrades config changed
+  ansible.builtin.service:
+    name: unattended-upgrades
+    state: restarted
+
+- name: NTP config changed
+  ansible.builtin.service:
+    name: systemd-timesyncd
+    state: restarted
+
+- name: Fail2ban config changed
+  ansible.builtin.service:
+    name: fail2ban
+    state: restarted
+
+- name: Sshd config changed
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+
+- name: Modprobe config changed
+  ansible.builtin.debug:
+    msg: Modprobe config has changed, a reboot is recommended
+
+- name: Sysctl config changed
+  # noqa no-changed-when
+  ansible.builtin.command: 'sysctl --system'

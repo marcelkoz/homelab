@@ -1,0 +1,38 @@
+- name: Set the timezone
+  community.general.timezone:
+    name: '{{ ubuntu_timezone }}'
+
+- name: Create timesyncd.conf.d directory
+  ansible.builtin.file:
+    path: '/etc/systemd/timesyncd.conf.d'
+    state: directory
+    mode: '0644'
+
+- name: Copy NTP servers config
+  ansible.builtin.copy:
+    src: 'files/00-ntp-servers.conf'
+    dest: '/etc/systemd/timesyncd.conf.d/00-ntp-servers.conf'
+    mode: '0644'
+  notify:
+    - NTP config changed
+
+- name: Check device is a Raspberry Pi
+  # noqa no-changed-when risky-shell-pipe
+  ansible.builtin.shell:
+    cmd: 'cat /sys/firmware/devicetree/base/model | grep -a -i "raspberry pi"'
+  ignore_errors: true
+  register: ubuntu_raspberry_pi_result
+
+- name: Set PoE hat fan settings for Raspberry Pi
+  ansible.builtin.blockinfile:
+    state: present
+    insertafter: EOF
+    dest: '/boot/firmware/config.txt'
+    marker: '#### {mark} ANSIBLE BLOCK ####'
+    block: |
+      # PoE Hat Fan Speeds
+      dtparam=poe_fan_temp0=70000
+      dtparam=poe_fan_temp1=80000
+      dtparam=poe_fan_temp2=85000
+      dtparam=poe_fan_temp3=90000
+  when: ubuntu_raspberry_pi_result.rc == 0

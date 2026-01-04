@@ -1,0 +1,141 @@
+- name: Install fail2ban package
+  ansible.builtin.apt:
+    name: fail2ban
+    state: present
+
+- name: Copy fail2ban configuration
+  ansible.builtin.copy:
+    src: 'files/jail.local'
+    dest: '/etc/fail2ban/jail.local'
+    mode: '0644'
+  notify:
+    - Fail2ban config changed
+
+- name: Restrict shadow and gshadow file permissions
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: file
+    mode: '0640'
+  loop:
+    - '/etc/shadow'
+    - '/etc/gshadow'
+    - '/etc/shadow-'
+    - '/etc/gshadow-'
+
+- name: Restrict cron directory permissions
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0700'
+  loop:
+    - '/etc/cron.d'
+    - '/etc/cron.daily'
+    - '/etc/cron.hourly'
+    - '/etc/cron.monthly'
+    - '/etc/cron.weekly'
+
+- name: Restrict crontab permissions
+  ansible.builtin.file:
+    path: '/etc/crontab'
+    state: file
+    mode: '0600'
+
+- name: Create blank at.allow and cron.allow files
+  ansible.builtin.copy:
+    content: ''
+    dest: '{{ item }}'
+    mode: '0600'
+    force: false
+  loop:
+    - '/etc/at.allow'
+    - '/etc/cron.allow'
+
+- name: Set cron.allow group to crontab
+  ansible.builtin.file:
+    path: '/etc/cron.allow'
+    state: file
+    group: crontab
+
+- name: Check grub config file exists
+  ansible.builtin.stat:
+    path: '/boot/grub/grub.cfg'
+  register: ubuntu_grub_config_file
+
+- name: Restrict grub config file permissions
+  ansible.builtin.file:
+    path: '/boot/grub/grub.cfg'
+    mode: '0600'
+    owner: root
+    group: root
+  when: ubuntu_grub_config_file.stat.exists
+
+- name: Disable uncommon filesystems
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '/etc/modprobe.d'
+    mode: '0600'
+    owner: root
+    group: root
+  loop:
+    - 'files/disable-unusual-filesystems.conf'
+    # - 'files/disable-usb-storage.conf'
+  notify:
+    - Modprobe config changed
+
+- name: Copy hardened sysctl config
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '/etc/sysctl.d'
+    mode: '0600'
+    owner: root
+    group: root
+  loop:
+    - 'files/hardened-networking.conf'
+    - 'files/disable-suid-coredumps.conf'
+    - 'files/enable-aslr-memory.conf'
+  notify:
+    - Sysctl config changed
+
+- name: Disable apport service
+  ansible.builtin.systemd_service:
+    name: apport
+    state: stopped
+    enabled: false
+    masked: true
+
+- name: Uninstall unnecessary and insecure packages
+  ansible.builtin.apt:
+    name: '{{ item }}'
+    state: absent
+  loop:
+    - ftp
+    - tnftp
+    - telnet
+    - rsync
+
+- name: Copy SSH banner message (issue.net)
+  ansible.builtin.copy:
+    src: 'files/issue.net'
+    dest: '/etc/issue.net'
+    mode: '0644'
+
+- name: Create sshd_config.d directory
+  ansible.builtin.file:
+    path: '/etc/ssh/sshd_config.d'
+    state: directory
+    mode: '0600'
+
+- name: Copy hardened sshd config
+  ansible.builtin.copy:
+    src: 'files/00-hardened-sshd.conf'
+    dest: '/etc/ssh/sshd_config.d/00-hardened-sshd.conf'
+    mode: '0600'
+  notify:
+    - Sshd config changed
+
+- name: Restrict sshd config file permissions
+  ansible.builtin.file:
+    path: '/etc/ssh/sshd_config'
+    mode: '0600'
+    owner: root
+    group: root
