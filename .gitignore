@@ -3,6 +3,7 @@
 
 runtime
 
+TODO.*
 
 # TERRAFORM
 # source: https://github.com/github/gitignore/blob/main/Terraform.gitignore
