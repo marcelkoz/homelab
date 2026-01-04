@@ -1,6 +1,6 @@
 ---
 - name: APT packaging configuration
-  ansible.builtin.include_tasks: apt-packages.yml
+  ansible.builtin.include_tasks: apt_packages.yml
 
 - name: Firewall configuration
   ansible.builtin.include_tasks: firewall.yml
