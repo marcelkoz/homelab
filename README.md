@@ -26,3 +26,30 @@ Run using vault secrets (with vault password prompt):
 ANSIBLE_ARGS='-i runtime/inventory.yml --ask-vault-password -e@runtime/ansible_secrets.yml'
 ansible-playbook $ANSIBLE_ARGS [PLAYBOOKS]
 ```
+
+### Terraform
+
+Before running the terraform config, make sure to fetch API tokens for the following services:
+
+* Authentik
+
+#### Init Project
+
+```bash
+cd terraform
+terraform init
+
+echo 'domain_name = [DOMAIN NAME]' > terraform.tfvars
+export AUTHENTIK_URL=[URL]
+export AUTHENTIK_TOKEN=[API TOKEN]
+
+terraform plan
+terraform apply
+```
+
+#### Development
+
+```bash
+terraform fmt && terraform validate
+terraform plan
+```
