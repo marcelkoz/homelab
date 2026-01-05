@@ -1,7 +1,7 @@
 # docker compose up --build --detach
 - name: Run docker compose services
   community.docker.docker_compose_v2:
-    project_src: '{{ server_path.docker }}'
+    project_src: '{{ core_apps_service_path.docker }}'
     pull: missing
     build: always
     state: present
