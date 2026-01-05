@@ -1,4 +1,8 @@
 ---
+- name: Add docker role required for installing docker
+  ansible.builtin.include_role:
+    name: docker
+
 - name: Setup docker environment
   ansible.builtin.include_tasks: setup.yml
 
