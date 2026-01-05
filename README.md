@@ -13,22 +13,27 @@ Copy the configs: `cp -r templates runtime`
 #### Vault
 Create an ansible vault file to store secrets.
 
-`ansible-vault create runtime/ansible_secrets.yml`
+```bash
+ansible-vault create runtime/prod_secrets.yml
+ansible-vault create runtime/test_secrets.yml
+```
 
-Edit the become password variables in the `runtime/inventory.yml` file to match the secret names above.
+Note: The templates directory contains a sample secrets file.
 
 Run using vault secrets (with vault password file):
 
 ```bash
-ANSIBLE_ARGS='-i runtime/inventory.yml --vault-password-file runtime/vault_pass.txt -e@runtime/ansible_secrets.yml'
-ansible-playbook $ANSIBLE_ARGS site.yml
+ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --vault-password-file runtime/prod_vault_pass.txt -e@runtime/prod_secrets.yml'
+ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --vault-password-file runtime/test_vault_pass.txt -e@runtime/test_secrets.yml'
+ansible-playbook $ANSIBLE_ARGS_ENV site.yml
 ```
 
 Run using vault secrets (with vault password prompt):
 
 ```bash
-ANSIBLE_ARGS='-i runtime/inventory.yml --ask-vault-password -e@runtime/ansible_secrets.yml'
-ansible-playbook $ANSIBLE_ARGS site.yml
+ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --ask-vault-password -e@runtime/prod_secrets.yml'
+ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --ask-vault-password -e@runtime/test_secrets.yml'
+ansible-playbook $ANSIBLE_ARGS_ENV site.yml
 ```
 
 #### Useful Commands
@@ -43,19 +48,19 @@ List of available tasks.
 
 List of hosts.
 
-`ansible-playbook $ANSIBLE_ARGS site.yml --list-hosts`
+`ansible-playbook $ANSIBLE_ARGS_ENV site.yml --list-hosts`
 
 Run specific tags.
 
-`ansible-playbook $ANSIBLE_ARGS site.yml --tags TAG1,TAG2`
+`ansible-playbook $ANSIBLE_ARGS_ENV site.yml --tags TAG1,TAG2`
 
 Skip specific tags.
 
-`ansible-playbook $ANSIBLE_ARGS site.yml --skip-tags TAG1,TAG2`
+`ansible-playbook $ANSIBLE_ARGS_ENV site.yml --skip-tags TAG1,TAG2`
 
 Run specific host group.
 
-`ansible-playbook $ANSIBLE_ARGS site.yml -l HOSTGROUP`
+`ansible-playbook $ANSIBLE_ARGS_ENV site.yml -l HOSTGROUP`
 
 
 
