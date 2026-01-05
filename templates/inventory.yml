@@ -12,7 +12,7 @@ application_servers:
       ansible_ssh_private_key_file: ~/.ssh/ansible
       anisble_become_pass: "{{ VAR2 }}"
 
-vpn_servers:
+netbird_servers:
   vars:
       ansible_user: USER
   hosts:

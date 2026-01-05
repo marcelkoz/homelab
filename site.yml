@@ -11,3 +11,10 @@
       ansible.builtin.include_role:
         name: ubuntu
       when: ansible_facts['distribution'] | lower == 'ubuntu'
+
+- name: Netbird server configuration
+  hosts: netbird_servers
+  become: true
+
+  roles:
+    - netbird_server
