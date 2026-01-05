@@ -1,6 +1,7 @@
 - name: Apply distro specific configuration
   hosts: all
   become: true
+  tags: os_build
 
   tasks:
     - name: OS distrubution of each host
@@ -15,6 +16,7 @@
 - name: Netbird server configuration
   hosts: netbird_servers
   become: true
+  tags: netbird
 
   roles:
     - netbird_server
@@ -22,6 +24,7 @@
 - name: Core apps server configuration
   hosts: application_servers
   become: true
+  tags: core_apps
 
   roles:
     - core_apps

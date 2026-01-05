@@ -5,9 +5,12 @@
 
 - name: Setup docker environment
   ansible.builtin.include_tasks: setup.yml
+  tags: core_apps_setup
 
 - name: Build custom docker images
   ansible.builtin.include_tasks: build.yml
+  tags: core_apps_build
 
 - name: Start the docker environment
   ansible.builtin.include_tasks: run.yml
+  tags: core_apps_run
