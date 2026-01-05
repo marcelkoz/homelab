@@ -4,6 +4,23 @@
     enabled: true
     state: started
 
+- name: Enable TCP ports on the firewall relevant to the docker containers
+  community.general.ufw:
+    rule: allow
+    port: '{{ item }}'
+    proto: tcp
+  loop:
+    - 443 # https
+    - 53 # dns
+
+- name: Enable UDP ports on the firewall relevant to the docker containers
+  community.general.ufw:
+    rule: allow
+    port: '{{ item }}'
+    proto: udp
+  loop:
+    - 53 # dns
+
 - name: Create directories for docker containers
   ansible.builtin.file:
     path: '{{ item }}'
