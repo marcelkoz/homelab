@@ -74,13 +74,13 @@
     - '{{ core_apps_runtime_path }}/pihole.env'
     - 'files/etc-resolv.conf'
 
-- name: Copy traefik configuration
-  ansible.builtin.copy:
+- name: Copy traefik configuration template
+  ansible.builtin.template:
     src: '{{ item }}'
-    dest: '{{ core_apps_service_path.traefik }}'
+    dest: '{{ core_apps_service_path.traefik }}/traefik.yml'
     mode: '0400'
   loop:
-    - '{{ core_apps_runtime_path }}/traefik.yml'
+    - 'templates/traefik.yml.j2'
 
 - name: Create traefik certs directory
   ansible.builtin.file:

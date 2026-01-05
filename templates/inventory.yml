@@ -2,6 +2,7 @@ application_servers:
   vars:
     ansible_user: USER
     traefik_hostname: FQDN
+    traefik_letsencrypt_email_address: EMAIL
   hosts:
     SERVER1:
       ansible_host: FQDN

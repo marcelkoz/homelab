@@ -1,6 +1,5 @@
 
-api:
-  dashboard: true
+api: {}
 
 log:
   filePath: '/dev/stdout'
@@ -30,7 +29,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: <<EMAIL>>
+      email: '{{ traefik_letsencrypt_email_address }}'
       storage: '/etc/traefik/certs/acme.json'
       dnsChallenge:
         provider: cloudflare
