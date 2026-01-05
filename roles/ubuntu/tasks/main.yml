@@ -8,8 +8,5 @@
 - name: General server configuration
   ansible.builtin.include_tasks: general.yml
 
-- name: Install docker
-  ansible.builtin.include_tasks: docker.yml
-
 - name: Server configuration hardening
   ansible.builtin.include_tasks: hardening.yml
