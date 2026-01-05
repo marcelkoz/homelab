@@ -1,0 +1,89 @@
+- name: Enable and start docker service
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Create directories for docker containers
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0700'
+    state: directory
+    owner: '{{ core_apps_docker_user }}'
+    group: '{{ core_apps_docker_group }}'
+  loop:
+    - '{{ core_apps_service_path.traefik }}'
+    - '{{ core_apps_service_path.pihole }}'
+    - '{{ core_apps_service_path.daisy }}'
+    - '{{ core_apps_service_path.homarr }}'
+    - '{{ core_apps_service_path.authentik }}'
+    - '{{ core_apps_service_path.gitea }}'
+    - '{{ core_apps_service_path.grafana }}'
+
+- name: Create directory for prometheus docker container (which has different user/group)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0700'
+    state: directory
+    owner: '{{ core_apps_prometheus_docker_user }}'
+    group: '{{ core_apps_prometheus_docker_group }}'
+  loop:
+    - '{{ core_apps_service_path.prometheus }}'
+
+- name: Copy docker configuration
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.docker }}'
+    mode: '0400'
+  loop:
+    - '{{ core_apps_runtime_path }}/.env'
+    - 'files/docker-compose.yml'
+
+- name: Disable systemd resolved default dns stub listener
+  ansible.builtin.copy:
+    src: 'files/etc-systemd-resolved.conf'
+    dest: '/etc/systemd/resolved.conf'
+    mode: '0644'
+  notify:
+    - Systemd resolved config changed
+
+- name: Copy pihole configuration
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.pihole }}'
+    mode: '0400'
+  loop:
+    - '{{ core_apps_runtime_path }}/pihole.env'
+    - 'files/etc-resolv.conf'
+
+- name: Copy traefik configuration
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.traefik }}'
+    mode: '0400'
+  loop:
+    - '{{ core_apps_runtime_path }}/traefik.yml'
+
+- name: Create traefik certs directory
+  ansible.builtin.file:
+    path: '{{ core_apps_service_path.traefik }}/certs'
+    mode: '0400'
+    state: directory
+
+- name: Create blank acme file for proxy tls traffic
+  ansible.builtin.file:
+    path: '{{ core_apps_service_path.traefik }}/certs/acme.json'
+    mode: '0600'
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+
+- name: Copy prometheus configuration template
+  ansible.builtin.template:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.prometheus }}/prometheus.yml'
+    mode: '0400'
+    owner: nobody
+    group: nogroup
+  loop:
+    - 'templates/prometheus.yml.j2'

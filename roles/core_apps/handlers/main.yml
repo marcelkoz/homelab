@@ -1,0 +1,4 @@
+- name: Systemd resolved config changed
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: restarted

@@ -1,8 +1,0 @@
-
-timezone: 'Europe/London'
-docker_user: 1000
-docker_group: 1000
-ubuntu:
-  local_path:
-    config: config/ubuntu
-    runtime: runtime/ubuntu

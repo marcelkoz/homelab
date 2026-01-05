@@ -18,3 +18,10 @@
 
   roles:
     - netbird_server
+
+- name: Core apps server configuration
+  hosts: application_servers
+  become: true
+
+  roles:
+    - core_apps

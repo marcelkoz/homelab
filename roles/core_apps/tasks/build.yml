@@ -1,0 +1,37 @@
+- name: Copy SSH private key for the Daisy git repository
+  ansible.builtin.copy:
+    src: '{{ core_apps_runtime_path }}/daisy_git_key'
+    dest: '{{ core_apps_service_path.docker }}'
+    mode: '0400'
+
+- name: Pull Daisy git repository
+  # noqa latest
+  ansible.builtin.git:
+    repo: '{{ core_apps_daisy_repo }}'
+    dest: '{{ core_apps_service_path.daisy }}'
+    accept_hostkey: true
+    version: HEAD
+    key_file: '{{ core_apps_service_path.docker }}/daisy_git_key'
+
+- name: Build daisy-web container image
+  community.docker.docker_image_build:
+    name: daisy-web
+    path: '{{ core_apps_service_path.daisy }}/web'
+    dockerfile: Dockerfile
+
+- name: Build daisy-app container image
+  community.docker.docker_image_build:
+    name: daisy-app
+    path: '{{ core_apps_service_path.daisy }}/app'
+    dockerfile: Dockerfile
+
+- name: Check if Daisy SSH private key exists
+  ansible.builtin.stat:
+    path: "{{ core_apps_service_path.docker }}/daisy_git_key"
+  register: core_apps_daisy_key_file
+
+- name: Remove Daisy SSH private key if found
+  ansible.builtin.file:
+    path: "{{ core_apps_service_path.docker }}/daisy_git_key"
+    state: absent
+  when: core_apps_daisy_key_file.stat.exists | default(false)

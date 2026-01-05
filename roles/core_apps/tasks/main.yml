@@ -1,0 +1,9 @@
+---
+- name: Setup docker environment
+  ansible.builtin.include_tasks: setup.yml
+
+- name: Build custom docker images
+  ansible.builtin.include_tasks: build.yml
+
+- name: Start the docker environment
+  ansible.builtin.include_tasks: run.yml

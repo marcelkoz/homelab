@@ -1,8 +1,13 @@
-local_path:
-  config: config/application_servers
-  runtime: runtime/application_servers
+core_apps_docker_user: 1000
+core_apps_docker_group: 1000
 
-server_path:
+core_apps_prometheus_docker_user: nobody
+core_apps_prometheus_docker_group: nogroup
+
+core_apps_daisy_repo: git@github.com:marcelkoz/daisy.git
+
+core_apps_runtime_path: ../../runtime/application_servers
+core_apps_service_path:
   docker: /home/ansible/docker
   traefik: /home/ansible/docker/traefik
   pihole: /home/ansible/docker/pihole
