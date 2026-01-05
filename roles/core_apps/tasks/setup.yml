@@ -6,7 +6,7 @@
 
 - name: Create directories for docker containers
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     mode: '0700'
     state: directory
     owner: '{{ core_apps_docker_user }}'
@@ -14,11 +14,18 @@
   loop:
     - '{{ core_apps_service_path.traefik }}'
     - '{{ core_apps_service_path.pihole }}'
-    - '{{ core_apps_service_path.daisy }}'
     - '{{ core_apps_service_path.homarr }}'
     - '{{ core_apps_service_path.authentik }}'
     - '{{ core_apps_service_path.gitea }}'
     - '{{ core_apps_service_path.grafana }}'
+
+- name: Create directory for daisy docker container
+  ansible.builtin.file:
+    path: '{{ core_apps_service_path.daisy }}'
+    mode: '0700'
+    state: directory
+    owner: root
+    group: root
 
 - name: Create directory for prometheus docker container (which has different user/group)
   ansible.builtin.file:
