@@ -71,8 +71,15 @@
     dest: '{{ core_apps_service_path.pihole }}'
     mode: '0400'
   loop:
-    - '{{ core_apps_runtime_path }}/pihole.env'
     - 'files/etc-resolv.conf'
+
+- name: Copy pihole configuration template
+  ansible.builtin.template:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.pihole }}/pihole.env'
+    mode: '0400'
+  loop:
+    - 'templates/pihole.env.j2'
 
 - name: Copy traefik configuration template
   ansible.builtin.template:

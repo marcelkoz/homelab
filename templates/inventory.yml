@@ -3,6 +3,8 @@ application_servers:
     ansible_user: USER
     traefik_hostname: FQDN
     traefik_letsencrypt_email_address: EMAIL
+    pihole_fqdn: pihole.example.com
+    pihole_password: "{{ pihole_admin_password }}" # ansible vault
   hosts:
     SERVER1:
       ansible_host: FQDN
