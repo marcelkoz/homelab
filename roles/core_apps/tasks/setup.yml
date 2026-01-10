@@ -89,11 +89,14 @@
   loop:
     - 'templates/traefik.yml.j2'
 
-- name: Create traefik certs directory
+- name: Create traefik directories
   ansible.builtin.file:
-    path: '{{ core_apps_service_path.traefik }}/certs'
-    mode: '0400'
+    path: '{{ item }}'
+    mode: '0700'
     state: directory
+  loop:
+    - '{{ core_apps_service_path.traefik }}/certs'
+    - '{{ core_apps_service_path.traefik }}/config'
 
 - name: Create blank acme file for proxy tls traffic
   ansible.builtin.file:
