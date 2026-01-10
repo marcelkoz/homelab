@@ -1,0 +1,7 @@
+http:
+  routers:
+    SERVICE-override:
+      rule: Host(`IP/FQDN`)
+      entryPoints: web,websecure
+      service: SERVICE@docker
+      priority: 1000
