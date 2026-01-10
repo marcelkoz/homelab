@@ -96,7 +96,7 @@
     state: directory
   loop:
     - '{{ core_apps_service_path.traefik }}/certs'
-    - '{{ core_apps_service_path.traefik }}/config'
+    - '{{ core_apps_service_path.traefik }}/config.d'
 
 - name: Create blank acme file for proxy tls traffic
   ansible.builtin.file:
