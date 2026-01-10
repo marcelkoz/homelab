@@ -15,6 +15,14 @@
   loop:
     - 53 # dns
 
+- name: Disable systemd resolved default dns stub listener
+  ansible.builtin.copy:
+    src: 'files/etc-systemd-resolved.conf'
+    dest: '/etc/systemd/resolved.conf'
+    mode: '0644'
+  notify:
+    - Systemd resolved config changed
+
 - name: Create directories for docker containers
   ansible.builtin.file:
     path: '{{ item }}'
@@ -56,14 +64,6 @@
   loop:
     - '{{ core_apps_runtime_path }}/.env'
     - 'files/docker-compose.yml'
-
-- name: Disable systemd resolved default dns stub listener
-  ansible.builtin.copy:
-    src: 'files/etc-systemd-resolved.conf'
-    dest: '/etc/systemd/resolved.conf'
-    mode: '0644'
-  notify:
-    - Systemd resolved config changed
 
 - name: Copy pihole configuration
   ansible.builtin.copy:
