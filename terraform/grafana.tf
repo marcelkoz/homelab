@@ -43,3 +43,7 @@ resource "authentik_policy_binding" "grafana-admins-access" {
   group  = authentik_group.groups["grafana-admins"].id
   order  = 0
 }
+
+output "grafana_id" {
+  value = random_string.grafana_client_id.result
+}

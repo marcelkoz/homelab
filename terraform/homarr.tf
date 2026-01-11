@@ -38,3 +38,6 @@ resource "authentik_policy_binding" "homarr-admins-access" {
   order  = 0
 }
 
+output "homarr_id" {
+  value = random_string.homarr_client_id.result
+}

@@ -31,3 +31,7 @@ resource "authentik_policy_binding" "portainer-admins-access" {
   group  = authentik_group.groups["portainer-admins"].id
   order  = 0
 }
+
+output "portainer_id" {
+  value = random_string.portainer_client_id.result
+}

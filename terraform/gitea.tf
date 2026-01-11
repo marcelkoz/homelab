@@ -67,3 +67,7 @@ resource "authentik_policy_binding" "gitea-admins-access" {
   group  = authentik_group.groups["gitea-admins"].id
   order  = 0
 }
+
+output "gitea_id" {
+  value = random_string.gitea_client_id.result
+}
