@@ -10,13 +10,23 @@ variable "domain_name" {
 }
 
 variable "oidc_client_type" {
-  type = string
+  type    = string
   default = "confidential"
 }
 
 variable "oidc_policy_engine_mode" {
-  type = string
+  type    = string
   default = "all"
+}
+
+variable "client_id_length" {
+  type    = number
+  default = 20
+}
+
+variable "client_id_special_chars" {
+  type    = bool
+  default = true
 }
 
 variable "oidc_applications" {

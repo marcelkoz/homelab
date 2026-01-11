@@ -1,7 +1,12 @@
 
+resource "random_string" "gitea_client_id" {
+  length  = var.client_id_length
+  special = var.client_id_special_chars
+}
+
 resource "authentik_provider_oauth2" "gitea" {
   name               = "gitea-provider"
-  client_id          = "gitea" # TODO: make this random
+  client_id          = random_string.gitea_client_id.result
   client_type        = var.oidc_client_type
   authorization_flow = data.authentik_flow.default-authorization-flow.id
   invalidation_flow  = data.authentik_flow.default-provider-invalidation-flow.id
