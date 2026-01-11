@@ -25,13 +25,6 @@ variable "oidc_applications" {
       slug             = "homarr"
     }
 
-    gitea = {
-      application_name = "Gitea"
-      provider_name    = "gitea-provider"
-      client_id        = "gitea"
-      slug             = "gitea"
-    }
-
     grafana = {
       application_name = "Grafana"
       provider_name    = "grafana-provider"

@@ -14,19 +14,19 @@ resource "authentik_policy_binding" "homarr-admins-access" {
 
 # gitea
 resource "authentik_policy_binding" "gitea-restricted-access" {
-  target = authentik_application.applications["gitea"].uuid
+  target = authentik_application.gitea.uuid
   group  = authentik_group.groups["gitea-restricted"].id
   order  = 0
 }
 
 resource "authentik_policy_binding" "gitea-users-access" {
-  target = authentik_application.applications["gitea"].uuid
+  target = authentik_application.gitea.uuid
   group  = authentik_group.groups["gitea-users"].id
   order  = 0
 }
 
 resource "authentik_policy_binding" "gitea-admins-access" {
-  target = authentik_application.applications["gitea"].uuid
+  target = authentik_application.gitea.uuid
   group  = authentik_group.groups["gitea-admins"].id
   order  = 0
 }
