@@ -12,7 +12,7 @@ resource "authentik_provider_oauth2" "homarr" {
   invalidation_flow  = data.authentik_flow.default-provider-invalidation-flow.id
   allowed_redirect_uris = [
     {
-      url           = "https://homarr.${var.domain_name}/api/auth/callback/oidc"
+      url           = "https://home.${var.domain_name}/api/auth/callback/oidc"
       matching_mode = "strict"
     }
   ]
