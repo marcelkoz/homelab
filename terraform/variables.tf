@@ -59,6 +59,8 @@ variable "user_groups" {
     "grafana-viewers",
     "grafana-editors",
     "grafana-admins",
+    "pihole-admins",
     "portainer-admins",
+    "traefik-dashboard-viewers",
   ]
 }
