@@ -9,6 +9,16 @@ variable "domain_name" {
   type = string
 }
 
+variable "oidc_client_type" {
+  type = string
+  default = "confidential"
+}
+
+variable "oidc_policy_engine_mode" {
+  type = string
+  default = "all"
+}
+
 variable "oidc_applications" {
   type = map(object({
     application_name = string
