@@ -24,9 +24,10 @@ variable "client_id_length" {
   default = 20
 }
 
+# client ids do not work well with special chars
 variable "client_id_special_chars" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "user_groups" {
