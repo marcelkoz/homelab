@@ -1,0 +1,19 @@
+pihole:
+  api_base_url: https://pihole.example.com/api
+  password:
+
+  a_records:
+    test1:
+      ip_address: "127.0.0.1"
+      fqdn: "test1.example.com"
+    test2:
+      ip_address: "127.0.0.1"
+      fqdn: "test2.example.com"
+
+  cname_records:
+    test1:
+      fqdn: "test1.example.com"
+      target: "server.example.com"
+    test2:
+      fqdn: "test2.example.com"
+      target: "server.example.com"

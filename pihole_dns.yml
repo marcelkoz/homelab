@@ -1,0 +1,51 @@
+# WARNING: This config is not idempotent
+
+- name: Pihole DNS configuration
+  hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+    - name: Obtain pihole API session token
+      ansible.builtin.uri:
+        url: '{{ pihole.api_base_url }}/auth'
+        method: POST
+        body: '{"password":"{{ pihole.password }}"}'
+        body_format: json
+      register: session_response
+
+    - name: Create resources
+      block:
+        - name: Create DNS A records
+          ansible.builtin.uri:
+            url: '{{ pihole.api_base_url }}/config/dns/hosts/{{ item.value.ip_address }}%20{{ item.value.fqdn }}'
+            method: PUT
+            body: '{"sid":"{{ session_response.cookies.sid }}"}'
+            body_format: json
+            status_code: 201
+          loop: '{{ lookup("dict", pihole.a_records) }}'
+
+        - name: Wait for 3 seconds
+          ansible.builtin.wait_for:
+            timeout: 3
+
+        - name: Create DNS CNAME records
+          ansible.builtin.uri:
+            url: '{{ pihole.api_base_url }}/config/dns/cnameRecords/{{ item.value.fqdn }}%2C{{ item.value.target }}'
+            method: PUT
+            body: '{"sid":"{{ session_response.cookies.sid }}"}'
+            body_format: json
+            status_code: 201
+          loop: '{{ lookup("dict", pihole.cname_records) }}'
+
+      always:
+        - name: Wait for 3 seconds
+          ansible.builtin.wait_for:
+            timeout: 3
+
+        - name: Release pihole API session token
+          ansible.builtin.uri:
+            url: '{{ pihole.api_base_url }}/auth'
+            method: DELETE
+            body: '{"sid":"{{ session_response.cookies.sid }}"}'
+            body_format: json
+            status_code: 204
