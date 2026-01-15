@@ -36,6 +36,10 @@ ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --ask-vault-password -e@runtime
 ansible-playbook $ANSIBLE_ARGS_ENV site.yml
 ```
 
+Run the pihole bootstrap DNS playbook:
+
+```ansible-playbook $ANSIBLE_ARGS_ENV pihole_dns.yml -e @./runtime/prod_pihole_dns.yml```
+
 #### Useful Commands
 
 List of available tags.
