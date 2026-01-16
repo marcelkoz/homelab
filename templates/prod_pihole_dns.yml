@@ -28,6 +28,9 @@ pihole:
     grafana:
       fqdn: "grafana.example.com"
       target: "server1.example.com"
+    grafana-loki:
+      fqdn: "loki.example.com"
+      target: "server1.example.com"
     portainer:
       fqdn: "portainer.example.com"
       target: "server1.example.com"

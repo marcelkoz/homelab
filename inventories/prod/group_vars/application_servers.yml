@@ -2,3 +2,5 @@ traefik_fqdn: 'proxy.mkoz.net'
 traefik_letsencrypt_email_address: '{{ vault.traefik_letsencrypt_email_address }}'
 pihole_fqdn: 'pihole.mkoz.net'
 pihole_password: '{{ vault.pihole_pass }}'
+grafana_loki_fqdn: 'loki.mkoz.net'
+
