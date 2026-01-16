@@ -17,3 +17,5 @@ core_apps_service_path:
   gitea: /home/ansible/docker/gitea
   prometheus: /home/ansible/docker/prometheus
   grafana: /home/ansible/docker/grafana
+  grafana_alloy: /home/ansible/docker/grafana-alloy
+  grafana_loki: /home/ansible/docker/grafana-loki
