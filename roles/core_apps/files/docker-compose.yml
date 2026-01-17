@@ -309,6 +309,14 @@ services:
     networks:
       - proxy
     restart: unless-stopped
+    logging:
+      driver: loki
+      options:
+        loki-url: 'https://loki.${DOMAIN}/loki/api/v1/push'
+        loki-retries: 2
+        loki-max-backoff: 800ms
+        loki-timeout: 1s
+        keep-file: 'true'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
