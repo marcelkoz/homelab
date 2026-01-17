@@ -38,7 +38,6 @@
     - '{{ core_apps_service_path.authentik }}'
     - '{{ core_apps_service_path.gitea }}'
     - '{{ core_apps_service_path.grafana }}'
-    - '{{ core_apps_service_path.grafana_alloy }}'
 
 - name: Create directory for daisy docker container
   ansible.builtin.file:
