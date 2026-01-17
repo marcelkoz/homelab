@@ -24,6 +24,12 @@
   notify:
     - Systemd resolved config changed
 
+- name: Install grafana loki docker plugin
+  community.docker.docker_plugin:
+    plugin_name: 'grafana/loki-docker-driver'
+    alias: loki
+    state: enable
+
 - name: Create directories for docker containers
   ansible.builtin.file:
     path: '{{ item }}'
