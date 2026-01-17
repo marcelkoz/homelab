@@ -4,6 +4,9 @@ core_apps_docker_group: 1000
 core_apps_prometheus_docker_user: nobody
 core_apps_prometheus_docker_group: nogroup
 
+core_apps_grafana_loki_docker_user: 10001
+core_apps_grafana_loki_docker_group: 10001
+
 core_apps_daisy_repo: git@github.com:marcelkoz/daisy.git
 
 core_apps_runtime_path: ../../runtime/application_servers

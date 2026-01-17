@@ -39,7 +39,6 @@
     - '{{ core_apps_service_path.gitea }}'
     - '{{ core_apps_service_path.grafana }}'
     - '{{ core_apps_service_path.grafana_alloy }}'
-    - '{{ core_apps_service_path.grafana_loki }}'
 
 - name: Create directory for daisy docker container
   ansible.builtin.file:
@@ -58,6 +57,16 @@
     group: '{{ core_apps_prometheus_docker_group }}'
   loop:
     - '{{ core_apps_service_path.prometheus }}'
+
+- name: Create directory for grafana loki docker container (which has different user/group)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0700'
+    state: directory
+    owner: '{{ core_apps_grafana_loki_docker_user }}'
+    group: '{{ core_apps_grafana_loki_docker_group }}'
+  loop:
+    - '{{ core_apps_service_path.grafana_loki }}'
 
 - name: Copy docker configuration
   ansible.builtin.copy:
@@ -118,3 +127,13 @@
     group: nogroup
   loop:
     - 'templates/prometheus.yml.j2'
+
+- name: Copy grafana loki configuration
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.grafana_loki }}'
+    mode: '0400'
+    owner: '10001'
+    group: '10001'
+  loop:
+    - 'files/loki.yml'
