@@ -16,9 +16,7 @@
 
 - name: Install USG packages
   ansible.builtin.apt:
-    name:
-      - usg
-      - usg-benchmarks-1
+    name: '{{ cis_benchmark_ubuntu_packages }}'
     state: present
     update_cache: true
 
