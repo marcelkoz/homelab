@@ -1,1 +1,20 @@
 ubuntu_timezone: 'Europe/London'
+
+ubuntu_standard_file_mode: '0644'
+ubuntu_restricted_file_mode: '0600'
+ubuntu_special_file_mode:
+  shadow: '0640'
+  cron: '0700'
+
+ubuntu_essential_packages:
+  - openssh-server
+  - openssh-client
+
+ubuntu_allowed_tcp_ports:
+  - 22 # ssh
+
+ubuntu_unnecessary_packages:
+  - ftp
+  - tnftp
+  - telnet
+  - rsync

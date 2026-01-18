@@ -7,7 +7,7 @@
   ansible.builtin.copy:
     src: 'files/jail.local'
     dest: '/etc/fail2ban/jail.local'
-    mode: '0644'
+    mode: '{{ ubuntu_standard_file_mode }}'
   notify:
     - Fail2ban config changed
 
@@ -15,7 +15,7 @@
   ansible.builtin.file:
     path: '{{ item }}'
     state: file
-    mode: '0640'
+    mode: '{{ ubuntu_special_file_mode.shadow }}'
   loop:
     - '/etc/shadow'
     - '/etc/gshadow'
@@ -26,7 +26,7 @@
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
-    mode: '0700'
+    mode: '{{ ubuntu_special_file_mode.cron }}'
   loop:
     - '/etc/cron.d'
     - '/etc/cron.daily'
@@ -38,13 +38,13 @@
   ansible.builtin.file:
     path: '/etc/crontab'
     state: file
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
 
 - name: Create blank at.allow and cron.allow files
   ansible.builtin.copy:
     content: ''
     dest: '{{ item }}'
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
     force: false
   loop:
     - '/etc/at.allow'
@@ -64,7 +64,7 @@
 - name: Restrict grub config file permissions
   ansible.builtin.file:
     path: '/boot/grub/grub.cfg'
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
     owner: root
     group: root
   when: ubuntu_grub_config_file.stat.exists
@@ -73,7 +73,7 @@
   ansible.builtin.copy:
     src: '{{ item }}'
     dest: '/etc/modprobe.d'
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
     owner: root
     group: root
   loop:
@@ -86,7 +86,7 @@
   ansible.builtin.copy:
     src: '{{ item }}'
     dest: '/etc/sysctl.d'
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
     owner: root
     group: root
   loop:
@@ -107,35 +107,31 @@
   ansible.builtin.apt:
     name: '{{ item }}'
     state: absent
-  loop:
-    - ftp
-    - tnftp
-    - telnet
-    - rsync
+  loop: '{{ ubuntu_unnecessary_packages }}'
 
 - name: Copy SSH banner message (issue.net)
   ansible.builtin.copy:
     src: 'files/issue.net'
     dest: '/etc/issue.net'
-    mode: '0644'
+    mode: '{{ ubuntu_standard_file_mode }}'
 
 - name: Create sshd_config.d directory
   ansible.builtin.file:
     path: '/etc/ssh/sshd_config.d'
     state: directory
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
 
 - name: Copy hardened sshd config
   ansible.builtin.copy:
     src: 'files/00-hardened-sshd.conf'
     dest: '/etc/ssh/sshd_config.d/00-hardened-sshd.conf'
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
   notify:
     - Sshd config changed
 
 - name: Restrict sshd config file permissions
   ansible.builtin.file:
     path: '/etc/ssh/sshd_config'
-    mode: '0600'
+    mode: '{{ ubuntu_restricted_file_mode }}'
     owner: root
     group: root

@@ -18,5 +18,4 @@
     rule: allow
     port: '{{ item }}'
     proto: tcp
-  loop:
-    - 22 # ssh
+  loop: '{{ ubuntu_allowed_tcp_ports }}'

@@ -7,9 +7,7 @@
 
 - name: Install essential packages
   ansible.builtin.apt:
-    name:
-      - openssh-server
-      - openssh-client
+    name: '{{ ubuntu_essential_packages }}'
     state: present
     update_cache: true
 
@@ -22,6 +20,6 @@
   ansible.builtin.copy:
     src: 'files/50unattended-upgrades'
     dest: '/etc/apt/apt.conf.d/50unattended-upgrades'
-    mode: '0644'
+    mode: '{{ ubuntu_standard_file_mode }}'
   notify:
     - Unattended-upgrades config changed

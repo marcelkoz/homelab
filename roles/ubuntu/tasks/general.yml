@@ -10,13 +10,13 @@
   ansible.builtin.file:
     path: '/etc/systemd/timesyncd.conf.d'
     state: directory
-    mode: '0644'
+    mode: '{{ ubuntu_standard_file_mode }}'
 
 - name: Copy NTP servers config
   ansible.builtin.copy:
     src: 'files/00-ntp-servers.conf'
     dest: '/etc/systemd/timesyncd.conf.d/00-ntp-servers.conf'
-    mode: '0644'
+    mode: '{{ ubuntu_standard_file_mode }}'
   notify:
     - NTP config changed
 
