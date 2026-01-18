@@ -1,0 +1,53 @@
+# https://documentation.ubuntu.com/security/compliance/usg/
+
+# noqa: no-changed-when
+- name: Get Ubuntu pro status
+  ansible.builtin.command: pro status
+  register: cis_benchmark_ubuntu_pro_status
+
+- name: Check Ubuntu pro is enabled
+  ansible.builtin.assert:
+    that: '"Subscription:" in cis_benchmark_ubuntu_pro_status.stdout'
+    msg: Ubuntu pro must be enabled
+
+- name: Enable USG
+# noqa: no-changed-when
+  ansible.builtin.command: pro enable usg
+
+- name: Install USG packages
+  ansible.builtin.apt:
+    name:
+      - usg
+      - usg-benchmarks-1
+    state: present
+    update_cache: true
+
+- name: Create CIS benchmark output directory
+  ansible.builtin.file:
+    path: '{{ cis_benchmark_ubuntu_remote_output_directory }}'
+    state: directory
+    mode: '0700'
+
+- name: Create name for output files
+  ansible.builtin.set_fact:
+    cis_benchmark_ubuntu_output_file_name: '{{ cis_benchmark_ubuntu_remote_output_directory }}/{{ inventory_hostname }}_{{ ansible_facts["date_time"].date }}'
+
+- name: Run CIS benchmark at level 1
+# noqa: no-changed-when
+  ansible.builtin.command:
+    argv:
+      - usg
+      - audit
+      - cis_level1_server
+      - --html-file
+      - '{{ cis_benchmark_ubuntu_output_file_name }}.html'
+      - --results-file
+      - '{{ cis_benchmark_ubuntu_output_file_name }}.xml'
+
+- name: Fetch reports from remote host
+  ansible.builtin.fetch:
+    src: '{{ item }}'
+    dest: '{{ cis_benchmark_ubuntu_local_output_directory }}'
+  loop:
+    - '{{ cis_benchmark_ubuntu_output_file_name }}.html'
+    - '{{ cis_benchmark_ubuntu_output_file_name }}.xml'

@@ -1,0 +1,2 @@
+cis_benchmark_ubuntu_remote_output_directory: /home/ansible/cis_benchmark_ubuntu
+cis_benchmark_ubuntu_local_output_directory: ./runtime/cis_benchmark_ubuntu

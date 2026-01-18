@@ -1,0 +1,13 @@
+- name: Benchmark Ubuntu hosts
+  hosts: all
+  become: true
+
+  tasks:
+    - name: OS distrubution of each host
+      ansible.builtin.debug:
+        var: ansible_facts['distribution']
+
+    - name: Apply Ubuntu configuration
+      ansible.builtin.include_role:
+        name: cis_benchmark_ubuntu
+      when: ansible_facts['distribution'] | lower == 'ubuntu'
