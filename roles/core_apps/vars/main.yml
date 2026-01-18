@@ -1,3 +1,17 @@
+core_apps_allowed_tcp_ports:
+  - 443 # https
+  - 80 # http
+  - 53 # dns
+
+core_apps_allowed_udp_ports:
+  - 53 # dns
+
+core_apps_standard_file_mode: '0644'
+core_apps_restricted_file_mode: '0400'
+core_apps_restricted_directory_mode: '0700'
+core_apps_special_file_mode:
+  traefik_certs: '0600'
+
 core_apps_docker_user: 1000
 core_apps_docker_group: 1000
 
