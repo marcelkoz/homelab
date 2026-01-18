@@ -13,15 +13,14 @@
 
 - name: Install docker packages
   ansible.builtin.apt:
-    name: '{{ item }}'
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
     state: present
     update_cache: true
-  loop:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
-    - docker-buildx-plugin
-    - docker-compose-plugin
 
 - name: Enable and start docker service
   ansible.builtin.service:
