@@ -1,6 +1,7 @@
 - name: Disable cloud-init
   ansible.builtin.file:
     path: '/etc/cloud/cloud-init.disabled'
+    state: touch
 
 - name: Set the timezone
   community.general.timezone:
