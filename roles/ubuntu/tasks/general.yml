@@ -2,6 +2,7 @@
   ansible.builtin.file:
     path: '/etc/cloud/cloud-init.disabled'
     state: touch
+    mode: '{{ ubuntu_restricted_file_mode }}'
 
 - name: Set the timezone
   community.general.timezone:
