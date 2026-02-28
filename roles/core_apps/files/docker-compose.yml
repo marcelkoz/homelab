@@ -356,11 +356,11 @@ services:
       - 'traefik.http.routers.traefik-dashboard.tls=true'
       - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.traefik-dashboard.service=api@internal'
-      - 'traefik.http.routers.traefik-metrics.rule=Host(`proxy.${DOMAIN}`) && PathPrefix(`/metrics`)'
-      - 'traefik.http.routers.traefik-metrics.entryPoints=websecure'
-      - 'traefik.http.routers.traefik-metrics.tls=true'
-      - 'traefik.http.routers.traefik-metrics.tls.certresolver=letsencrypt'
-      - 'traefik.http.routers.traefik-metrics.service=prometheus@internal'
+      # - 'traefik.http.routers.traefik-metrics.rule=Host(`proxy.${DOMAIN}`) && PathPrefix(`/metrics`)'
+      # - 'traefik.http.routers.traefik-metrics.entryPoints=websecure'
+      # - 'traefik.http.routers.traefik-metrics.tls=true'
+      # - 'traefik.http.routers.traefik-metrics.tls.certresolver=letsencrypt'
+      # - 'traefik.http.routers.traefik-metrics.service=prometheus@internal'
 
 networks:
   proxy:
