@@ -22,14 +22,14 @@ services:
       - proxy
     command: server
     restart: unless-stopped
-    logging: &loki-logging
-      driver: loki
-      options:
-        loki-url: '${LOKI_LOGS_ENDPOINT}'
-        loki-retries: '${LOKI_RETRIES}'
-        loki-max-backoff: '${LOKI_MAX_BACKOFF}'
-        loki-timeout: '${LOKI_TIMEOUT}'
-        keep-file: '${LOKI_KEEP_FILE}'
+    # logging: &loki-logging
+    #   driver: loki
+    #   options:
+    #     loki-url: '${LOKI_LOGS_ENDPOINT}'
+    #     loki-retries: '${LOKI_RETRIES}'
+    #     loki-max-backoff: '${LOKI_MAX_BACKOFF}'
+    #     loki-timeout: '${LOKI_TIMEOUT}'
+    #     keep-file: '${LOKI_KEEP_FILE}'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authentik.rule=Host(`authentik.${DOMAIN}`)'
@@ -52,7 +52,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     healthcheck:
       interval: 30s
       retries: 5
@@ -85,7 +85,7 @@ services:
       - proxy
     command: worker
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     user: root
 
   daisy-app:
@@ -96,7 +96,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
 
   daisy-web:
     image: daisy-web
@@ -107,7 +107,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
@@ -245,7 +245,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
@@ -273,7 +273,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
@@ -299,7 +299,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)'
@@ -348,7 +348,7 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    logging: *loki-logging
+    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
