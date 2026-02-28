@@ -5,8 +5,8 @@ services:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
     container_name: authentik
     depends_on:
-      grafana-loki:
-        condition: service_started
+      # grafana-loki:
+      #   condition: service_started
       authentik-db:
         condition: service_healthy
     volumes:
@@ -41,8 +41,8 @@ services:
   authentik-db:
     image: postgres:${POSTGRES_IMAGE_TAG}
     container_name: authentik-db
-    depends_on:
-      - grafana-loki
+    # depends_on:
+    #   - grafana-loki
     volumes:
       - authentik-db:/var/lib/postgresql/data
     environment:
@@ -66,8 +66,8 @@ services:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
     container_name: authentik-worker
     depends_on:
-      grafana-loki:
-        condition: service_started
+      # grafana-loki:
+      #   condition: service_started
       authentik-db:
         condition: service_healthy
     volumes:
@@ -91,8 +91,8 @@ services:
   daisy-app:
     image: daisy-app
     container_name: daisy-app
-    depends_on:
-      - grafana-loki
+    # depends_on:
+    #   - grafana-loki
     networks:
       - proxy
     restart: unless-stopped
@@ -103,7 +103,7 @@ services:
     container_name: daisy-web
     depends_on:
       - proxy
-      - grafana-loki
+      # - grafana-loki
     networks:
       - proxy
     restart: unless-stopped
@@ -229,7 +229,7 @@ services:
     container_name: homarr
     depends_on:
       - proxy
-      - grafana-loki
+      # - grafana-loki
     volumes:
       - ./homarr/appdata:/appdata
     environment:
@@ -260,7 +260,7 @@ services:
     container_name: pihole
     depends_on:
       - proxy
-      - grafana-loki
+      # - grafana-loki
     volumes:
       - ./pihole/etc-pihole:/etc/pihole
       - ./pihole/etc-resolv.conf:/etc/resolv.conf
@@ -292,7 +292,7 @@ services:
     container_name: portainer
     depends_on:
       - proxy
-      - grafana-loki
+      # - grafana-loki
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
