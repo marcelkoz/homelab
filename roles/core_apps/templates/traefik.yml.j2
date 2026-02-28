@@ -7,14 +7,14 @@ log:
   format: common
   level: INFO
 
-metrics:
-  prometheus:
-    manualRouting: true
-    buckets:
-      - 0.1
-      - 0.3
-      - 1.2
-      - 5.0
+# metrics:
+#   prometheus:
+#     manualRouting: true
+#     buckets:
+#       - 0.1
+#       - 0.3
+#       - 1.2
+#       - 5.0
 
 entryPoints:
   web:
@@ -27,7 +27,7 @@ providers:
     endpoint: 'unix:///var/run/docker.sock'
     exposedByDefault: false
   file:
-    directory: "/etc/traefik/config.d"
+    directory: '/etc/traefik/config.d'
 
 certificatesResolvers:
   letsencrypt:
