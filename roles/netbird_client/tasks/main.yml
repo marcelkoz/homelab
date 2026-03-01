@@ -1,0 +1,20 @@
+# https://docs.netbird.io/get-started/install/linux
+# keeping the key in asc format to avoid dearmor-ing it with pgp cli
+- name: Fetch netbird GPG key
+  ansible.builtin.get_url:
+    url: 'https://pkgs.netbird.io/debian/public.key'
+    dest: '/usr/share/keyrings/netbird-archive-keyring.asc'
+    mode: '0644'
+
+- name: Add netbird apt repository
+  ansible.builtin.apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/netbird-archive-keyring.asc] https://pkgs.netbird.io/debian stable main'
+    state: present
+
+- name: Install netbird package
+  ansible.builtin.apt:
+    name: netbird
+    state: present
+    update_cache: true
+
+# TODO: peer enrollment

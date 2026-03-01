@@ -13,10 +13,18 @@
         name: ubuntu
       when: ansible_facts['distribution'] | lower == 'ubuntu'
 
+- name: Netbird client configuration
+  hosts: netbird_clients
+  become: true
+  tags: netbird_clients
+
+  roles:
+    - netbird_client
+
 - name: Netbird server configuration
   hosts: netbird_servers
   become: true
-  tags: netbird
+  tags: netbird_servers
 
   roles:
     - netbird_server
