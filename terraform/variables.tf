@@ -5,6 +5,11 @@ variable "application_group_name" {
   default = "homelab-sso"
 }
 
+variable "resource_namespace" {
+  type    = string
+  default = "homelab"
+}
+
 variable "domain_name" {
   type = string
 }
