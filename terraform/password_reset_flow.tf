@@ -22,11 +22,11 @@ resource "authentik_stage_prompt_field" "password" {
 }
 
 resource "authentik_stage_prompt_field" "repeat_password" {
-  name        = "${var.resource_namespace}-repeat-password-field"
+  name        = "${var.resource_namespace}-confirm-password-field"
   field_key   = "password_repeat"
-  label       = "Password (repeat)"
+  label       = "Confirm Password"
   type        = "password"
-  placeholder = "Password (repeat)"
+  placeholder = "Confirm Password"
   required    = true
   order       = 501
 }
