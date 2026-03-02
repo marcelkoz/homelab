@@ -68,9 +68,11 @@ resource "authentik_stage_prompt" "force_password_reset" {
 }
 
 resource "authentik_flow_stage_binding" "force_password_reset_check" {
-  target = data.authentik_flow.default_authentication_flow.id
-  stage  = resource.authentik_stage_prompt.force_password_reset.id
-  order  = 25
+  target               = data.authentik_flow.default_authentication_flow.id
+  stage                = resource.authentik_stage_prompt.force_password_reset.id
+  evaluate_on_plan     = false
+  re_evaluate_policies = true
+  order                = 25
 }
 
 resource "authentik_policy_binding" "force_password_reset_check" {
@@ -91,9 +93,11 @@ resource "authentik_stage_user_write" "force_password_reset" {
 }
 
 resource "authentik_flow_stage_binding" "force_password_reset_update" {
-  target = data.authentik_flow.default_authentication_flow.id
-  stage  = resource.authentik_stage_user_write.force_password_reset.id
-  order  = 26
+  target               = data.authentik_flow.default_authentication_flow.id
+  stage                = resource.authentik_stage_user_write.force_password_reset.id
+  evaluate_on_plan     = false
+  re_evaluate_policies = true
+  order                = 26
 }
 
 resource "authentik_policy_binding" "force_password_reset_update" {
