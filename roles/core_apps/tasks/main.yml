@@ -14,3 +14,7 @@
 - name: Start the docker environment
   ansible.builtin.include_tasks: run.yml
   tags: core_apps_run
+
+- name: Setup backups configuration
+  ansible.builtin.include_tasks: backups.yml
+  tags: core_apps_backups

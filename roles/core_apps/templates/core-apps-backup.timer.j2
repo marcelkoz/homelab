@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Timer for restic backups of the core apps data.
+
+[Timer]
+OnCalendar={{ core_apps_backups_timer_calendar }}
+RandomizedDelaySec={{ core_apps_backups_timer_randomised }}
+
+[Install]
+WantedBy=timers.target

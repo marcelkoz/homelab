@@ -1,0 +1,25 @@
+- name: Create backup scripts directory
+  ansible.builtin.file:
+    path: '{{ core_apps_backups_scripts_path }}'
+    mode: '{{ core_apps_restricted_directory_mode }}'
+    state: directory
+
+- name: Copy file copy script template
+  ansible.builtin.template:
+    src: templates/copy-backups-data.sh.j2
+    dest: '{{ core_apps_backups_copy_script }}'
+    mode: '{{ core_apps_restricted_file_mode }}'
+
+- name: Copy systemd service template
+  ansible.builtin.template:
+    src: templates/core-apps-backup.service.j2
+    dest: /etc/systemd/system/core-apps-backup.service
+    mode: '{{ core_apps_restricted_file_mode }}'
+
+- name: Copy systemd timer template
+  ansible.builtin.template:
+    src: templates/core-apps-backup.timer.j2
+    dest: /etc/systemd/system/core-apps-backup.timer
+    mode: '{{ core_apps_restricted_file_mode }}'
+
+# TODO: enable service and timer above

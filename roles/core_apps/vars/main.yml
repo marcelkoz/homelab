@@ -36,3 +36,10 @@ core_apps_service_path:
   grafana: /home/ansible/docker/grafana
   grafana_loki: /home/ansible/docker/grafana-loki
   actual_budget: /home/ansible/docker/actual-budget
+
+core_apps_backups_user: root
+core_apps_backups_path: /tmp/core-apps-backups
+core_apps_backups_scripts_path: /home/ansible/backups
+core_apps_backups_copy_script: /home/ansible/backups/copy-backups-data.sh
+core_apps_backups_timer_calendar: 'Sat 03:00'
+core_apps_backups_timer_randomised: 30

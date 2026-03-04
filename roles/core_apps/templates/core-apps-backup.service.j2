@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Run a restic backup of the core apps data.
+
+[Service]
+Type=oneshot
+User={{ core_apps_backups_user }}
+ExecStart=/usr/bin/bash {{ core_apps_backups_copy_script }}
+
+# CPUWeight=40
+# IOWeight=40
+# MemorySwapMax=0
+
+
