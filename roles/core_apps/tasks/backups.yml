@@ -4,9 +4,9 @@
     mode: '{{ core_apps_restricted_directory_mode }}'
     state: directory
 
-- name: Copy file copy script template
+- name: Copy backup script template
   ansible.builtin.template:
-    src: templates/copy-backups-data.sh.j2
+    src: templates/core-apps-backup.sh.j2
     dest: '{{ core_apps_backups_copy_script }}'
     mode: '{{ core_apps_restricted_file_mode }}'
 
@@ -23,3 +23,6 @@
     mode: '{{ core_apps_restricted_file_mode }}'
 
 # TODO: enable service and timer above
+# TODO: copy rclone config to remote machine
+# rclone copyto actual-budget-data_2026-03-04.tar.gz blob:backups-prod/actual-budget-data_2026-03-04.tar.gz
+

@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 [Unit]
-Description=Timer for restic backups of the core apps data.
+Description=Timer for backups of the core apps data.
 
 [Timer]
 OnCalendar={{ core_apps_backups_timer_calendar }}

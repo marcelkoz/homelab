@@ -3,34 +3,45 @@
 set -e
 
 mkdir -p {{ core_apps_backups_path }}
+CURRENT_TIMESTAMP="$(printf '%(%Y-%m-%d)T' -1)"
 
 
 
-# actual budget
+### actual budget
 echo COPY SCRIPT INFO: Backup actual budget data
 
 mkdir -p {{ core_apps_backups_path }}/actual-budget-data
 cd {{ core_apps_backups_path }}/actual-budget-data
 
 docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml down actual-budget
-cp -r {{ core_apps_service_path.actual_budget }}/data .
+cp -rf {{ core_apps_service_path.actual_budget }}/data .
 docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml up -d actual-budget
 
+cd ..
+tar -czvf "actual-budget-data_$CURRENT_TIMESTAMP.tar.gz" actual-budget-data
 
 
-# authentik
+
+### authentik
 echo COPY SCRIPT INFO: Backup authentik data
 
 
 
-# pihole
+### pihole
 echo COPY SCRIPT INFO: Backup pihole data
 
 mkdir -p {{ core_apps_backups_path }}/pihole-data
 cd {{ core_apps_backups_path }}/pihole-data
 
 docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml down pihole
-cp -r {{ core_apps_service_path.pihole }}/etc-pihole/pihole.toml .
-cp -r {{ core_apps_service_path.pihole }}/etc-pihole/gravity.db .
-cp -r {{ core_apps_service_path.pihole }}/etc-pihole/pihole-FTL.db .
+cp -rf {{ core_apps_service_path.pihole }}/etc-pihole/pihole.toml .
+cp -rf {{ core_apps_service_path.pihole }}/etc-pihole/gravity.db .
+cp -rf {{ core_apps_service_path.pihole }}/etc-pihole/pihole-FTL.db .
 docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml up -d pihole
+
+cd ..
+tar -czvf "pihole-data_$CURRENT_TIMESTAMP.tar.gz" pihole-data
+
+
+
+### rclone
