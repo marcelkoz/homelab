@@ -9,7 +9,7 @@ ubuntu_special_file_mode:
 ubuntu_essential_packages:
   - openssh-server
   - openssh-client
-  - restic # backups
+  - rclone # backups
 
 ubuntu_allowed_tcp_ports:
   - 22 # ssh
@@ -19,3 +19,4 @@ ubuntu_unnecessary_packages:
   - tnftp
   - telnet
   - rsync
+  - restic # backups
