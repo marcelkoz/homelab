@@ -1,7 +1,37 @@
 
+data "azuread_client_config" "current" {}
+
 resource "azurerm_resource_group" "backups_rg" {
   name     = var.backups_resource_group_name
   location = var.primary_resource_location
+}
+
+resource "azuread_application" "backups_prod" {
+  display_name = var.backups_application_name_prod
+  owners       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_service_principal" "backups_prod" {
+  client_id                    = azuread_application.backups_prod.client_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_application" "backups_test" {
+  display_name = var.backups_application_name_test
+  owners       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_service_principal" "backups_test" {
+  client_id                    = azuread_application.backups_test.client_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azurerm_user_assigned_identity" "automation_id" {
+  name                = var.automation_managed_identity_name
+  resource_group_name = resource.azurerm_resource_group.backups_rg.name
+  location            = resource.azurerm_resource_group.backups_rg.location
 }
 
 resource "azurerm_storage_account" "backups_st" {
@@ -24,3 +54,17 @@ resource "azurerm_storage_container" "backups_blob_container_test" {
   storage_account_id    = resource.azurerm_storage_account.backups_st.id
   container_access_type = "private"
 }
+
+resource "azurerm_role_assignment" "backups_prod" {
+  scope                = resource.azurerm_storage_container.backups_blob_container_prod.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = resource.azuread_service_principal.backups_prod.object_id
+}
+
+resource "azurerm_role_assignment" "backups_test" {
+  scope                = resource.azurerm_storage_container.backups_blob_container_test.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = resource.azuread_service_principal.backups_test.object_id
+}
+
+#TODO: automation_id

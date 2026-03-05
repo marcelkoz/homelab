@@ -13,6 +13,21 @@ variable "backups_storage_account_name" {
   type = string
 }
 
+variable "backups_application_name_prod" {
+  type    = string
+  default = "Homelab Backups (prod)"
+}
+
+variable "backups_application_name_test" {
+  type    = string
+  default = "Homelab Backups (test)"
+}
+
+variable "automation_managed_identity_name" {
+  type    = string
+  default = "automation-id"
+}
+
 variable "backups_blob_container_name_prod" {
   type    = string
   default = "backups-prod"
