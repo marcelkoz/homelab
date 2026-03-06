@@ -4,13 +4,32 @@ variable "primary_resource_location" {
   default = "UK South"
 }
 
-variable "backups_resource_group_name" {
+variable "backups_resource_group_name_prod" {
   type    = string
-  default = "homelab-backups-rg-1"
+  default = "prod-homelab-backups-rg-1"
 }
 
-variable "backups_storage_account_name" {
+variable "backups_resource_group_name_test" {
+  type    = string
+  default = "test-homelab-backups-rg-1"
+}
+
+variable "backups_storage_account_name_prod" {
   type = string
+}
+
+variable "backups_storage_account_name_test" {
+  type = string
+}
+
+variable "backups_blob_container_name_prod" {
+  type    = string
+  default = "prod-core-apps-backups"
+}
+
+variable "backups_blob_container_name_test" {
+  type    = string
+  default = "test-core-apps-backups"
 }
 
 variable "backups_application_name_prod" {
@@ -23,18 +42,12 @@ variable "backups_application_name_test" {
   default = "Homelab Backups (test)"
 }
 
-variable "automation_managed_identity_name" {
+variable "automation_managed_identity_name_prod" {
   type    = string
-  default = "automation-id"
+  default = "prod-automation-id"
 }
 
-variable "backups_blob_container_name_prod" {
+variable "automation_managed_identity_name_test" {
   type    = string
-  default = "backups-prod"
+  default = "test-automation-id"
 }
-
-variable "backups_blob_container_name_test" {
-  type    = string
-  default = "backups-test"
-}
-

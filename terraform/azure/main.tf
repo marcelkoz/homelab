@@ -1,8 +1,13 @@
 
 data "azuread_client_config" "current" {}
 
-resource "azurerm_resource_group" "backups_rg" {
-  name     = var.backups_resource_group_name
+resource "azurerm_resource_group" "backups_rg_prod" {
+  name     = var.backups_resource_group_name_prod
+  location = var.primary_resource_location
+}
+
+resource "azurerm_resource_group" "backups_rg_test" {
+  name     = var.backups_resource_group_name_test
   location = var.primary_resource_location
 }
 
@@ -28,16 +33,31 @@ resource "azuread_service_principal" "backups_test" {
   owners                       = [data.azuread_client_config.current.object_id]
 }
 
-resource "azurerm_user_assigned_identity" "automation_id" {
-  name                = var.automation_managed_identity_name
-  resource_group_name = resource.azurerm_resource_group.backups_rg.name
-  location            = resource.azurerm_resource_group.backups_rg.location
+resource "azurerm_user_assigned_identity" "automation_id_prod" {
+  name                = var.automation_managed_identity_name_prod
+  resource_group_name = resource.azurerm_resource_group.backups_rg_prod.name
+  location            = resource.azurerm_resource_group.backups_rg_prod.location
 }
 
-resource "azurerm_storage_account" "backups_st" {
-  name                     = var.backups_storage_account_name
-  resource_group_name      = resource.azurerm_resource_group.backups_rg.name
-  location                 = resource.azurerm_resource_group.backups_rg.location
+resource "azurerm_user_assigned_identity" "automation_id_test" {
+  name                = var.automation_managed_identity_name_test
+  resource_group_name = resource.azurerm_resource_group.backups_rg_test.name
+  location            = resource.azurerm_resource_group.backups_rg_test.location
+}
+
+resource "azurerm_storage_account" "backups_st_prod" {
+  name                     = var.backups_storage_account_name_prod
+  resource_group_name      = resource.azurerm_resource_group.backups_rg_prod.name
+  location                 = resource.azurerm_resource_group.backups_rg_prod.location
+  account_tier             = "Standard"
+  access_tier              = "Cold"
+  account_replication_type = "ZRS"
+}
+
+resource "azurerm_storage_account" "backups_st_test" {
+  name                     = var.backups_storage_account_name_test
+  resource_group_name      = resource.azurerm_resource_group.backups_rg_test.name
+  location                 = resource.azurerm_resource_group.backups_rg_test.location
   account_tier             = "Standard"
   access_tier              = "Cold"
   account_replication_type = "ZRS"
@@ -45,13 +65,13 @@ resource "azurerm_storage_account" "backups_st" {
 
 resource "azurerm_storage_container" "backups_blob_container_prod" {
   name                  = var.backups_blob_container_name_prod
-  storage_account_id    = resource.azurerm_storage_account.backups_st.id
+  storage_account_id    = resource.azurerm_storage_account.backups_st_prod.id
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "backups_blob_container_test" {
   name                  = var.backups_blob_container_name_test
-  storage_account_id    = resource.azurerm_storage_account.backups_st.id
+  storage_account_id    = resource.azurerm_storage_account.backups_st_test.id
   container_access_type = "private"
 }
 
