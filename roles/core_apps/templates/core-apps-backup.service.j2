@@ -6,7 +6,7 @@ Description=Run a backup of the core apps data.
 [Service]
 Type=oneshot
 User={{ core_apps_backups_user }}
-ExecStart=/usr/bin/bash {{ core_apps_backups_copy_script }}
+ExecStart=/usr/bin/bash {{ core_apps_backups_copy_script_path }}
 
 # CPUWeight=40
 # IOWeight=40
