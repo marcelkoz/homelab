@@ -40,4 +40,8 @@
     dest: '{{ core_apps_backups_config_path }}'
     mode: '{{ core_apps_restricted_file_mode }}'
 
-# TODO: enable service and timer above
+- name: Enable backup service timer
+  ansible.builtin.systemd_service:
+    name: core-apps-backup.timer
+    state: started
+    enabled: true
