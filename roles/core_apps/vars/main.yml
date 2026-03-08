@@ -40,7 +40,7 @@ core_apps_service_path:
 core_apps_backups_user: root
 core_apps_backups_path: /tmp/core-apps-backups
 core_apps_backups_config_path: /home/ansible/backups
-core_apps_backups_copy_script_path: /home/ansible/backups/core-apps-backup.sh
+core_apps_backups_script_path: /home/ansible/backups/core-apps-backup.sh
 core_apps_backups_timer_calendar: 'Sat *-*-* 03:00:00'
 core_apps_backups_timer_randomised: 30
 core_apps_backups_azure_service_principle_file_name: backups-sp.json

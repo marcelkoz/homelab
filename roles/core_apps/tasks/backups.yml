@@ -7,7 +7,7 @@
 - name: Copy backup script template
   ansible.builtin.template:
     src: templates/core-apps-backup.sh.j2
-    dest: '{{ core_apps_backups_copy_script_path }}'
+    dest: '{{ core_apps_backups_script_path }}'
     mode: '{{ core_apps_restricted_file_mode }}'
 
 - name: Copy systemd service template
