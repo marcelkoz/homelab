@@ -22,12 +22,12 @@ variable "backups_storage_account_name_test" {
   type = string
 }
 
-variable "backups_blob_container_name_prod" {
+variable "backups_core_apps_blob_container_name_prod" {
   type    = string
   default = "prod-core-apps-backups"
 }
 
-variable "backups_blob_container_name_test" {
+variable "backups_core_apps_blob_container_name_test" {
   type    = string
   default = "test-core-apps-backups"
 }

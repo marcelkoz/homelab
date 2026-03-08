@@ -63,26 +63,26 @@ resource "azurerm_storage_account" "backups_st_test" {
   account_replication_type = "ZRS"
 }
 
-resource "azurerm_storage_container" "backups_blob_container_prod" {
-  name                  = var.backups_blob_container_name_prod
+resource "azurerm_storage_container" "backups_core_apps_blob_container_prod" {
+  name                  = var.backups_core_apps_blob_container_name_prod
   storage_account_id    = resource.azurerm_storage_account.backups_st_prod.id
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "backups_blob_container_test" {
-  name                  = var.backups_blob_container_name_test
+resource "azurerm_storage_container" "backups_core_apps_blob_container_test" {
+  name                  = var.backups_core_apps_blob_container_name_test
   storage_account_id    = resource.azurerm_storage_account.backups_st_test.id
   container_access_type = "private"
 }
 
-resource "azurerm_role_assignment" "backups_prod" {
-  scope                = resource.azurerm_storage_container.backups_blob_container_prod.id
+resource "azurerm_role_assignment" "backups_core_apps_prod" {
+  scope                = resource.azurerm_storage_container.backups_core_apps_blob_container_prod.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = resource.azuread_service_principal.backups_prod.object_id
 }
 
-resource "azurerm_role_assignment" "backups_test" {
-  scope                = resource.azurerm_storage_container.backups_blob_container_test.id
+resource "azurerm_role_assignment" "backups_core_apps_test" {
+  scope                = resource.azurerm_storage_container.backups_core_apps_blob_container_test.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = resource.azuread_service_principal.backups_test.object_id
 }
