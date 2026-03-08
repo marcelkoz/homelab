@@ -1,48 +1,65 @@
 {{ ansible_managed | comment }}
 
-set -e
-
-mkdir -p {{ core_apps_backups_path }}
+BACKUPS_PATH='{{ core_apps_backups_path }}'
+COMPOSE_FILE='{{ core_apps_service_path.docker }}/docker-compose.yml'
 CURRENT_TIMESTAMP="$(printf '%(%Y-%m-%d)T' -1)"
 
+cleanup_script() {
+    local SERVICES=('actual-budget', 'pihole')
+
+    for service in "${SERVICES[@]}"; do
+        docker compose -f "$COMPOSE_FILE" up -d "$service"
+    done
+}
+
+trap 'cleanup_script' ERR
+
+mkdir -p "$BACKUPS_PATH"
+
+# Args:
+# 1: Service name
+# 2-N: Source data directory or files (space-separated)
+backup_service() {
+    local SERVICE=$1
+    local SOURCES=("$@")
+    local TEMP_DIR="$BACKUPS_PATH/$SERVICE-data"
+
+    echo 'SCRIPT INFO: Backup $SERVICE data'
+    mkdir -p "$TEMP_DIR"
+
+    docker compose -f "$COMPOSE_FILE" down "$SERVICE"
+
+    for service in "${SOURCES[@]:1}"; do
+        cp -rf "$service" "$TEMP_DIR"
+    done
+
+    docker compose -f "$COMPOSE_FILE" up -d "$SERVICE"
+
+    tar -czvf "$BACKUPS_PATH/$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz" "$TEMP_DIR"
+    rm -r "$TEMP_DIR"
+}
+
+backup_service 'actual-budget' '{{ core_apps_service_path.actual_budget }}/data'
+
+backup_service 'pihole' \
+    '{{ core_apps_service_path.pihole }}/etc-pihole/pihole.toml' \
+    '{{ core_apps_service_path.pihole }}/etc-pihole/gravity.db' \
+    '{{ core_apps_service_path.pihole }}/etc-pihole/pihole-FTL.db'
+
+# TODO: authentik
 
 
-### actual budget
-echo COPY SCRIPT INFO: Backup actual budget data
+# Args:
+# 1: Service name
+backup_filename() {
+    local SERVICE=$1
+    echo "$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz"
+}
 
-mkdir -p {{ core_apps_backups_path }}/actual-budget-data
-cd {{ core_apps_backups_path }}/actual-budget-data
+AZURE_PATH="{{ core_apps_backups_rclone_azure_remote_name }}:{{ deployment_environment }}-{{ core_apps_backups_azure_blob_container_name }}"
 
-docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml down actual-budget
-cp -rf {{ core_apps_service_path.actual_budget }}/data .
-docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml up -d actual-budget
+echo 'SCRIPT INFO: Sending pihole backup to Azure'
+rclone copyto "$BACKUPS_PATH/$(backup_filename pihole)" "$AZURE_PATH/$(backup_filename pihole)"
 
-cd ..
-tar -czvf "actual-budget-data_$CURRENT_TIMESTAMP.tar.gz" actual-budget-data
-
-
-
-### authentik
-echo COPY SCRIPT INFO: Backup authentik data
-
-
-
-### pihole
-echo COPY SCRIPT INFO: Backup pihole data
-
-mkdir -p {{ core_apps_backups_path }}/pihole-data
-cd {{ core_apps_backups_path }}/pihole-data
-
-docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml down pihole
-cp -rf {{ core_apps_service_path.pihole }}/etc-pihole/pihole.toml .
-cp -rf {{ core_apps_service_path.pihole }}/etc-pihole/gravity.db .
-cp -rf {{ core_apps_service_path.pihole }}/etc-pihole/pihole-FTL.db .
-docker compose -f {{core_apps_service_path.docker }}/docker-compose.yml up -d pihole
-
-cd ..
-tar -czvf "pihole-data_$CURRENT_TIMESTAMP.tar.gz" pihole-data
-
-
-
-### rclone
-#rclone copyto actual-budget-data_2026-03-04.tar.gz blob:backups-prod/actual-budget-data_2026-03-04.tar.gz
+echo 'SCRIPT INFO: Sending actual-budget backup to Azure'
+rclone copyto "$BACKUPS_PATH/$(backup_filename actual-budget)" "$AZURE_PATH/$(backup_filename actual-budget)"
