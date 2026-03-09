@@ -35,7 +35,8 @@ backup_service() {
 
     docker compose -f "$COMPOSE_FILE" up -d "$SERVICE"
 
-    tar -czvf "$BACKUPS_PATH/$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz" "$TEMP_DIR"
+    # -C changes dir to avoid nested dirs in the archive
+    tar -czvf "$BACKUPS_PATH/$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz" -C "$BACKUPS_PATH" "$SERVICE-data"
     rm -r "$TEMP_DIR"
 }
 
@@ -54,8 +55,9 @@ AUTHENTIK_BACKUP_PATH="$BACKUPS_PATH/authentik-data"
 mkdir -p "$AUTHENTIK_BACKUP_PATH"
 docker exec "$AUTHENTIK_DB_CONTAINER_NAME" pg_dump -U "$AUTHENTIK_DB_USER" "$AUTHENTIK_DB_NAME" > "$AUTHENTIK_BACKUP_PATH/$AUTHENTIK_DB_NAME-dump.sql"
 cp -rf "$AUTHENTIK_STATIC_FILES/"* "$AUTHENTIK_BACKUP_PATH"
-tar -czvf "$BACKUPS_PATH/authentik-data_$CURRENT_TIMESTAMP.tar.gz" "$AUTHENTIK_BACKUP_PATH"
-rm -r "$BACKUPS_PATH"
+# -C changes dir to avoid nested dirs in the archive
+tar -czvf "$BACKUPS_PATH/authentik-data_$CURRENT_TIMESTAMP.tar.gz" -C "$BACKUPS_PATH" authentik-data
+rm -r "$AUTHENTIK_BACKUP_PATH"
 
 # Args:
 # 1: Service name
