@@ -46,8 +46,16 @@ backup_service 'pihole' \
     '{{ core_apps_service_path.pihole }}/etc-pihole/gravity.db' \
     '{{ core_apps_service_path.pihole }}/etc-pihole/pihole-FTL.db'
 
-# TODO: authentik
-
+AUTHENTIK_DB_CONTAINER_NAME='{{ core_apps_backups_authentik_database_container_name }}'
+AUTHENTIK_DB_NAME='{{ core_apps_backups_authentik_database_name }}'
+AUTHENTIK_DB_USER='{{ core_apps_backups_authentik_database_user }}'
+AUTHENTIK_STATIC_FILES="{{ core_apps_service_path.authentik }}"
+AUTHENTIK_BACKUP_PATH="$BACKUPS_PATH/authentik-data"
+mkdir -p "$AUTHENTIK_BACKUP_PATH"
+docker exec "$AUTHENTIK_DB_CONTAINER_NAME" pg_dump -U "$AUTHENTIK_DB_USER" "$AUTHENTIK_DB_NAME" > "$AUTHENTIK_BACKUP_PATH/$AUTHENTIK_DB_NAME-dump.sql"
+cp -rf "$AUTHENTIK_STATIC_FILES/"* "$AUTHENTIK_BACKUP_PATH"
+tar -czvf "$BACKUPS_PATH/authentik-data_$CURRENT_TIMESTAMP.tar.gz" "$AUTHENTIK_BACKUP_PATH"
+rm -r "$BACKUPS_PATH"
 
 # Args:
 # 1: Service name
@@ -63,3 +71,6 @@ rclone copyto "$BACKUPS_PATH/$(backup_filename pihole)" "$AZURE_PATH/$(backup_fi
 
 echo 'SCRIPT INFO: Sending actual-budget backup to Azure'
 rclone copyto "$BACKUPS_PATH/$(backup_filename actual-budget)" "$AZURE_PATH/$(backup_filename actual-budget)"
+
+echo 'SCRIPT INFO: Sending authentik backup to Azure'
+rclone copyto "$BACKUPS_PATH/$(backup_filename authentik)" "$AZURE_PATH/$(backup_filename authentik)"

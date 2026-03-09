@@ -46,3 +46,6 @@ core_apps_backups_timer_randomised: 30
 core_apps_backups_azure_service_principle_file_name: backups-sp.json
 core_apps_backups_azure_blob_container_name: core-apps-backups
 core_apps_backups_rclone_azure_remote_name: coreappsbackups_blob
+core_apps_backups_authentik_database_container_name: authentik-db
+core_apps_backups_authentik_database_name: authentik
+core_apps_backups_authentik_database_user: weeman
