@@ -5,6 +5,8 @@ COMPOSE_FILE='{{ core_apps_service_path.docker }}/docker-compose.yml'
 CURRENT_TIMESTAMP="$(printf '%(%Y-%m-%d)T' -1)"
 
 cleanup_script() {
+    echo 'SCRIPT ERROR: Script failed, running cleanup'
+
     local SERVICES=('actual-budget', 'pihole')
 
     for service in "${SERVICES[@]}"; do
@@ -15,6 +17,13 @@ cleanup_script() {
 trap 'cleanup_script' ERR
 
 mkdir -p "$BACKUPS_PATH"
+
+# Args:
+# 1: Service name
+backup_filename() {
+    local SERVICE=$1
+    echo "$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz"
+}
 
 # Args:
 # 1: Service name
@@ -36,7 +45,7 @@ backup_service() {
     docker compose -f "$COMPOSE_FILE" up -d "$SERVICE"
 
     # -C changes dir to avoid nested dirs in the archive
-    tar -czvf "$BACKUPS_PATH/$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz" -C "$BACKUPS_PATH" "$SERVICE-data"
+    tar -czvf "$BACKUPS_PATH/$(backup_filename $SERVICE)" -C "$BACKUPS_PATH" "$SERVICE-data"
     rm -r "$TEMP_DIR"
 }
 
@@ -56,15 +65,8 @@ mkdir -p "$AUTHENTIK_BACKUP_PATH"
 docker exec "$AUTHENTIK_DB_CONTAINER_NAME" pg_dump -U "$AUTHENTIK_DB_USER" "$AUTHENTIK_DB_NAME" > "$AUTHENTIK_BACKUP_PATH/$AUTHENTIK_DB_NAME-dump.sql"
 cp -rf "$AUTHENTIK_STATIC_FILES/"* "$AUTHENTIK_BACKUP_PATH"
 # -C changes dir to avoid nested dirs in the archive
-tar -czvf "$BACKUPS_PATH/authentik-data_$CURRENT_TIMESTAMP.tar.gz" -C "$BACKUPS_PATH" authentik-data
+tar -czvf "$BACKUPS_PATH/$(backup_filename authentik)" -C "$BACKUPS_PATH" authentik-data
 rm -r "$AUTHENTIK_BACKUP_PATH"
-
-# Args:
-# 1: Service name
-backup_filename() {
-    local SERVICE=$1
-    echo "$SERVICE-data_$CURRENT_TIMESTAMP.tar.gz"
-}
 
 AZURE_PATH="{{ core_apps_backups_rclone_azure_remote_name }}:{{ deployment_environment }}-{{ core_apps_backups_azure_blob_container_name }}"
 
