@@ -70,29 +70,36 @@ Run specific host group.
 
 ### Terraform
 
-Before running the terraform config, make sure to fetch API tokens for the following services:
+Before running the terraform config, make sure to fetch API tokens (or credentials) for the following services:
 
 * Authentik
+* Azure
 
-#### Init Project
+#### Init Project (Authentik)
 
 ```bash
-cd terraform
+cd terraform/authentik
 terraform init
 
 echo 'domain_name = [DOMAIN NAME]' > terraform.tfvars
 export AUTHENTIK_URL=[URL]
 export AUTHENTIK_TOKEN=[API TOKEN]
+```
 
-terraform plan
-terraform apply
+#### Init Project (Azure)
+
+```bash
+cd terraform/azure
+terraform init
+
+az login
 ```
 
 #### Development
 
 ```bash
 terraform fmt && terraform validate
-terraform plan
+terraform plan # or terraform apply
 ```
 
 
