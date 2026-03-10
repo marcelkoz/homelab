@@ -114,3 +114,13 @@ packer build --var-file=ubuntu.pkrvars.hcl ubuntu-2404-server.pkr.hcl
 packer fmt . && packer validate --var-file=ubuntu.pkrvars.hcl .
 packer build --var-file=ubuntu.pkrvars.hcl ubuntu-2404-server.pkr.hcl
 ```
+
+### Backups
+
+#### Restore Authentik Database
+```bash
+DOCKER_CONTAINER='authentik-db'
+DB_USER=''
+DB_NAME='authentik'
+docker exec -i "$DOCKER_CONTAINER" psql -U "$DB_USER" "$DB_NAME" < /path/to/authentik-dump.sql
+```
