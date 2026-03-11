@@ -32,6 +32,16 @@ variable "backups_core_apps_blob_container_name_test" {
   default = "test-core-apps-backups"
 }
 
+variable "backups_home_assistant_blob_container_name_prod" {
+  type    = string
+  default = "prod-home-assistant-backups"
+}
+
+variable "backups_home_assistant_blob_container_name_test" {
+  type    = string
+  default = "test-home-assistant-backups"
+}
+
 variable "backups_application_name_prod" {
   type    = string
   default = "Homelab Backups (prod)"
