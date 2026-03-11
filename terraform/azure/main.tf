@@ -88,6 +88,18 @@ resource "azurerm_storage_container" "backups_home_assistant_blob_container_test
   container_access_type = "private"
 }
 
+resource "azurerm_storage_container" "backups_opnsense_blob_container_prod" {
+  name                  = var.backups_opnsense_blob_container_name_prod
+  storage_account_id    = resource.azurerm_storage_account.backups_st_prod.id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "backups_opnsense_blob_container_test" {
+  name                  = var.backups_opnsense_blob_container_name_test
+  storage_account_id    = resource.azurerm_storage_account.backups_st_test.id
+  container_access_type = "private"
+}
+
 resource "azurerm_role_assignment" "backups_core_apps_prod" {
   scope                = resource.azurerm_storage_container.backups_core_apps_blob_container_prod.id
   role_definition_name = "Storage Blob Data Contributor"

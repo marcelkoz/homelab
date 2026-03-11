@@ -42,6 +42,16 @@ variable "backups_home_assistant_blob_container_name_test" {
   default = "test-home-assistant-backups"
 }
 
+variable "backups_opnsense_blob_container_name_prod" {
+  type    = string
+  default = "prod-opnsense-backups"
+}
+
+variable "backups_opnsense_blob_container_name_test" {
+  type    = string
+  default = "test-opnsense-backups"
+}
+
 variable "backups_application_name_prod" {
   type    = string
   default = "Homelab Backups (prod)"
