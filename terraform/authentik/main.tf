@@ -1,10 +1,18 @@
 
+data "authentik_flow" "default_authentication_flow" {
+  slug = "default-authentication-flow"
+}
+
 data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-explicit-consent"
 }
 
 data "authentik_flow" "default-provider-invalidation-flow" {
   slug = "default-provider-invalidation-flow"
+}
+
+data "authentik_flow" "default_user_settings_flow" {
+  slug = "default-user-settings-flow"
 }
 
 data "authentik_property_mapping_provider_scope" "email" {

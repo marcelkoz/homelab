@@ -1,10 +1,5 @@
 # https://docs.goauthentik.io/users-sources/user/password_reset_on_login
 
-data "authentik_flow" "default_authentication_flow" {
-  slug = "default-authentication-flow"
-}
-
-
 # force password reset prompt
 resource "authentik_policy_expression" "reset_password_check" {
   name       = "${var.resource_namespace}-reset-password-check"
