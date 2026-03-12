@@ -8,8 +8,8 @@ resource "authentik_provider_oauth2" "portainer" {
   name               = "portainer-provider"
   client_id          = random_string.portainer_client_id.result
   client_type        = var.oidc_client_type
-  authorization_flow = data.authentik_flow.default-authorization-flow.id
-  invalidation_flow  = data.authentik_flow.default-provider-invalidation-flow.id
+  authorization_flow = data.authentik_flow.default_authorization_flow.id
+  invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
   allowed_redirect_uris = [
     {
       url           = "https://portainer.${var.domain_name}"
