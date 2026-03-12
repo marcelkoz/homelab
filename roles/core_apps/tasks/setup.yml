@@ -38,9 +38,22 @@
     - '{{ core_apps_service_path.pihole }}'
     - '{{ core_apps_service_path.homarr }}'
     - '{{ core_apps_service_path.authentik }}'
+    - '{{ core_apps_service_path.authentik_media }}'
     - '{{ core_apps_service_path.gitea }}'
     - '{{ core_apps_service_path.grafana }}'
     - '{{ core_apps_service_path.actual_budget }}'
+
+- name: Copy authentik branding assets
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '{{ core_apps_service_path.authentik_media }}'
+    mode: '{{ core_apps_restricted_file_mode }}'
+  loop:
+    - '{{ core_apps_assets_path }}/homelab_favicon.svg'
+    - '{{ core_apps_assets_path }}/homelab_logo.svg'
+    - '{{ core_apps_assets_path }}/homelab_logo_black.svg'
+    - '{{ core_apps_assets_path }}/homelab_logo_white.svg'
+    - '{{ core_apps_assets_path }}/homelab_logo_shadow.svg'
 
 - name: Create directory for daisy docker container
   ansible.builtin.file:

@@ -24,6 +24,7 @@ core_apps_grafana_loki_docker_group: 10001
 core_apps_daisy_repo: git@github.com:marcelkoz/daisy.git
 
 core_apps_runtime_path: ../../runtime/application_servers
+core_apps_assets_path: ../../assets
 core_apps_service_path:
   docker: /home/ansible/docker
   traefik: /home/ansible/docker/traefik
@@ -31,6 +32,7 @@ core_apps_service_path:
   daisy: /home/ansible/docker/daisy
   homarr: /home/ansible/docker/homarr
   authentik: /home/ansible/docker/authentik
+  authentik_media: /home/ansible/docker/authentik/media
   gitea: /home/ansible/docker/gitea
   prometheus: /home/ansible/docker/prometheus
   grafana: /home/ansible/docker/grafana
