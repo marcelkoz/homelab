@@ -55,3 +55,9 @@ variable "property_mapping" {
   type        = list(string)
   description = "List of authentik property mapping ids to include."
 }
+
+variable "subjet_mode" {
+  type        = string
+  default     = "hashed_user_id"
+  description = "Define the user id that should be shared with the application. The default is usually fine."
+}

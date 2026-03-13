@@ -18,6 +18,7 @@ resource "authentik_provider_oauth2" "provider" {
   ]
 
   property_mappings = var.property_mapping
+  sub_mode          = var.subjet_mode
 }
 
 resource "authentik_application" "application" {
