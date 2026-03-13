@@ -30,9 +30,3 @@ data "authentik_property_mapping_provider_scope" "openid" {
 data "authentik_property_mapping_provider_scope" "profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
-
-resource "authentik_group" "groups" {
-  for_each = var.user_groups
-
-  name = each.value
-}

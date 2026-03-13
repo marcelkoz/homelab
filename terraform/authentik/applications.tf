@@ -62,6 +62,12 @@ locals {
   }
 }
 
+resource "authentik_group" "groups" {
+  for_each = var.user_groups
+
+  name = each.value
+}
+
 resource "authentik_property_mapping_provider_scope" "gitea" {
   name       = "authentik gitea OAuth Mapping: OpenID 'gitea'"
   scope_name = "gitea"
