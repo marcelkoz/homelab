@@ -32,7 +32,7 @@ core_apps_service_path:
   daisy: /home/ansible/docker/daisy
   homarr: /home/ansible/docker/homarr
   authentik: /home/ansible/docker/authentik
-  authentik_media: /home/ansible/docker/authentik/data/media
+  authentik_media: /home/ansible/docker/authentik/data/media/public
   gitea: /home/ansible/docker/gitea
   prometheus: /home/ansible/docker/prometheus
   grafana: /home/ansible/docker/grafana
