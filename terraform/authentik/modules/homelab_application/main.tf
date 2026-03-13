@@ -34,3 +34,7 @@ resource "authentik_policy_binding" "allowed_groups" {
   group    = each.key
   order    = 0
 }
+
+output "client_id" {
+  value = random_string.client_id.result
+}
