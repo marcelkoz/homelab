@@ -21,7 +21,7 @@ variable "oidc_client_type" {
 
 variable "oidc_policy_engine_mode" {
   type    = string
-  default = "all"
+  default = "any"
 }
 
 variable "client_id_length" {
