@@ -4,11 +4,6 @@ terraform {
       source  = "goauthentik/authentik"
       version = "~> 2025.12.1"
     }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.7.2"
-    }
   }
 }
 
