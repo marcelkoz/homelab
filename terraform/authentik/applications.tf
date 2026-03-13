@@ -49,16 +49,6 @@ locals {
       ],
       property_mapping = local.default_property_mapping,
     },
-
-    portainer = {
-      name = "Portainer",
-      slug = "portainer",
-      url  = "https://portainer.${var.domain_name}",
-      groups = [
-        authentik_group.groups["portainer-admins"].id,
-      ],
-      property_mapping = local.default_property_mapping,
-    },
   }
 }
 
