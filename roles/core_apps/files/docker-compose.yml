@@ -39,7 +39,7 @@ services:
       authentik-db:
         condition: service_healthy
     volumes:
-      - ./authentik/media:/media
+      - ./authentik/data:/data
       - ./authentik/custom-templates:/templates
     environment:
       AUTHENTIK_POSTGRESQL__HOST: authentik-db
@@ -101,7 +101,7 @@ services:
         condition: service_healthy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./authentik/media:/media
+      - ./authentik/data:/data
       - ./authentik/certs:/certs
       - ./authentik/custom-templates:/templates
     environment:
