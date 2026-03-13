@@ -9,7 +9,7 @@ resource "authentik_provider_oauth2" "grafana" {
   client_id          = random_string.grafana_client_id.result
   client_type        = var.oidc_client_type
   authorization_flow = data.authentik_flow.default_authorization_flow.id
-  invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
+  invalidation_flow  = data.authentik_flow.default_provider_invalidation_flow.id
   allowed_redirect_uris = [
     {
       url           = "https://grafana.${var.domain_name}/login/generic_oauth"
