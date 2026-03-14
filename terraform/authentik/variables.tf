@@ -40,6 +40,8 @@ variable "user_groups" {
   default = [
     "homarr-editors",
     "homarr-admins",
+    "home-assistant-users",
+    "home-assistant-admins",
     "gitea-restricted",
     "gitea-users",
     "gitea-admins",
@@ -48,5 +50,6 @@ variable "user_groups" {
     "grafana-admins",
     "pihole-admins",
     "traefik-dashboard-viewers",
+    "proxmox-admins",
   ]
 }

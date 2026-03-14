@@ -49,6 +49,28 @@ locals {
       ],
       property_mapping = local.default_property_mapping,
     },
+
+    home_assistant = {
+      name = "Home Assistant",
+      slug = "home-assistant",
+      url  = "https://ha.${var.domain_name}/auth/openid/callback",
+      groups = [
+        authentik_group.groups["home-assistant-users"].id,
+        authentik_group.groups["home-assistant-admins"].id,
+      ],
+      property_mapping = local.default_property_mapping,
+    },
+
+    proxmox = {
+      name = "Proxmox",
+      slug = "proxmox",
+      url  = "https://proxmox.${var.domain_name}:8006",
+      groups = [
+        authentik_group.groups["proxmox-admins"].id,
+      ],
+      property_mapping = local.default_property_mapping,
+      subjet           = "user_email"
+    },
   }
 }
 
@@ -90,4 +112,5 @@ module "standard_application" {
   redirect_url           = each.value.url
   property_mapping       = each.value.property_mapping
   allowed_user_group_ids = each.value.groups
+  subjet_mode            = lookup(each.value, "subjet", "hashed_user_id")
 }
