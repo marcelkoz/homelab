@@ -61,3 +61,9 @@ variable "subjet_mode" {
   default     = "hashed_user_id"
   description = "Define the user id that should be shared with the application. The default is usually fine."
 }
+
+variable "icon" {
+  type        = string
+  default     = ""
+  description = "Path or URL to the icon for the application. Used in the authentik user interface."
+}

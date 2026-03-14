@@ -27,6 +27,7 @@ resource "authentik_application" "application" {
   protocol_provider  = authentik_provider_oauth2.provider.id
   policy_engine_mode = var.policy_engine_mode
   group              = var.application_group
+  meta_icon          = var.icon
 }
 
 resource "authentik_policy_binding" "allowed_groups" {
