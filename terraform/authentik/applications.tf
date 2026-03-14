@@ -36,7 +36,6 @@ locals {
         authentik_group.groups["grafana-editors"].id,
         authentik_group.groups["grafana-admins"].id,
       ],
-      property_mapping = local.default_property_mapping,
     },
 
     homarr = {
@@ -47,7 +46,6 @@ locals {
         authentik_group.groups["homarr-editors"].id,
         authentik_group.groups["homarr-admins"].id,
       ],
-      property_mapping = local.default_property_mapping,
     },
 
     home_assistant = {
@@ -58,7 +56,6 @@ locals {
         authentik_group.groups["home-assistant-users"].id,
         authentik_group.groups["home-assistant-admins"].id,
       ],
-      property_mapping = local.default_property_mapping,
     },
 
     proxmox = {
@@ -68,8 +65,7 @@ locals {
       groups = [
         authentik_group.groups["proxmox-admins"].id,
       ],
-      property_mapping = local.default_property_mapping,
-      subjet           = "user_email"
+      subjet = "user_email"
     },
   }
 }
@@ -110,7 +106,7 @@ module "standard_application" {
   invalidation_flow_id  = local.default_invalidation_flow_id
 
   redirect_url           = each.value.url
-  property_mapping       = each.value.property_mapping
   allowed_user_group_ids = each.value.groups
+  property_mapping       = lookup(each.value, "property_mapping", local.default_property_mapping)
   subjet_mode            = lookup(each.value, "subjet", "hashed_user_id")
 }
