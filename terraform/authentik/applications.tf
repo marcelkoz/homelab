@@ -25,6 +25,7 @@ locals {
         data.authentik_property_mapping_provider_scope.profile.id,
         authentik_property_mapping_provider_scope.gitea.id,
       ],
+      icon = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gitea.svg",
     },
 
     grafana = {
@@ -36,6 +37,7 @@ locals {
         authentik_group.groups["grafana-editors"].id,
         authentik_group.groups["grafana-admins"].id,
       ],
+      icon = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg"
     },
 
     homarr = {
@@ -56,6 +58,7 @@ locals {
         authentik_group.groups["home-assistant-users"].id,
         authentik_group.groups["home-assistant-admins"].id,
       ],
+      icon = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/home-assistant-alt.svg"
     },
 
     proxmox = {
@@ -66,6 +69,7 @@ locals {
         authentik_group.groups["proxmox-admins"].id,
       ],
       subjet = "user_email"
+      icon   = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/proxmox.svg"
     },
   }
 }
@@ -109,4 +113,5 @@ module "standard_application" {
   allowed_user_group_ids = each.value.groups
   property_mapping       = lookup(each.value, "property_mapping", local.default_property_mapping)
   subjet_mode            = lookup(each.value, "subjet", "hashed_user_id")
+  icon                   = lookup(each.value, "icon", "")
 }
