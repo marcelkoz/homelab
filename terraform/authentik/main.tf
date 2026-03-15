@@ -23,6 +23,14 @@ data "authentik_flow" "default_password_change_flow" {
   slug = "default-password-change"
 }
 
+data "authentik_stage" "default_totp_setup_stage" {
+  name = "default-authenticator-totp-setup"
+}
+
+data "authentik_stage" "default_webauthn_setup_stage" {
+  name = "default-authenticator-webauthn-setup"
+}
+
 data "authentik_property_mapping_provider_scope" "email" {
   name = "authentik default OAuth Mapping: OpenID 'email'"
 }

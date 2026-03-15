@@ -21,6 +21,18 @@ resource "authentik_stage_identification" "credentials" {
   case_insensitive_matching = true
 }
 
+resource "authentik_stage_authenticator_validate" "mfa" {
+  name                       = "${var.resource_namespace}-authentication-mfa-validate"
+  device_classes             = ["totp", "webauthn"]
+  not_configured_action      = "configure"
+  webauthn_user_verification = "preferred"
+
+  configuration_stages = [
+    data.authentik_stage.default_totp_setup_stage.id,
+    data.authentik_stage.default_webauthn_setup_stage.id,
+  ]
+}
+
 resource "authentik_stage_user_login" "user_login" {
   name = "${var.resource_namespace}-authentication-login"
 }
@@ -61,6 +73,15 @@ resource "authentik_policy_binding" "force_password_reset_update" {
   target = resource.authentik_flow_stage_binding.force_password_reset_update.id
   policy = resource.authentik_policy_expression.reset_password_update.id
   order  = 0
+}
+
+# mfa binding
+resource "authentik_flow_stage_binding" "mfa" {
+  target               = resource.authentik_flow.authentication.uuid
+  stage                = resource.authentik_stage_authenticator_validate.mfa.id
+  evaluate_on_plan     = false
+  re_evaluate_policies = true
+  order                = 50
 }
 
 # user login binding
