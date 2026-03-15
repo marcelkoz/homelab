@@ -52,13 +52,29 @@ resource "authentik_flow_stage_binding" "credentials" {
   order                = 10
 }
 
+# mfa binding
+resource "authentik_flow_stage_binding" "mfa" {
+  target               = resource.authentik_flow.authentication.uuid
+  stage                = resource.authentik_stage_authenticator_validate.mfa.id
+  evaluate_on_plan     = false
+  re_evaluate_policies = true
+  order                = 30
+}
+
+resource "authentik_policy_binding" "mfa_group_check" {
+  target = resource.authentik_flow_stage_binding.mfa.id
+  group  = authentik_group.util_groups["util-mfa-exemption"].id
+  order  = 0
+  negate = true
+}
+
 # password reset bindings
 resource "authentik_flow_stage_binding" "force_password_reset_check" {
   target               = resource.authentik_flow.authentication.uuid
   stage                = resource.authentik_stage_prompt.force_password_reset.id
   evaluate_on_plan     = false
   re_evaluate_policies = true
-  order                = 30
+  order                = 50
 }
 
 resource "authentik_policy_binding" "force_password_reset_check" {
@@ -72,29 +88,13 @@ resource "authentik_flow_stage_binding" "force_password_reset_update" {
   stage                = resource.authentik_stage_user_write.force_password_reset.id
   evaluate_on_plan     = false
   re_evaluate_policies = true
-  order                = 31
+  order                = 51
 }
 
 resource "authentik_policy_binding" "force_password_reset_update" {
   target = resource.authentik_flow_stage_binding.force_password_reset_update.id
   policy = resource.authentik_policy_expression.reset_password_update.id
   order  = 0
-}
-
-# mfa binding
-resource "authentik_flow_stage_binding" "mfa" {
-  target               = resource.authentik_flow.authentication.uuid
-  stage                = resource.authentik_stage_authenticator_validate.mfa.id
-  evaluate_on_plan     = false
-  re_evaluate_policies = true
-  order                = 50
-}
-
-resource "authentik_policy_binding" "mfa_group_check" {
-  target = resource.authentik_flow_stage_binding.mfa.id
-  group  = authentik_group.util_groups["util-mfa-exemption"].id
-  order  = 0
-  negate = true
 }
 
 # user login binding
