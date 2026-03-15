@@ -13,7 +13,7 @@ resource "authentik_stage_prompt_field" "password" {
   type        = "password"
   placeholder = "Password"
   required    = true
-  order       = 500
+  order       = 501
 }
 
 resource "authentik_stage_prompt_field" "repeat_password" {
@@ -23,7 +23,7 @@ resource "authentik_stage_prompt_field" "repeat_password" {
   type        = "password"
   placeholder = "Confirm Password"
   required    = true
-  order       = 501
+  order       = 502
 }
 
 resource "authentik_stage_prompt_field" "change_password_text" {
@@ -32,7 +32,7 @@ resource "authentik_stage_prompt_field" "change_password_text" {
   label         = "Change Password Message"
   initial_value = "Please enter your new password."
   type          = "static"
-  order         = 502
+  order         = 500
 }
 
 resource "authentik_policy_password" "password_policy" {
