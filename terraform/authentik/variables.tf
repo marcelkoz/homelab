@@ -54,6 +54,13 @@ variable "user_groups" {
   ]
 }
 
+variable "utility_groups" {
+  type = set(string)
+  default = [
+    "util-mfa-exemption",
+  ]
+}
+
 variable "authentication_flow_title" {
   type    = string
   default = "Homelab SSO"

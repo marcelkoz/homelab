@@ -1,4 +1,10 @@
 
+resource "authentik_group" "util_groups" {
+  for_each = var.utility_groups
+
+  name = each.value
+}
+
 resource "authentik_flow" "authentication" {
   name        = "${var.resource_namespace}-authentication-flow"
   title       = var.authentication_flow_title
@@ -82,6 +88,13 @@ resource "authentik_flow_stage_binding" "mfa" {
   evaluate_on_plan     = false
   re_evaluate_policies = true
   order                = 50
+}
+
+resource "authentik_policy_binding" "mfa_group_check" {
+  target = resource.authentik_flow_stage_binding.mfa.id
+  group  = authentik_group.util_groups["util-mfa-exemption"].id
+  order  = 0
+  negate = true
 }
 
 # user login binding
