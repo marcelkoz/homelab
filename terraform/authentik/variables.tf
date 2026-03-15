@@ -53,3 +53,8 @@ variable "user_groups" {
     "proxmox-admins",
   ]
 }
+
+variable "authentication_flow_title" {
+  type    = string
+  default = "Homelab SSO"
+}

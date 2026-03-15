@@ -19,6 +19,10 @@ data "authentik_flow" "default_user_settings_flow" {
   slug = "default-user-settings-flow"
 }
 
+data "authentik_flow" "default_password_change_flow" {
+  slug = "default-password-change"
+}
+
 data "authentik_property_mapping_provider_scope" "email" {
   name = "authentik default OAuth Mapping: OpenID 'email'"
 }

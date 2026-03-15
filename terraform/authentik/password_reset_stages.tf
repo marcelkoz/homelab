@@ -62,21 +62,6 @@ resource "authentik_stage_prompt" "force_password_reset" {
   ]
 }
 
-resource "authentik_flow_stage_binding" "force_password_reset_check" {
-  target               = data.authentik_flow.default_authentication_flow.id
-  stage                = resource.authentik_stage_prompt.force_password_reset.id
-  evaluate_on_plan     = false
-  re_evaluate_policies = true
-  order                = 25
-}
-
-resource "authentik_policy_binding" "force_password_reset_check" {
-  target = resource.authentik_flow_stage_binding.force_password_reset_check.id
-  policy = resource.authentik_policy_expression.reset_password_check.id
-  order  = 0
-}
-
-
 # force password reset write
 resource "authentik_policy_expression" "reset_password_update" {
   name       = "${var.resource_namespace}-reset-password-update"
@@ -85,18 +70,4 @@ resource "authentik_policy_expression" "reset_password_update" {
 
 resource "authentik_stage_user_write" "force_password_reset" {
   name = "${var.resource_namespace}-force-password-reset-user-write-stage"
-}
-
-resource "authentik_flow_stage_binding" "force_password_reset_update" {
-  target               = data.authentik_flow.default_authentication_flow.id
-  stage                = resource.authentik_stage_user_write.force_password_reset.id
-  evaluate_on_plan     = false
-  re_evaluate_policies = true
-  order                = 26
-}
-
-resource "authentik_policy_binding" "force_password_reset_update" {
-  target = resource.authentik_flow_stage_binding.force_password_reset_update.id
-  policy = resource.authentik_policy_expression.reset_password_update.id
-  order  = 0
 }
