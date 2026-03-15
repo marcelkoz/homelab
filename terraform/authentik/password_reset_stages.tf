@@ -30,7 +30,7 @@ resource "authentik_stage_prompt_field" "change_password_text" {
   name          = "${var.resource_namespace}-change-password-text-field"
   field_key     = "change_password_text"
   label         = "Change Password Message"
-  initial_value = "Please enter your new password."
+  initial_value = "Your password has been reset by the administrator. Please enter a new password."
   type          = "static"
   order         = 500
 }
