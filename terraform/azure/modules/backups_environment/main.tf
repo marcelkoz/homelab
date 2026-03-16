@@ -26,7 +26,7 @@ resource "azurerm_user_assigned_identity" "automation_managed_identity" {
 
 # resources
 resource "azurerm_storage_account" "storage_account" {
-  name                     = "${var.storage_account_name}"
+  name                     = var.storage_account_name
   resource_group_name      = resource.azurerm_resource_group.environment_resource_group.name
   location                 = resource.azurerm_resource_group.environment_resource_group.location
   account_tier             = "Standard"
@@ -51,6 +51,12 @@ resource "azurerm_storage_container" "home_assistant" {
 
 resource "azurerm_storage_container" "opnsense" {
   name                  = "${var.environment_name}-${var.blob_container_name_opnsense}"
+  storage_account_id    = resource.azurerm_storage_account.storage_account.id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "terraform" {
+  name                  = "${var.environment_name}-${var.blob_container_name_terraform}"
   storage_account_id    = resource.azurerm_storage_account.storage_account.id
   container_access_type = "private"
 }

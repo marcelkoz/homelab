@@ -38,6 +38,12 @@ variable "blob_container_name_opnsense" {
   description = "Name of the opnsense blob container. The environment name is prepended."
 }
 
+variable "blob_container_name_terraform" {
+  type        = string
+  default     = "terraform-backups"
+  description = "Name of the terraform blob container. The environment name is prepended."
+}
+
 variable "entra_application_name" {
   type        = string
   default     = "Homelab Backups"
