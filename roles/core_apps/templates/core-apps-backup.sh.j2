@@ -3,6 +3,7 @@
 BACKUPS_PATH='{{ core_apps_backups_path }}'
 COMPOSE_FILE='{{ core_apps_service_path.docker }}/docker-compose.yml'
 CURRENT_TIMESTAMP="$(printf '%(%Y-%m-%d_%H%M%S)T\n' -1)"
+AZURE_PATH="{{ core_apps_backups_rclone_azure_remote_name }}:{{ deployment_environment }}-{{ core_apps_backups_azure_blob_container_name }}"
 
 cleanup_script() {
     echo 'SCRIPT ERROR: Script failed, running cleanup'
@@ -29,7 +30,7 @@ backup_service() {
     local SOURCES=("$@")
     local TEMP_DIR="$BACKUPS_PATH/$SERVICE-data"
 
-    echo 'SCRIPT INFO: Backup $SERVICE data'
+    echo "SCRIPT INFO: Backup $SERVICE data"
     mkdir -p "$TEMP_DIR"
 
     docker compose -f "$COMPOSE_FILE" down "$SERVICE"
@@ -43,6 +44,14 @@ backup_service() {
     # -C changes dir to avoid nested dirs in the archive
     tar -czvf "$BACKUPS_PATH/$(backup_filename $SERVICE)" -C "$BACKUPS_PATH" "$SERVICE-data"
     rm -r "$TEMP_DIR"
+}
+
+# Args:
+# 1: Service name
+send_backup() {
+    local SERVICE=$1
+    echo "SCRIPT INFO: Send $SERVICE backup to Azure"
+    rclone copyto "$BACKUPS_PATH/$(backup_filename $SERVICE)" "$AZURE_PATH/$(backup_filename $SERVICE)"
 }
 
 backup_service 'actual-budget' '{{ core_apps_service_path.actual_budget }}/data'
@@ -66,16 +75,7 @@ cp -rf "$AUTHENTIK_STATIC_FILES/"* "$AUTHENTIK_BACKUP_PATH"
 tar -czvf "$BACKUPS_PATH/$(backup_filename authentik)" -C "$BACKUPS_PATH" authentik-data
 rm -r "$AUTHENTIK_BACKUP_PATH"
 
-AZURE_PATH="{{ core_apps_backups_rclone_azure_remote_name }}:{{ deployment_environment }}-{{ core_apps_backups_azure_blob_container_name }}"
-
-echo 'SCRIPT INFO: Sending pihole backup to Azure'
-rclone copyto "$BACKUPS_PATH/$(backup_filename pihole)" "$AZURE_PATH/$(backup_filename pihole)"
-
-echo 'SCRIPT INFO: Sending homarr backup to Azure'
-rclone copyto "$BACKUPS_PATH/$(backup_filename homarr)" "$AZURE_PATH/$(backup_filename homarr)"
-
-echo 'SCRIPT INFO: Sending actual-budget backup to Azure'
-rclone copyto "$BACKUPS_PATH/$(backup_filename actual-budget)" "$AZURE_PATH/$(backup_filename actual-budget)"
-
-echo 'SCRIPT INFO: Sending authentik backup to Azure'
-rclone copyto "$BACKUPS_PATH/$(backup_filename authentik)" "$AZURE_PATH/$(backup_filename authentik)"
+send_backup 'actual-budget'
+send_backup 'homarr'
+send_backup 'pihole'
+send_backup 'authentik'
