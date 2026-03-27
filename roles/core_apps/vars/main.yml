@@ -25,24 +25,24 @@ core_apps_daisy_repo: git@github.com:marcelkoz/daisy.git
 
 core_apps_runtime_path: ../../runtime/application_servers
 core_apps_assets_path: ../../assets
+core_apps_base_docker_path: /home/ansible/docker
 core_apps_service_path:
-  docker: /home/ansible/docker
-  traefik: /home/ansible/docker/traefik
-  pihole: /home/ansible/docker/pihole
-  daisy: /home/ansible/docker/daisy
-  homarr: /home/ansible/docker/homarr
-  authentik: /home/ansible/docker/authentik
-  authentik_media: /home/ansible/docker/authentik/data/media/public
-  gitea: /home/ansible/docker/gitea
-  prometheus: /home/ansible/docker/prometheus
-  grafana: /home/ansible/docker/grafana
-  grafana_loki: /home/ansible/docker/grafana-loki
-  actual_budget: /home/ansible/docker/actual-budget
+  traefik: '{{ core_apps_base_docker_path }}/traefik'
+  pihole: '{{ core_apps_base_docker_path }}/pihole'
+  daisy: '{{ core_apps_base_docker_path }}/daisy'
+  homarr: '{{ core_apps_base_docker_path }}/homarr'
+  authentik: '{{ core_apps_base_docker_path }}/authentik'
+  authentik_media: '{{ core_apps_base_docker_path }}/authentik/data/media/public'
+  gitea: '{{ core_apps_base_docker_path }}/gitea'
+  prometheus: '{{ core_apps_base_docker_path }}/prometheus'
+  grafana: '{{ core_apps_base_docker_path }}/grafana'
+  grafana_loki: '{{ core_apps_base_docker_path }}/grafana-loki'
+  actual_budget: '{{ core_apps_base_docker_path }}/actual-budget'
 
 core_apps_backups_user: root
 core_apps_backups_path: /tmp/core-apps-backups
 core_apps_backups_config_path: /home/ansible/backups
-core_apps_backups_script_path: /home/ansible/backups/core-apps-backup.sh
+core_apps_backups_script_path: '{{ core_apps_backups_config_path }}/core-apps-backup.sh'
 core_apps_backups_timer_calendar: 'Sat *-*-* 03:00:00'
 core_apps_backups_timer_randomised: 30
 core_apps_backups_azure_service_principle_file_name: backups-sp.json

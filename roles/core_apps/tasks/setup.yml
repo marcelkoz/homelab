@@ -86,7 +86,7 @@
 - name: Copy docker configuration
   ansible.builtin.copy:
     src: '{{ item }}'
-    dest: '{{ core_apps_service_path.docker }}'
+    dest: '{{ core_apps_base_docker_path }}'
     mode: '{{ core_apps_restricted_file_mode }}'
   loop:
     - '{{ core_apps_runtime_path }}/.env'
