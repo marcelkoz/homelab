@@ -41,10 +41,27 @@ BLOB_NAMES=(
     'pihole-data'
 )
 
+CORE_APPS_CONTAINER="${ST_CONTAINERS[0]}"
+
+# generate valid core apps file names
 for name in "${BLOB_NAMES[@]}"; do
     for timestamp in "${TIMESTAMPS[@]}"; do
         blob_name="${name}_$timestamp.tar.gz"
         echo "Creating blob: $blob_name"
-        az storage blob upload --data 'test' --name "$blob_name" --container "${ST_CONTAINERS[0]}" --connection-string "$ST_CONN_STRING"
+        az storage blob upload --data 'test' --name "$blob_name" --container "$CORE_APPS_CONTAINER" --connection-string "$ST_CONN_STRING"
     done
+done
+
+INVALID_BLOB_NAMES=(
+    'test_____.tar.gz'
+    'test_.tar.gz'
+    'test_01-01-2020_123456.tar.gz'
+    'test_01-01_123456.tar.gz'
+    'test_2020-01_123.tar.gz'
+)
+
+# generate invalid core apps file names
+for name in "${INVALID_BLOB_NAMES[@]}"; do
+    echo "Creating blob: $name"
+    az storage blob upload --data 'test' --name "$name" --container "$CORE_APPS_CONTAINER" --connection-string "$ST_CONN_STRING"
 done

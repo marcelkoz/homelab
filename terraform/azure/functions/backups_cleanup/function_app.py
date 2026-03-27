@@ -7,16 +7,26 @@ from datetime import datetime
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 
+class InvalidFileName(Exception):
+    pass
+
 class CoreAppsFile:
     def __init__(self, file_name: str):
-        # TODO: handle file names that do not conform to this format
+        error_message = f'file name "{file_name}" does not fit the core apps format'
+
         chunks = file_name.split('_')
+        if len(chunks) != 3:
+            raise InvalidFileName(error_message)
+
         date = chunks[1]
         time = chunks[2].split('.')[0]
 
         self.name = file_name
         self.service = chunks[0]
-        self.timestamp = datetime.strptime(f'{date}_{time}', "%Y-%m-%d_%H%M%S")
+        try:
+            self.timestamp = datetime.strptime(f'{date}_{time}', "%Y-%m-%d_%H%M%S")
+        except ValueError:
+            raise InvalidFileName(error_message)
 
     def __lt__(self, file: CoreAppsFile):
         return self.timestamp < file.timestamp
@@ -42,18 +52,18 @@ def backups_cleanup(timer: func.TimerRequest) -> None:
     account_client, url = get_blob_client(development=True)
     container_client = account_client.get_container_client('dev-core-apps-backups')
 
-    files = map(lambda blob: CoreAppsFile(blob.name), container_client.list_blobs())
-
     # group files into services
     services = defaultdict(list)
-    for file in files:
-        services[file.service].append(file)
+    for blob in container_client.list_blobs():
+        try:
+            file = CoreAppsFile(blob.name)
+            services[file.service].append(file)
+        except InvalidFileName:
+            logging.info(f'skipping blob with invalid file name format: {blob.name}')
 
     # sort files by timestamp in descending order
     for service in services:
         services[service] = sorted(services[service], reverse=True)
-
-    # TODO: file archiving
 
     # delete files beyond the threshold below
     file_threshold = 8
@@ -64,5 +74,5 @@ def backups_cleanup(timer: func.TimerRequest) -> None:
 
         logging.info(f'found service {service} with too many files (threshold: {file_threshold})')
         for file in services[service][file_threshold:]:
-            logging.info('deleting blob:', file.name)
+            logging.info(f'deleting blob: {file.name}')
             container_client.delete_blob(file.name)
