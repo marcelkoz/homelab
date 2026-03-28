@@ -23,12 +23,6 @@ resource "azuread_service_principal" "entra_service_principle" {
   owners                       = [data.azuread_client_config.current.object_id]
 }
 
-resource "azurerm_user_assigned_identity" "automation_managed_identity" {
-  name                = "${var.environment_name}-${var.automation_managed_identity_name}"
-  resource_group_name = resource.azurerm_resource_group.environment_resource_group.name
-  location            = resource.azurerm_resource_group.environment_resource_group.location
-}
-
 # resources
 resource "azurerm_storage_account" "storage_account" {
   name                     = var.storage_account_name

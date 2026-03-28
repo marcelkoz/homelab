@@ -49,9 +49,3 @@ variable "entra_application_name" {
   default     = "Homelab Backups"
   description = "Name of the Entra ID service principle/app registration. The environment name is appended."
 }
-
-variable "automation_managed_identity_name" {
-  type        = string
-  default     = "automation-id"
-  description = "Name of the managed identity. The environment name is prepended."
-}
