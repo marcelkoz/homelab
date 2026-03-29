@@ -28,7 +28,7 @@ class CoreAppsFile:
         except ValueError:
             raise InvalidFileName(error_message)
 
-    def __lt__(self, file: CoreAppsFile):
+    def __lt__(self, file):
         return self.timestamp < file.timestamp
 
 app = func.FunctionApp()
