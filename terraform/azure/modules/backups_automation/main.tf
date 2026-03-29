@@ -23,6 +23,13 @@ resource "azurerm_storage_container" "function_container" {
   container_access_type = "private"
 }
 
+resource "azurerm_application_insights" "function_logs" {
+  name                = "${var.environment_name}-func-app-insights"
+  resource_group_name = var.resource_group_name
+  location            = var.resource_group_location
+  application_type    = "other"
+}
+
 resource "azurerm_service_plan" "function_service_plan" {
   name                         = "${var.environment_name}-srv-plan"
   resource_group_name          = var.resource_group_name
@@ -58,7 +65,15 @@ resource "azurerm_function_app_flex_consumption" "backups_function" {
     "BACKUP_STORAGE_ACCOUNT_NAME" = var.backups_storage_account_name
   }
 
-  site_config {}
+  site_config {
+    application_insights_connection_string = resource.azurerm_application_insights.function_logs.connection_string
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "azurerm_role_assignment" "function_storage_account" {
