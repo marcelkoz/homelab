@@ -42,11 +42,13 @@ resource "azurerm_function_app_flex_consumption" "backups_function" {
   storage_container_endpoint  = local.function_container_endpoint
   storage_authentication_type = "SystemAssignedIdentity"
 
-  runtime_name                  = var.function_runtime
-  runtime_version               = var.function_runtime_version
-  maximum_instance_count        = 1
-  instance_memory_in_mb         = 512
-  public_network_access_enabled = false
+  runtime_name           = var.function_runtime
+  runtime_version        = var.function_runtime_version
+  maximum_instance_count = 1
+  instance_memory_in_mb  = 512
+
+  https_only                    = true
+  public_network_access_enabled = true
 
   identity {
     type = "SystemAssigned"

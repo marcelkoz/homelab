@@ -37,6 +37,6 @@ variable "function_runtime" {
 
 variable "function_runtime_version" {
   type        = string
-  default     = "3.14"
+  default     = "3.13"
   description = "Version of the language runtime used by the function app."
 }
