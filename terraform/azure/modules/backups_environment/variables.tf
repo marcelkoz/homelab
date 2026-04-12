@@ -44,6 +44,12 @@ variable "blob_container_name_terraform" {
   description = "Name of the terraform blob container. The environment name is prepended."
 }
 
+variable "blob_container_name_devvm" {
+  type        = string
+  default     = "devvm-backups"
+  description = "Name of the devvm blob container. The environment name is prepended."
+}
+
 variable "entra_application_name" {
   type        = string
   default     = "Homelab Backups"

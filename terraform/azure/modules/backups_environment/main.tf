@@ -60,6 +60,12 @@ resource "azurerm_storage_container" "terraform" {
   container_access_type = local.container_access_type
 }
 
+resource "azurerm_storage_container" "devvm" {
+  name                  = "${var.environment_name}-${var.blob_container_name_devvm}"
+  storage_account_id    = resource.azurerm_storage_account.storage_account.id
+  container_access_type = local.container_access_type
+}
+
 # role assignment
 resource "azurerm_role_assignment" "entra_service_principle" {
   scope                = resource.azurerm_storage_container.core_apps.id
