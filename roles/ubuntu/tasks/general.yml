@@ -1,7 +1,7 @@
 - name: Disable cloud-init
   ansible.builtin.file:
     path: '/etc/cloud/cloud-init.disabled'
-    state: touch
+    state: file
     mode: '{{ ubuntu_restricted_file_mode }}'
 
 - name: Enable QEMU guest agent service
