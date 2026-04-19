@@ -9,6 +9,7 @@ ubuntu_special_file_mode:
 ubuntu_essential_packages:
   - openssh-server
   - openssh-client
+  - qemu-guest-agent
   - rclone # backups
 
 ubuntu_allowed_tcp_ports:
