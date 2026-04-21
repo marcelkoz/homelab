@@ -1,3 +1,57 @@
+# https://wiki.archlinux.org/title/SFTP_chroot
+
+- name: Create SFTP directories
+  ansible.builtin.file:
+    path: '{{ item }}'
+    owner: root
+    group: root
+    mode: '{{ core_apps_sftp_directory_mode }}'
+    state: directory
+  loop:
+    - '{{ core_apps_sftp_bind_mount_path }}'
+    - '{{ core_apps_sftp_jail_path }}'
+    - '{{ core_apps_sftp_authorised_ssh_keys_path }}'
+
+- name: Bind mount the SFTP jail
+  ansible.posix.mount:
+    src: '{{ core_apps_sftp_bind_mount_path }}'
+    path: '{{ core_apps_sftp_jail_path }}'
+    fstype: none
+    opts: bind
+    state: mounted
+
+- name: Create the SFTP group
+  ansible.builtin.group:
+    name: '{{ core_apps_sftp_group }}'
+    state: present
+
+- name: Create SFTP users
+  ansible.builtin.user:
+    name: '{{ item }}'
+    groups: '{{ core_apps_sftp_group }}'
+    shell: /bin/nologin
+    home: '{{ core_apps_sftp_jail_path }}'
+    state: present
+  loop: '{{ core_apps_sftp_users }}'
+
+- name: Create SFTP users
+  ansible.builtin.user:
+    name: '{{ item }}'
+    groups: '{{ core_apps_sftp_group }}'
+    shell: /bin/nologin
+    home: '{{ core_apps_sftp_jail_path }}'
+    state: present
+  loop: '{{ core_apps_sftp_users }}'
+
+- name: Copy SFTP user directories
+  ansible.builtin.file:
+    path: '{{ core_apps_sftp_jail_path }}/{{ item }}'
+    owner: '{{ item }}'
+    group: '{{ item }}'
+    mode: '{{ core_apps_sftp_directory_mode }}'
+    state: directory
+  loop: '{{ core_apps_sftp_users }}'
+
 - name: Create backup scripts directory
   ansible.builtin.file:
     path: '{{ core_apps_backups_config_path }}'

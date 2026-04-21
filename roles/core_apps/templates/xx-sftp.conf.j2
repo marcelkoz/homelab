@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+
+AuthorizedKeysFile {{ core_apps_sftp_authorised_ssh_keys_path }}/%u .ssh/authorized_keys
+
+Subsystem sftp /usr/lib/ssh/sftp-server
+
+Match Group {{ core_apps_sftp_group }}
+  ChrootDirectory %h
+  ForceCommand internal-sftp
+  AllowTcpForwarding no
+  X11Forwarding no
+  PasswordAuthentication no

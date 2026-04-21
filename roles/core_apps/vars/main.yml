@@ -51,3 +51,11 @@ core_apps_backups_rclone_azure_remote_name: coreappsbackups_blob
 core_apps_backups_authentik_database_container_name: authentik-db
 core_apps_backups_authentik_database_name: authentik
 core_apps_backups_authentik_database_user: weeman
+
+core_apps_sftp_users:
+  - opnsense
+core_apps_sftp_group: sftponly
+core_apps_sftp_directory_mode: '0755'
+core_apps_sftp_bind_mount_path: /mnt/data/sftp
+core_apps_sftp_jail_path: /srv/ssh/jail
+core_apps_sftp_authorised_ssh_keys_path: /etc/ssh/authorized_keys
