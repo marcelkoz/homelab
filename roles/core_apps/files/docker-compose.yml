@@ -34,8 +34,6 @@ services:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
     container_name: authentik
     depends_on:
-      # grafana-loki:
-      #   condition: service_started
       authentik-db:
         condition: service_healthy
     volumes:
@@ -51,14 +49,6 @@ services:
       - proxy
     command: server
     restart: unless-stopped
-    # logging: &loki-logging
-    #   driver: loki
-    #   options:
-    #     loki-url: '${LOKI_LOGS_ENDPOINT}'
-    #     loki-retries: '${LOKI_RETRIES}'
-    #     loki-max-backoff: '${LOKI_MAX_BACKOFF}'
-    #     loki-timeout: '${LOKI_TIMEOUT}'
-    #     keep-file: '${LOKI_KEEP_FILE}'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authentik.rule=Host(`authentik.${DOMAIN}`)'
@@ -70,8 +60,6 @@ services:
   authentik-db:
     image: postgres:${POSTGRES_IMAGE_TAG}
     container_name: authentik-db
-    # depends_on:
-    #   - grafana-loki
     volumes:
       - authentik-db:/var/lib/postgresql/data
     environment:
@@ -81,7 +69,6 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    # logging: *loki-logging
     healthcheck:
       interval: 30s
       retries: 5
@@ -95,8 +82,6 @@ services:
     image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
     container_name: authentik-worker
     depends_on:
-      # grafana-loki:
-      #   condition: service_started
       authentik-db:
         condition: service_healthy
     volumes:
@@ -114,29 +99,23 @@ services:
       - proxy
     command: worker
     restart: unless-stopped
-    # logging: *loki-logging
     user: root
 
   daisy-app:
     image: daisy-app
     container_name: daisy-app
-    # depends_on:
-    #   - grafana-loki
     networks:
       - proxy
     restart: unless-stopped
-    # logging: *loki-logging
 
   daisy-web:
     image: daisy-web
     container_name: daisy-web
     depends_on:
       - proxy
-      # - grafana-loki
     networks:
       - proxy
     restart: unless-stopped
-    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
@@ -151,7 +130,6 @@ services:
   #   container_name: gitea
   #   depends_on:
   #     - proxy
-  #     - grafana-loki
   #     - gitea-db
   #   volumes:
   #     - ./gitea:/data
@@ -166,7 +144,6 @@ services:
   #   networks:
   #     - proxy
   #   restart: unless-stopped
-  #   logging: *loki-logging
   #   labels:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.routers.gitea.rule=Host(`git.${DOMAIN}`)'
@@ -178,8 +155,6 @@ services:
   # gitea-db:
   #   image: postgres:${POSTGRES_IMAGE_TAG}
   #   container_name: gitea-db
-  #   depends_on:
-  #     - grafana-loki
   #   volumes:
   #     - gitea-db:/var/lib/postgresql/data
   #   environment:
@@ -189,7 +164,6 @@ services:
   #   networks:
   #     - proxy
   #   restart: unless-stopped
-  #   logging: *loki-logging
   #   healthcheck:
   #     interval: 30s
   #     retries: 5
@@ -222,7 +196,6 @@ services:
   #   networks:
   #     - proxy
   #   restart: unless-stopped
-  #   logging: *loki-logging
   #   labels:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)'
@@ -231,34 +204,12 @@ services:
   #     - 'traefik.http.routers.grafana.tls.certresolver=letsencrypt'
   #     - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
 
-  # grafana-loki:
-  #   image: grafana/loki:${GRAFANA_LOKI_IMAGE_TAG}
-  #   container_name: grafana-loki
-  #   depends_on:
-  #     - proxy
-  #   volumes:
-  #     - loki-data:/loki:rw
-  #     - ./grafana-loki/loki.yml:/etc/loki/config.yml:r
-  #   command: -config.file=/etc/loki/config.yml
-  #   networks:
-  #     - proxy
-  #   restart: unless-stopped
-  #   logging: *loki-logging
-  #   labels:
-  #     - 'traefik.enable=true'
-  #     - 'traefik.http.routers.grafana-loki.rule=Host(`loki.${DOMAIN}`)'
-  #     - 'traefik.http.routers.grafana-loki.entryPoints=websecure'
-  #     - 'traefik.http.routers.grafana-loki.tls=true'
-  #     - 'traefik.http.routers.grafana-loki.tls.certresolver=letsencrypt'
-  #     - 'traefik.http.services.grafana-loki.loadbalancer.server.port=3100'
-
   # https://homarr.dev/docs/getting-started/installation/docker/
   homarr:
     image: ghcr.io/homarr-labs/homarr
     container_name: homarr
     depends_on:
       - proxy
-      # - grafana-loki
     volumes:
       - ./homarr/appdata:/appdata
     environment:
@@ -274,7 +225,6 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
@@ -289,7 +239,6 @@ services:
     container_name: pihole
     depends_on:
       - proxy
-      # - grafana-loki
     volumes:
       - ./pihole/etc-pihole:/etc/pihole
       - ./pihole/etc-resolv.conf:/etc/resolv.conf
@@ -302,7 +251,6 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
@@ -322,7 +270,6 @@ services:
   #   container_name: prometheus
   #   depends_on:
   #     - proxy
-  #     - grafana-loki
   #   volumes:
   #     - ./prometheus:/etc/prometheus
   #     - prometheus-data:/prometheus
@@ -332,7 +279,6 @@ services:
   #     - '--config.file=/etc/prometheus/prometheus.yml'
   #     - '--storage.tsdb.retention.size=1GB'
   #   restart: unless-stopped
-  #   logging: *loki-logging
   #   labels:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)'
@@ -356,7 +302,6 @@ services:
     networks:
       - proxy
     restart: unless-stopped
-    # logging: *loki-logging
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
@@ -380,5 +325,4 @@ volumes:
   gitea-db:
     driver: local
   grafana-data: {}
-  loki-data: {}
   prometheus-data: {}

@@ -20,11 +20,12 @@
   notify:
     - Systemd resolved config changed
 
-- name: Install grafana loki docker plugin
+- name: Disable grafana loki docker plugin (old config)
+  # Note: this breaks if the plugin is enabled
   community.docker.docker_plugin:
     plugin_name: 'grafana/loki-docker-driver'
     alias: loki
-    state: enable
+    state: absent
 
 - name: Create directories for docker containers
   ansible.builtin.file:
@@ -72,16 +73,6 @@
     group: '{{ core_apps_prometheus_docker_group }}'
   loop:
     - '{{ core_apps_service_path.prometheus }}'
-
-- name: Create directory for grafana loki docker container (which has different user/group)
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: '{{ core_apps_restricted_directory_mode }}'
-    state: directory
-    owner: '{{ core_apps_grafana_loki_docker_user }}'
-    group: '{{ core_apps_grafana_loki_docker_group }}'
-  loop:
-    - '{{ core_apps_service_path.grafana_loki }}'
 
 - name: Copy docker configuration
   ansible.builtin.copy:
@@ -142,13 +133,3 @@
     group: '{{ core_apps_prometheus_docker_group }}'
   loop:
     - 'templates/prometheus.yml.j2'
-
-- name: Copy grafana loki configuration
-  ansible.builtin.copy:
-    src: '{{ item }}'
-    dest: '{{ core_apps_service_path.grafana_loki }}'
-    mode: '{{ core_apps_restricted_file_mode }}'
-    owner: '{{ core_apps_grafana_loki_docker_user }}'
-    group: '{{ core_apps_grafana_loki_docker_group }}'
-  loop:
-    - 'files/loki.yml'
