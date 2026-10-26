@@ -1,15 +1,25 @@
 # https://docs.docker.com/engine/install/ubuntu
-# keeping the key in asc format to avoid dearmor-ing it with pgp cli
-- name: Fetch docker GPG key
-  ansible.builtin.get_url:
-    url: 'https://download.docker.com/linux/ubuntu/gpg'
-    dest: '/usr/share/keyrings/docker.asc'
-    mode: '0644'
+- name: Remove old docker apt repo files (old config)
+  ansible.builtin.file:
+    dest: '{{ item }}'
+    state: absent
+  loop:
+    - '/usr/share/keyrings/docker.asc'
+    - '/etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list'
 
-- name: Add docker apt repository
-  ansible.builtin.apt_repository:
-    repo: 'deb [signed-by=/usr/share/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable'
+- name: Add Docker deb822 repository
+  ansible.builtin.deb822_repository:
+    name: docker
     state: present
+    enabled: true
+    types:
+      - deb
+    uris: https://download.docker.com/linux/ubuntu
+    # TODO: make this a variable
+    suites: noble
+    components:
+      - stable
+    signed_by: https://download.docker.com/linux/ubuntu/gpg
 
 - name: Install docker packages
   ansible.builtin.apt:
