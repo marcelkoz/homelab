@@ -1,0 +1,16 @@
+- name: Benchmark Ubuntu hosts
+  hosts: all
+  become: true
+
+  tasks:
+    - name: OS distrubution of each host
+      ansible.builtin.debug:
+        var: ansible_facts['distribution']
+
+    - name: Update apt cache and all packages
+      # noqa package-latest
+      ansible.builtin.apt:
+        name: '*'
+        state: latest
+        update_cache: true
+      when: ansible_facts['distribution'] | lower == 'ubuntu'

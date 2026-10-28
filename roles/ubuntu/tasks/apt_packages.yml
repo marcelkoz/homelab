@@ -1,10 +1,3 @@
-- name: Update apt cache and all packages
-  # noqa package-latest
-  ansible.builtin.apt:
-    name: '*'
-    state: latest
-    update_cache: true
-
 - name: Install essential packages
   ansible.builtin.apt:
     name: '{{ ubuntu_essential_packages }}'
