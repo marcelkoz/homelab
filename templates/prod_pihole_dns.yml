@@ -35,5 +35,5 @@ pihole:
       fqdn: "home.example.com"
       target: "server1.example.com"
     actual-budget:
-      qdn: "actual.example.com"
+      fqdn: "actual.example.com"
       target: "server1.example.com"
