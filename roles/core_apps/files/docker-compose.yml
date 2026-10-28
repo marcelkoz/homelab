@@ -1,7 +1,7 @@
 services:
   # https://actualbudget.org/docs/install/docker/
   actual-budget:
-    image: actualbudget/actual-server:${IMAGE_TAG_ACTUAL_BUDGET}
+    image: "$IMAGE_SOURCE_ACTUAL_BUDGET:$IMAGE_TAG_ACTUAL_BUDGET"
     container_name: actual-budget
     depends_on:
       - proxy
@@ -31,7 +31,7 @@ services:
 
   # https://docs.goauthentik.io/install-config/install/docker-compose/
   authentik:
-    image: ghcr.io/goauthentik/server:${IMAGE_TAG_AUTHENTIK}
+    image: "$IMAGE_SOURCE_AUTHENTIK:$IMAGE_TAG_AUTHENTIK"
     container_name: authentik
     depends_on:
       authentik-db:
@@ -58,7 +58,7 @@ services:
       - 'traefik.http.services.authentik.loadbalancer.server.port=9000'
 
   authentik-db:
-    image: postgres:${IMAGE_TAG_POSTGRES}
+    image: "$IMAGE_SOURCE_POSTGRES:$IMAGE_TAG_POSTGRES"
     container_name: authentik-db
     volumes:
       - authentik-db:/var/lib/postgresql/data
@@ -79,7 +79,7 @@ services:
       timeout: 5s
 
   authentik-worker:
-    image: ghcr.io/goauthentik/server:${IMAGE_TAG_AUTHENTIK}
+    image: "$IMAGE_SOURCE_AUTHENTIK:$IMAGE_TAG_AUTHENTIK"
     container_name: authentik-worker
     depends_on:
       authentik-db:
@@ -102,14 +102,14 @@ services:
     user: root
 
   daisy-app:
-    image: daisy-app:${IMAGE_TAG_DAISY}
+    image: "$IMAGE_SOURCE_DAISY_APP:$IMAGE_TAG_DAISY"
     container_name: daisy-app
     networks:
       - proxy
     restart: unless-stopped
 
   daisy-web:
-    image: daisy-web:${IMAGE_TAG_DAISY}
+    image: "$IMAGE_SOURCE_DAISY_WEB:$IMAGE_TAG_DAISY"
     container_name: daisy-web
     depends_on:
       - proxy
@@ -206,7 +206,7 @@ services:
 
   # https://homarr.dev/docs/getting-started/installation/docker/
   homarr:
-    image: ghcr.io/homarr-labs/homarr:${IMAGE_TAG_HOMARR}
+    image: "$IMAGE_SOURCE_HOMARR:$IMAGE_TAG_HOMARR"
     container_name: homarr
     depends_on:
       - proxy
@@ -235,7 +235,7 @@ services:
 
   # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
   pihole:
-    image: pihole/pihole:${IMAGE_TAG_PIHOLE}
+    image: "$IMAGE_SOURCE_PIHOLE:$IMAGE_TAG_PIHOLE"
     container_name: pihole
     depends_on:
       - proxy
@@ -288,7 +288,7 @@ services:
   #     - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
 
   proxy:
-    image: traefik:${IMAGE_TAG_TRAEFIK}
+    image: "$IMAGE_SOURCE_TRAEFIK:$IMAGE_TAG_TRAEFIK"
     container_name: proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
