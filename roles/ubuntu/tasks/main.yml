@@ -2,6 +2,10 @@
 - name: APT packaging configuration
   ansible.builtin.include_tasks: apt_packages.yml
 
+- name: Import qemu role
+  ansible.builtin.include_role:
+    name: qemu
+
 - name: Firewall configuration
   ansible.builtin.include_tasks: firewall.yml
 

@@ -4,12 +4,6 @@
     state: file
     mode: '{{ ubuntu_restricted_file_mode }}'
 
-- name: Enable QEMU guest agent service
-  ansible.builtin.service:
-    name: qemu-guest-agent
-    enabled: true
-    state: started
-
 - name: Set the timezone
   community.general.timezone:
     name: '{{ ubuntu_timezone }}'

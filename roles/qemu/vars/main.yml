@@ -1,0 +1,3 @@
+qemu_guest_agent_device_file_path: /dev/virtio-ports/org.qemu.guest_agent.0
+qemu_guest_agent_package_name: qemu-guest-agent
+qemu_guest_agent_service_name: qemu-guest-agent

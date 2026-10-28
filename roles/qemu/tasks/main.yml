@@ -1,0 +1,22 @@
+- name: Check QEMU guest agent device exists
+  ansible.builtin.stat:
+    path: '{{ qemu_guest_agent_device_file_path }}'
+  register: qemu_guest_agent_device
+
+- name: Show whether QEMU agent device exists
+  ansible.builtin.debug:
+    var: qemu_guest_agent_device.stat.exists
+
+- name: Install QEMU guest agent
+  ansible.builtin.apt:
+    name: '{{ qemu_guest_agent_package_name }}'
+    state: present
+    update_cache: true
+  when: qemu_guest_agent_device.stat.exists
+
+- name: Enable QEMU guest agent service
+  ansible.builtin.service:
+    name: '{{ qemu_guest_agent_service_name }}'
+    enabled: true
+    state: started
+  when: qemu_guest_agent_device.stat.exists
