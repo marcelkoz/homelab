@@ -1,7 +1,8 @@
 .vscode
 .ansible
 
-runtime
+runtime/*
+!runtime/.gitkeep
 
 TODO.*
 
