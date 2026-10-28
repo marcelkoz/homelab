@@ -1,7 +1,7 @@
 services:
   # https://actualbudget.org/docs/install/docker/
   actual-budget:
-    image: actualbudget/actual-server:latest
+    image: actualbudget/actual-server:${IMAGE_TAG_ACTUAL_BUDGET}
     container_name: actual-budget
     depends_on:
       - proxy
@@ -23,7 +23,7 @@ services:
       start_period: 20s
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.actual-budget.rule=Host(`actual.${DOMAIN}`)'
+      - 'traefik.http.routers.actual-budget.rule=Host(`actual.${METADATA_DOMAIN}`)'
       - 'traefik.http.routers.actual-budget.entryPoints=websecure'
       - 'traefik.http.routers.actual-budget.tls=true'
       - 'traefik.http.routers.actual-budget.tls.certresolver=letsencrypt'
@@ -31,7 +31,7 @@ services:
 
   # https://docs.goauthentik.io/install-config/install/docker-compose/
   authentik:
-    image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
+    image: ghcr.io/goauthentik/server:${IMAGE_TAG_AUTHENTIK}
     container_name: authentik
     depends_on:
       authentik-db:
@@ -51,14 +51,14 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.authentik.rule=Host(`authentik.${DOMAIN}`)'
+      - 'traefik.http.routers.authentik.rule=Host(`authentik.${METADATA_DOMAIN}`)'
       - 'traefik.http.routers.authentik.entryPoints=websecure'
       - 'traefik.http.routers.authentik.tls=true'
       - 'traefik.http.routers.authentik.tls.certresolver=letsencrypt'
       - 'traefik.http.services.authentik.loadbalancer.server.port=9000'
 
   authentik-db:
-    image: postgres:${POSTGRES_IMAGE_TAG}
+    image: postgres:${IMAGE_TAG_POSTGRES}
     container_name: authentik-db
     volumes:
       - authentik-db:/var/lib/postgresql/data
@@ -79,7 +79,7 @@ services:
       timeout: 5s
 
   authentik-worker:
-    image: ghcr.io/goauthentik/server:${AUTHENTIK_IMAGE_TAG}
+    image: ghcr.io/goauthentik/server:${IMAGE_TAG_AUTHENTIK}
     container_name: authentik-worker
     depends_on:
       authentik-db:
@@ -102,14 +102,14 @@ services:
     user: root
 
   daisy-app:
-    image: daisy-app
+    image: daisy-app:${IMAGE_TAG_DAISY}
     container_name: daisy-app
     networks:
       - proxy
     restart: unless-stopped
 
   daisy-web:
-    image: daisy-web
+    image: daisy-web:${IMAGE_TAG_DAISY}
     container_name: daisy-web
     depends_on:
       - proxy
@@ -118,7 +118,7 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.daisy.rule=Host(`daisy.${DOMAIN}`)'
+      - 'traefik.http.routers.daisy.rule=Host(`daisy.${METADATA_DOMAIN}`)'
       - 'traefik.http.routers.daisy.entryPoints=websecure'
       - 'traefik.http.routers.daisy.tls=true'
       - 'traefik.http.routers.daisy.tls.certresolver=letsencrypt'
@@ -126,7 +126,7 @@ services:
 
   # https://docs.gitea.com/installation/install-with-docker
   # gitea:
-  #   image: docker.gitea.com/gitea:${GITEA_IMAGE_TAG}
+  #   image: docker.gitea.com/gitea:${IMAGE_TAG_GITEA}
   #   container_name: gitea
   #   depends_on:
   #     - proxy
@@ -146,14 +146,14 @@ services:
   #   restart: unless-stopped
   #   labels:
   #     - 'traefik.enable=true'
-  #     - 'traefik.http.routers.gitea.rule=Host(`git.${DOMAIN}`)'
+  #     - 'traefik.http.routers.gitea.rule=Host(`git.${METADATA_DOMAIN}`)'
   #     - 'traefik.http.routers.gitea.entryPoints=websecure'
   #     - 'traefik.http.routers.gitea.tls=true'
   #     - 'traefik.http.routers.gitea.tls.certresolver=letsencrypt'
   #     - 'traefik.http.services.gitea.loadbalancer.server.port=3000'
 
   # gitea-db:
-  #   image: postgres:${POSTGRES_IMAGE_TAG}
+  #   image: postgres:${IMAGE_TAG_POSTGRES}
   #   container_name: gitea-db
   #   volumes:
   #     - gitea-db:/var/lib/postgresql/data
@@ -175,7 +175,7 @@ services:
 
   # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
   # grafana:
-  #   image: grafana/grafana:${GRAFANA_IMAGE_TAG}
+  #   image: grafana/grafana:${IMAGE_TAG_GRAFANA}
   #   container_name: grafana
   #   depends_on:
   #     - proxy
@@ -187,18 +187,18 @@ services:
   #     GF_AUTH_GENERIC_OAUTH_CLIENT_ID: ${GRAFANA_OIDC_CLIENT_ID}
   #     GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: ${GRAFANA_OIDC_CLIENT_SECRET}
   #     GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
-  #     GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.${DOMAIN}/application/o/authorize/"
-  #     GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.${DOMAIN}/application/o/token/"
-  #     GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.${DOMAIN}/application/o/userinfo/"
-  #     GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.${DOMAIN}/application/o/${GRAFANA_OIDC_SLUG}/end-session/"
+  #     GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.${METADATA_DOMAIN}/application/o/authorize/"
+  #     GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.${METADATA_DOMAIN}/application/o/token/"
+  #     GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.${METADATA_DOMAIN}/application/o/userinfo/"
+  #     GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.${METADATA_DOMAIN}/application/o/${GRAFANA_OIDC_SLUG}/end-session/"
   #     GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || contains(groups[*], 'grafana-viewers') && 'Viewer'"
-  #     GF_SERVER_ROOT_URL: https://grafana.${DOMAIN}
+  #     GF_SERVER_ROOT_URL: https://grafana.${METADATA_DOMAIN}
   #   networks:
   #     - proxy
   #   restart: unless-stopped
   #   labels:
   #     - 'traefik.enable=true'
-  #     - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)'
+  #     - 'traefik.http.routers.grafana.rule=Host(`grafana.${METADATA_DOMAIN}`)'
   #     - 'traefik.http.routers.grafana.entryPoints=websecure'
   #     - 'traefik.http.routers.grafana.tls=true'
   #     - 'traefik.http.routers.grafana.tls.certresolver=letsencrypt'
@@ -206,7 +206,7 @@ services:
 
   # https://homarr.dev/docs/getting-started/installation/docker/
   homarr:
-    image: ghcr.io/homarr-labs/homarr
+    image: ghcr.io/homarr-labs/homarr:${IMAGE_TAG_HOMARR}
     container_name: homarr
     depends_on:
       - proxy
@@ -216,8 +216,8 @@ services:
       PORT: 80
       SECRET_ENCRYPTION_KEY: ${HOMARR_ENCRYPTION_KEY}
       AUTH_PROVIDERS: oidc
-      AUTH_OIDC_ISSUER: "${SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/"
-      AUTH_OIDC_URI: "${SSO_BASE_URL}/application/o/authorize"
+      AUTH_OIDC_ISSUER: "${METADATA_SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/"
+      AUTH_OIDC_URI: "${METADATA_SSO_BASE_URL}/application/o/authorize"
       AUTH_OIDC_CLIENT_NAME: authentik
       AUTH_OIDC_CLIENT_ID: ${HOMARR_OIDC_CLIENT_ID}
       AUTH_OIDC_CLIENT_SECRET: ${HOMARR_OIDC_CLIENT_SECRET}
@@ -227,7 +227,7 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.home.rule=Host(`home.${DOMAIN}`)'
+      - 'traefik.http.routers.home.rule=Host(`home.${METADATA_DOMAIN}`)'
       - 'traefik.http.routers.home.entryPoints=websecure'
       - 'traefik.http.routers.home.tls=true'
       - 'traefik.http.routers.home.tls.certresolver=letsencrypt'
@@ -235,7 +235,7 @@ services:
 
   # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
   pihole:
-    image: pihole/pihole:latest
+    image: pihole/pihole:${IMAGE_TAG_PIHOLE}
     container_name: pihole
     depends_on:
       - proxy
@@ -253,7 +253,7 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.pihole.rule=Host(`pihole.${DOMAIN}`)'
+      - 'traefik.http.routers.pihole.rule=Host(`pihole.${METADATA_DOMAIN}`)'
       - 'traefik.http.routers.pihole.entryPoints=websecure'
       - 'traefik.http.routers.pihole.tls=true'
       - 'traefik.http.routers.pihole.tls.certresolver=letsencrypt'
@@ -266,7 +266,7 @@ services:
 
   # https://prometheus.io/docs/prometheus/latest/installation/
   # prometheus:
-  #   image: prom/prometheus:${PROMETHEUS_IMAGE_TAG}
+  #   image: prom/prometheus:${IMAGE_TAG_PROMETHEUS}
   #   container_name: prometheus
   #   depends_on:
   #     - proxy
@@ -281,20 +281,20 @@ services:
   #   restart: unless-stopped
   #   labels:
   #     - 'traefik.enable=true'
-  #     - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)'
+  #     - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${METADATA_DOMAIN}`)'
   #     - 'traefik.http.routers.prometheus.entryPoints=websecure'
   #     - 'traefik.http.routers.prometheus.tls=true'
   #     - 'traefik.http.routers.prometheus.tls.certresolver=letsencrypt'
   #     - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
 
   proxy:
-    image: traefik
+    image: traefik:${IMAGE_TAG_TRAEFIK}
     container_name: proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik:/etc/traefik
     environment:
-      CF_DNS_API_TOKEN: ${CF_API_TOKEN}
+      CF_DNS_API_TOKEN: ${SECRET_CLOUDFLARE_API_TOKEN}
     ports:
       - '80:80'
       - '443:443'
@@ -304,12 +304,12 @@ services:
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
+      - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${METADATA_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
       - 'traefik.http.routers.traefik-dashboard.entryPoints=websecure'
       - 'traefik.http.routers.traefik-dashboard.tls=true'
       - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.traefik-dashboard.service=api@internal'
-      # - 'traefik.http.routers.traefik-metrics.rule=Host(`proxy.${DOMAIN}`) && PathPrefix(`/metrics`)'
+      # - 'traefik.http.routers.traefik-metrics.rule=Host(`proxy.${METADATA_DOMAIN}`) && PathPrefix(`/metrics`)'
       # - 'traefik.http.routers.traefik-metrics.entryPoints=websecure'
       # - 'traefik.http.routers.traefik-metrics.tls=true'
       # - 'traefik.http.routers.traefik-metrics.tls.certresolver=letsencrypt'
