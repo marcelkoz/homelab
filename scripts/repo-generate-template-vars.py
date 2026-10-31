@@ -75,7 +75,8 @@ def main():
             section += f"{format_var_name(namespace, var)}={value}\n"
         sections.append(section)
 
-    output = "\n\n".join(sections)
+    output = '{{ ansible_managed | comment }}\n'
+    output += "\n\n".join(sections)
     with open(TARGET_FILE, "w") as f:
         f.write(output)
 
