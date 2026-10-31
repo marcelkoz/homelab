@@ -8,7 +8,7 @@
   # noqa latest
   ansible.builtin.git:
     repo: '{{ core_apps_daisy_repo }}'
-    dest: '{{ core_apps_service_path.daisy }}'
+    dest: '{{ core_apps_compose_service_path.daisy }}'
     accept_hostkey: true
     version: HEAD
     key_file: '{{ core_apps_base_docker_path }}/daisy_git_key'
@@ -16,13 +16,13 @@
 - name: Build daisy-web container image
   community.docker.docker_image_build:
     name: daisy-web
-    path: '{{ core_apps_service_path.daisy }}/web'
+    path: '{{ core_apps_compose_service_path.daisy }}/web'
     dockerfile: Dockerfile
 
 - name: Build daisy-app container image
   community.docker.docker_image_build:
     name: daisy-app
-    path: '{{ core_apps_service_path.daisy }}/app'
+    path: '{{ core_apps_compose_service_path.daisy }}/app'
     dockerfile: Dockerfile
 
 - name: Check if Daisy SSH private key exists

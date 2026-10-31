@@ -54,19 +54,19 @@ send_backup() {
     rclone copyto "$BACKUPS_PATH/$(backup_filename $SERVICE)" "$AZURE_PATH/$(backup_filename $SERVICE)"
 }
 
-backup_service 'actual-budget' '{{ core_apps_service_path.actual_budget }}/data'
+backup_service 'actual-budget' '{{ core_apps_compose_service_path.actual_budget }}/data'
 
-backup_service 'homarr' '{{ core_apps_service_path.homarr }}/appdata'
+backup_service 'homarr' '{{ core_apps_compose_service_path.homarr }}/appdata'
 
 backup_service 'pihole' \
-    '{{ core_apps_service_path.pihole }}/etc-pihole/pihole.toml' \
-    '{{ core_apps_service_path.pihole }}/etc-pihole/gravity.db' \
-    '{{ core_apps_service_path.pihole }}/etc-pihole/pihole-FTL.db'
+    '{{ core_apps_compose_service_path.pihole }}/etc-pihole/pihole.toml' \
+    '{{ core_apps_compose_service_path.pihole }}/etc-pihole/gravity.db' \
+    '{{ core_apps_compose_service_path.pihole }}/etc-pihole/pihole-FTL.db'
 
 AUTHENTIK_DB_CONTAINER_NAME='{{ core_apps_backups_authentik_database_container_name }}'
 AUTHENTIK_DB_NAME='{{ core_apps_backups_authentik_database_name }}'
 AUTHENTIK_DB_USER='{{ core_apps_backups_authentik_database_user }}'
-AUTHENTIK_STATIC_FILES="{{ core_apps_service_path.authentik }}"
+AUTHENTIK_STATIC_FILES="{{ core_apps_compose_service_path.authentik }}"
 AUTHENTIK_BACKUP_PATH="$BACKUPS_PATH/authentik-data"
 mkdir -p "$AUTHENTIK_BACKUP_PATH"
 docker exec "$AUTHENTIK_DB_CONTAINER_NAME" pg_dump -U "$AUTHENTIK_DB_USER" "$AUTHENTIK_DB_NAME" > "$AUTHENTIK_BACKUP_PATH/$AUTHENTIK_DB_NAME-dump.sql"
