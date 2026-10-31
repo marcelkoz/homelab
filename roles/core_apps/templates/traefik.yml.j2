@@ -32,7 +32,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: '{{ traefik_letsencrypt_email_address }}'
+      email: '{{ vault.traefik_letsencrypt_email_address }}'
       storage: '/etc/traefik/certs/acme.json'
       dnsChallenge:
         provider: cloudflare
