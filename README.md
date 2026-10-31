@@ -4,7 +4,7 @@
 ### Templates
 The directory `templates` contains config file templates essential to run the services in the ansible playbooks.
 
-Copy the configs: `cp -r templates runtime`
+Copy the configs: `cp -r templates runtime/ENV`
 
 
 
@@ -14,8 +14,8 @@ Copy the configs: `cp -r templates runtime`
 Create an ansible vault file to store secrets.
 
 ```bash
-ansible-vault create runtime/prod_secrets.yml
-ansible-vault create runtime/test_secrets.yml
+ansible-vault create runtime/prod/secrets.yml
+ansible-vault create runtime/test/secrets.yml
 ```
 
 Note: The templates directory contains a sample secrets file.
@@ -23,16 +23,16 @@ Note: The templates directory contains a sample secrets file.
 Run using vault secrets (with vault password file):
 
 ```bash
-ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --vault-password-file runtime/prod_vault_pass.txt -e@runtime/prod_secrets.yml'
-ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --vault-password-file runtime/test_vault_pass.txt -e@runtime/test_secrets.yml'
+ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --vault-password-file runtime/prod/vault_pass.txt -e@runtime/prod/secrets.yml'
+ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --vault-password-file runtime/test/vault_pass.txt -e@runtime/test/secrets.yml'
 ansible-playbook $ANSIBLE_ARGS_ENV site.yml
 ```
 
 Run using vault secrets (with vault password prompt):
 
 ```bash
-ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --ask-vault-password -e@runtime/prod_secrets.yml'
-ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --ask-vault-password -e@runtime/test_secrets.yml'
+ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --ask-vault-password -e@runtime/prod/secrets.yml'
+ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --ask-vault-password -e@runtime/test/secrets.yml'
 ansible-playbook $ANSIBLE_ARGS_ENV site.yml
 ```
 

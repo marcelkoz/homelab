@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-TARGET_FILE = "templates/application_servers/.env"
+TARGET_FILE = "roles/core_apps/templates/.env.j2"
+
+ANSIBLE_VAR_PREFIX = "core_apps_template"
 
 ENV_VARS = {
     "secret": {
@@ -66,7 +68,11 @@ def main():
     for namespace in ENV_VARS:
         section = f"## {namespace}\n".replace("_", " ").upper()
         for var in sorted(ENV_VARS[namespace].keys()):
-            section += f"{format_var_name(namespace, var)}={ENV_VARS[namespace][var]}\n"
+            value = ENV_VARS[namespace][var]
+            if value == "":
+                value = f"{{{{ {ANSIBLE_VAR_PREFIX}_{namespace}_{var} }}}}".lower()
+
+            section += f"{format_var_name(namespace, var)}={value}\n"
         sections.append(section)
 
     output = "\n\n".join(sections)

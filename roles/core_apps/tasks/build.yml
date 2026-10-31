@@ -1,7 +1,7 @@
 - name: Copy SSH private key for the Daisy git repository
-  ansible.builtin.copy:
-    src: '{{ core_apps_runtime_path }}/daisy_git_key'
-    dest: '{{ core_apps_base_docker_path }}'
+  ansible.builtin.template:
+    src: templates/daisy-git-key.j2
+    dest: '{{ core_apps_base_docker_path }}/daisy_git_key'
     mode: '0400'
 
 - name: Pull Daisy git repository

@@ -74,14 +74,17 @@
   loop:
     - '{{ core_apps_service_path.prometheus }}'
 
-- name: Copy docker configuration
+- name: Copy docker compose configuration
   ansible.builtin.copy:
-    src: '{{ item }}'
+    src: files/docker-compose.yml
     dest: '{{ core_apps_base_docker_path }}'
     mode: '{{ core_apps_restricted_file_mode }}'
-  loop:
-    - '{{ core_apps_runtime_path }}/.env'
-    - 'files/docker-compose.yml'
+
+- name: Template docker .env file
+  ansible.builtin.template:
+    src: templates/.env.j2
+    dest: '{{ core_apps_base_docker_path }}/.env'
+    mode: '{{ core_apps_restricted_file_mode }}'
 
 - name: Copy pihole configuration
   ansible.builtin.copy:
