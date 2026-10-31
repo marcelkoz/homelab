@@ -90,7 +90,7 @@
 
 - name: Copy azure service principle file
   ansible.builtin.copy:
-    src: '{{ core_apps_runtime_path }}/{{ deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}'
+    src: '{{ core_apps_runtime_path }}/{{ global_deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}'
     dest: '{{ core_apps_backups_config_path }}'
     mode: '{{ core_apps_restricted_file_mode }}'
 

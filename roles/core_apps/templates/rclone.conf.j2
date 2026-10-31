@@ -3,4 +3,4 @@
 [{{ core_apps_backups_rclone_azure_remote_name }}]
 type = azureblob
 account = {{ core_apps_backups_azure_storage_name }}
-service_principal_file = {{ core_apps_backups_config_path }}/{{ deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}
+service_principal_file = {{ core_apps_backups_config_path }}/{{ global_deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}

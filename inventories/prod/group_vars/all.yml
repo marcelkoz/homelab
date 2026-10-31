@@ -1,2 +1,2 @@
 ansible_user: ansible
-deployment_environment: prod
+global_deployment_environment: prod
