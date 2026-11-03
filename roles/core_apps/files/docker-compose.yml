@@ -24,9 +24,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.actual-budget.rule=Host(`actual.${METADATA_DOMAIN}`)'
-      - 'traefik.http.routers.actual-budget.entryPoints=websecure'
-      - 'traefik.http.routers.actual-budget.tls=true'
-      - 'traefik.http.routers.actual-budget.tls.certresolver=letsencrypt'
       - 'traefik.http.services.actual-budget.loadbalancer.server.port=80'
 
   # https://docs.goauthentik.io/install-config/install/docker-compose/
@@ -52,9 +49,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authentik.rule=Host(`authentik.${METADATA_DOMAIN}`)'
-      - 'traefik.http.routers.authentik.entryPoints=websecure'
-      - 'traefik.http.routers.authentik.tls=true'
-      - 'traefik.http.routers.authentik.tls.certresolver=letsencrypt'
       - 'traefik.http.services.authentik.loadbalancer.server.port=9000'
 
   authentik-db:
@@ -119,9 +113,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.daisy.rule=Host(`daisy.${METADATA_DOMAIN}`)'
-      - 'traefik.http.routers.daisy.entryPoints=websecure'
-      - 'traefik.http.routers.daisy.tls=true'
-      - 'traefik.http.routers.daisy.tls.certresolver=letsencrypt'
       - 'traefik.http.services.daisy.loadbalancer.server.port=80'
 
   # https://docs.gitea.com/installation/install-with-docker
@@ -147,9 +138,6 @@ services:
   #   labels:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.routers.gitea.rule=Host(`git.${METADATA_DOMAIN}`)'
-  #     - 'traefik.http.routers.gitea.entryPoints=websecure'
-  #     - 'traefik.http.routers.gitea.tls=true'
-  #     - 'traefik.http.routers.gitea.tls.certresolver=letsencrypt'
   #     - 'traefik.http.services.gitea.loadbalancer.server.port=3000'
 
   # gitea-db:
@@ -199,9 +187,6 @@ services:
   #   labels:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.routers.grafana.rule=Host(`grafana.${METADATA_DOMAIN}`)'
-  #     - 'traefik.http.routers.grafana.entryPoints=websecure'
-  #     - 'traefik.http.routers.grafana.tls=true'
-  #     - 'traefik.http.routers.grafana.tls.certresolver=letsencrypt'
   #     - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
 
   # https://homarr.dev/docs/getting-started/installation/docker/
@@ -228,9 +213,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.home.rule=Host(`home.${METADATA_DOMAIN}`)'
-      - 'traefik.http.routers.home.entryPoints=websecure'
-      - 'traefik.http.routers.home.tls=true'
-      - 'traefik.http.routers.home.tls.certresolver=letsencrypt'
       - 'traefik.http.services.home.loadbalancer.server.port=80'
 
   # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
@@ -254,9 +236,6 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pihole.rule=Host(`pihole.${METADATA_DOMAIN}`)'
-      - 'traefik.http.routers.pihole.entryPoints=websecure'
-      - 'traefik.http.routers.pihole.tls=true'
-      - 'traefik.http.routers.pihole.tls.certresolver=letsencrypt'
       - 'traefik.http.services.pihole.loadbalancer.server.port=80'
     cap_add:
       - CAP_CHOWN
@@ -282,9 +261,6 @@ services:
   #   labels:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${METADATA_DOMAIN}`)'
-  #     - 'traefik.http.routers.prometheus.entryPoints=websecure'
-  #     - 'traefik.http.routers.prometheus.tls=true'
-  #     - 'traefik.http.routers.prometheus.tls.certresolver=letsencrypt'
   #     - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
 
   proxy:
@@ -293,6 +269,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik:/etc/traefik
+      - ./traefik/config.d:/etc/traefik/config.d
     environment:
       CF_DNS_API_TOKEN: ${SECRET_CLOUDFLARE_API_TOKEN}
     ports:
@@ -305,14 +282,8 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.traefik-dashboard.rule=Host(`proxy.${METADATA_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))'
-      - 'traefik.http.routers.traefik-dashboard.entryPoints=websecure'
-      - 'traefik.http.routers.traefik-dashboard.tls=true'
-      - 'traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.traefik-dashboard.service=api@internal'
       # - 'traefik.http.routers.traefik-metrics.rule=Host(`proxy.${METADATA_DOMAIN}`) && PathPrefix(`/metrics`)'
-      # - 'traefik.http.routers.traefik-metrics.entryPoints=websecure'
-      # - 'traefik.http.routers.traefik-metrics.tls=true'
-      # - 'traefik.http.routers.traefik-metrics.tls.certresolver=letsencrypt'
       # - 'traefik.http.routers.traefik-metrics.service=prometheus@internal'
 
 networks:
