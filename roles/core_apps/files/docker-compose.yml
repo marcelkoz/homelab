@@ -3,8 +3,6 @@ services:
   actual-budget:
     image: "$IMAGE_SOURCE_ACTUAL_BUDGET:$IMAGE_TAG_ACTUAL_BUDGET"
     container_name: actual-budget
-    depends_on:
-      - proxy
     volumes:
       - ./actual-budget/data:/data
     environment:
@@ -39,7 +37,7 @@ services:
     environment:
       AUTHENTIK_POSTGRESQL__HOST: authentik-db
       AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME:-authentik}
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS:?database password required}
       AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_ENCRYPTION_KEY:?secret key required}
     networks:
@@ -79,14 +77,14 @@ services:
       authentik-db:
         condition: service_healthy
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./authentik/data:/data
       - ./authentik/certs:/certs
       - ./authentik/custom-templates:/templates
     environment:
       AUTHENTIK_POSTGRESQL__HOST: authentik-db
       AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME:-authentik}
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASS:?database password required}
       AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER:-authentik}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_ENCRYPTION_KEY:?secret key required}
     networks:
@@ -105,8 +103,6 @@ services:
   daisy-web:
     image: "$IMAGE_SOURCE_DAISY_WEB:$IMAGE_TAG_DAISY"
     container_name: daisy-web
-    depends_on:
-      - proxy
     networks:
       - proxy
     restart: unless-stopped
@@ -120,7 +116,6 @@ services:
   #   image: docker.gitea.com/gitea:${IMAGE_TAG_GITEA}
   #   container_name: gitea
   #   depends_on:
-  #     - proxy
   #     - gitea-db
   #   volumes:
   #     - ./gitea:/data
@@ -165,8 +160,6 @@ services:
   # grafana:
   #   image: grafana/grafana:${IMAGE_TAG_GRAFANA}
   #   container_name: grafana
-  #   depends_on:
-  #     - proxy
   #   volumes:
   #     - grafana-data:/var/lib/grafana
   #   environment:
@@ -193,13 +186,11 @@ services:
   homarr:
     image: "$IMAGE_SOURCE_HOMARR:$IMAGE_TAG_HOMARR"
     container_name: homarr
-    depends_on:
-      - proxy
     volumes:
       - ./homarr/appdata:/appdata
     environment:
       PORT: 80
-      SECRET_ENCRYPTION_KEY: ${HOMARR_ENCRYPTION_KEY}
+      SECRET_ENCRYPTION_KEY: ${HOMARR_ENCRYPTION_KEY:?secret key required}
       AUTH_PROVIDERS: oidc
       AUTH_OIDC_ISSUER: "${METADATA_SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/"
       AUTH_OIDC_URI: "${METADATA_SSO_BASE_URL}/application/o/authorize"
@@ -219,8 +210,6 @@ services:
   pihole:
     image: "$IMAGE_SOURCE_PIHOLE:$IMAGE_TAG_PIHOLE"
     container_name: pihole
-    depends_on:
-      - proxy
     volumes:
       - ./pihole/etc-pihole:/etc/pihole
       - ./pihole/etc-resolv.conf:/etc/resolv.conf
@@ -229,7 +218,6 @@ services:
     ports:
       - '53:53/tcp'
       - '53:53/udp'
-      - '67:67/udp'
     networks:
       - proxy
     restart: unless-stopped
@@ -247,8 +235,6 @@ services:
   # prometheus:
   #   image: prom/prometheus:${IMAGE_TAG_PROMETHEUS}
   #   container_name: prometheus
-  #   depends_on:
-  #     - proxy
   #   volumes:
   #     - ./prometheus:/etc/prometheus
   #     - prometheus-data:/prometheus
@@ -267,7 +253,7 @@ services:
     image: "$IMAGE_SOURCE_TRAEFIK:$IMAGE_TAG_TRAEFIK"
     container_name: proxy
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik:/etc/traefik
       - ./traefik/config.d:/etc/traefik/config.d
     environment:
