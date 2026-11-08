@@ -20,7 +20,7 @@ ENV_VARS = {
         "homarr": "ghcr.io/homarr-labs/homarr",
         "pihole": "pihole/pihole",
         "postgres": "postgres",
-        # "prometheus": "",
+        "prometheus": "prom/prometheus",
         "traefik": "traefik",
     },
     "image_tag": {
@@ -30,7 +30,7 @@ ENV_VARS = {
         "homarr": "latest",
         "pihole": "2026.10.0",
         "postgres": "16-alpine",
-        # "prometheus": "",
+        "prometheus": "v3.16.0",
         "traefik": "v3.7.16",
     },
     "homarr": {

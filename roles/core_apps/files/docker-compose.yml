@@ -162,22 +162,22 @@ services:
       - 127.0.0.1
 
   # https://prometheus.io/docs/prometheus/latest/installation/
-  # prometheus:
-  #   image: prom/prometheus:${IMAGE_TAG_PROMETHEUS}
-  #   container_name: prometheus
-  #   volumes:
-  #     - ./prometheus:/etc/prometheus
-  #     - prometheus-data:/prometheus
-  #   networks:
-  #     - proxy
-  #   command:
-  #     - '--config.file=/etc/prometheus/prometheus.yml'
-  #     - '--storage.tsdb.retention.size=1GB'
-  #   restart: unless-stopped
-  #   labels:
-  #     - 'traefik.enable=true'
-  #     - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${METADATA_DOMAIN}`)'
-  #     - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
+  prometheus:
+    image: "${IMAGE_SOURCE_PROMETHEUS}:${IMAGE_TAG_PROMETHEUS}"
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    networks:
+      - proxy
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.size=1GB'
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.${METADATA_DOMAIN}`)'
+      - 'traefik.http.services.prometheus.loadbalancer.server.port=9090'
 
   proxy:
     image: "$IMAGE_SOURCE_TRAEFIK:$IMAGE_TAG_TRAEFIK"
