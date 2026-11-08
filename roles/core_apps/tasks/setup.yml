@@ -118,12 +118,14 @@
     modification_time: preserve
     access_time: preserve
 
-- name: Copy prometheus configuration template
+- name: Set prometheus netdata applicable servers fact
+  ansible.builtin.set_fact:
+    core_apps_prometheus_netdata_applicable_servers: '{{ groups[core_apps_prometheus_netdata_server_group] | map("extract", hostvars, "ansible_host") | list }}'
+
+- name: Template prometheus configuration
   ansible.builtin.template:
-    src: '{{ item }}'
+    src: 'templates/prometheus.yml.j2'
     dest: '{{ core_apps_compose_service_path.prometheus }}/prometheus.yml'
     mode: '{{ core_apps_restricted_file_mode }}'
     owner: '{{ core_apps_prometheus_docker_user }}'
     group: '{{ core_apps_prometheus_docker_group }}'
-  loop:
-    - 'templates/prometheus.yml.j2'
