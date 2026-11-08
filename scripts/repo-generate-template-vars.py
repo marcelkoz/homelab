@@ -13,7 +13,6 @@ ENV_VARS = {
         "sso_base_url": "",
     },
     "image_source": {
-        "actual_budget": "actualbudget/actual-server",
         "authentik": "ghcr.io/goauthentik/server",
         "daisy_app": "daisy-app",
         "daisy_web": "daisy-web",
@@ -26,7 +25,6 @@ ENV_VARS = {
         "traefik": "traefik",
     },
     "image_tag": {
-        "actual_budget": "latest",
         "authentik": "2026.5.2",
         "daisy": "latest",
         # "gitea": "",

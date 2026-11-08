@@ -4,3 +4,8 @@
     plugin_name: 'grafana/loki-docker-driver'
     alias: loki
     state: absent
+
+- name: Delete actual-budget data directory
+  ansible.builtin.file:
+    path: '{{ core_apps_base_docker_path }}/actual-budget'
+    state: absent

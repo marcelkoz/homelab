@@ -34,6 +34,3 @@ pihole:
     homarr:
       fqdn: "home.example.com"
       target: "server1.example.com"
-    actual-budget:
-      fqdn: "actual.example.com"
-      target: "server1.example.com"

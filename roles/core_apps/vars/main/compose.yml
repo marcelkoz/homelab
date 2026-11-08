@@ -10,4 +10,3 @@ core_apps_compose_service_path:
   gitea: '{{ core_apps_base_docker_path }}/gitea'
   prometheus: '{{ core_apps_base_docker_path }}/prometheus'
   grafana: '{{ core_apps_base_docker_path }}/grafana'
-  actual_budget: '{{ core_apps_base_docker_path }}/actual-budget'

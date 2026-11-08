@@ -54,8 +54,6 @@ send_backup() {
     rclone copyto "$BACKUPS_PATH/$(backup_filename $SERVICE)" "$AZURE_PATH/$(backup_filename $SERVICE)"
 }
 
-backup_service 'actual-budget' '{{ core_apps_compose_service_path.actual_budget }}/data'
-
 backup_service 'homarr' '{{ core_apps_compose_service_path.homarr }}/appdata'
 
 backup_service 'pihole' \
@@ -75,7 +73,6 @@ cp -rf "$AUTHENTIK_STATIC_FILES/"* "$AUTHENTIK_BACKUP_PATH"
 tar -czvf "$BACKUPS_PATH/$(backup_filename authentik)" -C "$BACKUPS_PATH" authentik-data
 rm -r "$AUTHENTIK_BACKUP_PATH"
 
-send_backup 'actual-budget'
 send_backup 'homarr'
 send_backup 'pihole'
 send_backup 'authentik'
