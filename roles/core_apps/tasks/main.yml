@@ -18,3 +18,7 @@
 - name: Setup backups configuration
   ansible.builtin.include_tasks: backups.yml
   tags: core_apps_backups
+
+- name: Old configuration migrations and cleanup
+  ansible.builtin.include_tasks: migrations.yml
+  tags: core_apps_migrations
