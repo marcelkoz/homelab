@@ -5,12 +5,11 @@
     alias: loki
     state: absent
 
-- name: Delete actual-budget data directory
+- name: Delete docker service data directories
   ansible.builtin.file:
-    path: '{{ core_apps_base_docker_path }}/actual-budget'
+    path: '{{ core_apps_base_docker_path }}/{{ item }}'
     state: absent
-
-- name: Delete gitea data directory
-  ansible.builtin.file:
-    path: '{{ core_apps_base_docker_path }}/gitea'
-    state: absent
+  loop:
+    - actual-budget
+    - gitea
+    - grafana-loki
