@@ -13,3 +13,8 @@
     - actual-budget
     - gitea
     - grafana-loki
+
+- name: Delete old backups service principal file
+  ansible.builtin.file:
+    path: '{{ core_apps_backups_config_path }}/{{ global_deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}'
+    state: absent

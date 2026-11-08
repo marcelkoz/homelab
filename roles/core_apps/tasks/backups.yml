@@ -88,10 +88,10 @@
     dest: /root/.config/rclone/rclone.conf
     mode: '{{ core_apps_restricted_file_mode }}'
 
-- name: Copy azure service principle file
-  ansible.builtin.copy:
-    src: '{{ core_apps_runtime_path }}/{{ global_deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}'
-    dest: '{{ core_apps_backups_config_path }}'
+- name: Template azure service principle file
+  ansible.builtin.template:
+    src: templates/backups-sp.json.j2
+    dest: '{{ core_apps_backups_config_path }}/{{ core_apps_backups_azure_service_principle_file_name }}'
     mode: '{{ core_apps_restricted_file_mode }}'
 
 - name: Enable backup service timer
