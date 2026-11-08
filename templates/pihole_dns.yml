@@ -28,9 +28,6 @@ pihole:
     grafana:
       fqdn: "grafana.example.com"
       target: "server1.example.com"
-    gitea:
-      fqdn: "git.example.com"
-      target: "server1.example.com"
     homarr:
       fqdn: "home.example.com"
       target: "server1.example.com"

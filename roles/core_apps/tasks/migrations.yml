@@ -9,3 +9,8 @@
   ansible.builtin.file:
     path: '{{ core_apps_base_docker_path }}/actual-budget'
     state: absent
+
+- name: Delete gitea data directory
+  ansible.builtin.file:
+    path: '{{ core_apps_base_docker_path }}/gitea'
+    state: absent

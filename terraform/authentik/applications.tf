@@ -10,24 +10,6 @@ locals {
   default_invalidation_flow_id  = data.authentik_flow.default_provider_invalidation_flow.id
 
   standard_applications = {
-    gitea = {
-      name = "Gitea",
-      slug = "gitea",
-      url  = "https://git.${var.domain_name}/user/oauth2/authentik/callback",
-      groups = [
-        authentik_group.groups["gitea-restricted"].id,
-        authentik_group.groups["gitea-users"].id,
-        authentik_group.groups["gitea-admins"].id,
-      ],
-      property_mapping = [
-        data.authentik_property_mapping_provider_scope.email.id,
-        data.authentik_property_mapping_provider_scope.openid.id,
-        data.authentik_property_mapping_provider_scope.profile.id,
-        authentik_property_mapping_provider_scope.gitea.id,
-      ],
-      icon = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gitea.svg",
-    },
-
     grafana = {
       name = "Grafana",
       slug = "grafana",
@@ -78,23 +60,6 @@ resource "authentik_group" "groups" {
   for_each = var.user_groups
 
   name = each.value
-}
-
-resource "authentik_property_mapping_provider_scope" "gitea" {
-  name       = "authentik gitea OAuth Mapping: OpenID 'gitea'"
-  scope_name = "gitea"
-  expression = <<EOF
-gitea_claims = {}
-
-if request.user.ak_groups.filter(name="gitea-users").exists():
-    gitea_claims["gitea"] = "user"
-if request.user.ak_groups.filter(name="gitea-admins").exists():
-    gitea_claims["gitea"] = "admin"
-if request.user.ak_groups.filter(name="gitea-restricted").exists():
-    gitea_claims["gitea"] = "restricted"
-
-return gitea_claims
-EOF
 }
 
 module "standard_application" {

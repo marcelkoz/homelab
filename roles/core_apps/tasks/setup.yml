@@ -33,7 +33,6 @@
     - '{{ core_apps_compose_service_path.homarr }}'
     - '{{ core_apps_compose_service_path.authentik }}'
     - '{{ core_apps_compose_service_path.authentik_media }}'
-    - '{{ core_apps_compose_service_path.gitea }}'
     - '{{ core_apps_compose_service_path.grafana }}'
 
 - name: Copy authentik branding assets
