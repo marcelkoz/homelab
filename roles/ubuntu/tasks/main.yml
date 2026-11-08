@@ -6,6 +6,10 @@
   ansible.builtin.include_role:
     name: qemu
 
+- name: Import netdata role
+  ansible.builtin.include_role:
+    name: netdata
+
 - name: Firewall configuration
   ansible.builtin.include_tasks: firewall.yml
 

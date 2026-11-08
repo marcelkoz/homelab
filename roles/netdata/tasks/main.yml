@@ -1,0 +1,26 @@
+- name: Add netdata deb822 repository
+  ansible.builtin.deb822_repository:
+    name: netdata
+    state: present
+    enabled: true
+    types:
+      - deb
+    # NOTE: trailing slashes are important for the repo to work
+    uris: http://repository.netdata.cloud/repos/stable/ubuntu/
+    suites: '{{ ansible_facts["distribution_release"] }}/'
+    by_hash: true
+    signed_by: https://repository.netdata.cloud/netdatabot.gpg.key
+
+- name: Install netdata package
+  ansible.builtin.apt:
+    name: netdata
+    state: present
+    update_cache: true
+
+- name: Enable and start netdata service
+  ansible.builtin.service:
+    name: netdata
+    enabled: true
+    state: started
+
+# TODO: config
