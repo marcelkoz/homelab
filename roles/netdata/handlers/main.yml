@@ -1,0 +1,4 @@
+- name: Netdata config changed
+  ansible.builtin.service:
+    name: netdata
+    state: restarted

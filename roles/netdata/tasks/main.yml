@@ -23,4 +23,9 @@
     enabled: true
     state: started
 
-# TODO: config
+- name: Template netdata config
+  ansible.builtin.template:
+    src: templates/netdata.conf.j2
+    dest: /etc/netdata/netdata.conf
+    mode: '0644'
+  notify: Netdata config changed
