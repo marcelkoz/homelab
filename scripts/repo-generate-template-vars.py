@@ -16,7 +16,7 @@ ENV_VARS = {
         "authentik": "ghcr.io/goauthentik/server",
         "daisy_app": "daisy-app",
         "daisy_web": "daisy-web",
-        # "grafana": "",
+        "grafana": "grafana/grafana",
         "homarr": "ghcr.io/homarr-labs/homarr",
         "pihole": "pihole/pihole",
         "postgres": "postgres",
@@ -26,7 +26,7 @@ ENV_VARS = {
     "image_tag": {
         "authentik": "2026.5.2",
         "daisy": "latest",
-        # "grafana": "",
+        "grafana": "13.2.5",
         "homarr": "latest",
         "pihole": "2026.10.0",
         "postgres": "16-alpine",
@@ -45,7 +45,7 @@ ENV_VARS = {
         "db_pass": "",
         "encryption_key": "",
     },
-    # "grafana": {"oidc_slug": "grafana", "oidc_client_id": "", "oidc_client_secret": ""},
+    "grafana": {"oidc_slug": "grafana", "oidc_client_id": "", "oidc_client_secret": ""},
 }
 
 
