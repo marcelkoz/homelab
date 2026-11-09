@@ -45,6 +45,10 @@ ENV_VARS = {
         "db_pass": "",
         "encryption_key": "",
     },
+    "prometheus": {
+        "retention_time": "15d",
+        "retention_storage": "4GB",
+    },
     "grafana": {"oidc_slug": "grafana", "oidc_client_id": "", "oidc_client_secret": ""},
 }
 

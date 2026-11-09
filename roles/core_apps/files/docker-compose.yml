@@ -172,7 +172,8 @@ services:
       - proxy
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.retention.size=1GB'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME}'
+      - '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_STORAGE}'
     restart: unless-stopped
     labels:
       - 'traefik.enable=true'
