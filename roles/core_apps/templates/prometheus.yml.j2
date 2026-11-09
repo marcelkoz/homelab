@@ -9,8 +9,10 @@ scrape_configs:
     metrics_path: /api/v1/allmetrics
     honor_labels: true
     params:
+      # use hostnames
       format: [prometheus_all_hosts]
       server: ['prometheus1']
 
+    # TODO: do this a better way
     static_configs:
       - targets: {{ core_apps_prometheus_netdata_applicable_servers | map('regex_replace', '$', ':' ~ core_apps_prometheus_netdata_port) | to_yaml }}
