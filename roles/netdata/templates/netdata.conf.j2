@@ -2,3 +2,14 @@
 
 [host labels]
     environment = {{ global_deployment_environment }}
+
+[plugins]
+{% for plugin in netdata_plugins %}
+    {{ plugin }} = {{ netdata_plugins[plugin] }}
+{% endfor %}
+
+    enable running new plugins = {{ netdata_enable_new_plugins }}
+    check for new plugins every = {{ netdata_plugin_check_frequency }}
+{% for dir in netdata_plugin_locations %}
+    {{ dir | replace("_", ".") }} = {{ netdata_plugin_locations[dir] }}
+{% endfor %}
