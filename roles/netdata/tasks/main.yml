@@ -17,6 +17,12 @@
     state: present
     update_cache: true
 
+- name: Enable netdata TCP port on the firewall
+  community.general.ufw:
+    rule: allow
+    port: '{{ netdata_port }}'
+    proto: tcp
+
 - name: Enable and start netdata service
   ansible.builtin.service:
     name: netdata

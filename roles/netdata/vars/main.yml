@@ -1,3 +1,5 @@
+netdata_port: 19999
+
 netdata_enable_new_plugins: 'no'
 netdata_plugin_check_frequency: '1m'
 
