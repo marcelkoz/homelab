@@ -28,3 +28,6 @@ pihole:
     grafana:
       fqdn: "grafana.example.com"
       target: "server1.example.com"
+    glance:
+      fqdn: "home.example.com"
+      target: "server1.example.com"

@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+branding:
+  app-name: {{ core_apps_glance_branding_name}}
+  logo-text: {{ core_apps_glance_branding_logo_text }}
+
+server:
+  proxied: {{ core_apps_glance_proxied | lower }}
+
+document:
+  head: |
+    <style>
+      .bookmarks-icon-container { opacity: 1; }
+      .bookmarks-icon { opacity: 1; }
+    </style>
+
+pages:
+{{ core_apps_glance_pages | to_nice_yaml }}

@@ -1,0 +1,64 @@
+core_apps_glance_branding_name: Homelab
+core_apps_glance_branding_logo_text: Homelab
+core_apps_glance_proxied: true
+
+core_apps_glance_pages:
+  - name: Home
+    width: slim
+    center-vertically: true
+    columns:
+      - size: full
+        widgets:
+          - type: clock
+            hide-header: true
+            hour-format: 24h
+            timezones:
+              - timezone: Europe/London
+                label: United Kingdom
+          - type: bookmarks
+            groups:
+              - title: Apps
+                color: 280 55 65
+                links:
+                  - title: Daisy
+                    description: File Transfer
+                    url: 'https://daisy.{{ core_apps_template_metadata_domain }}'
+                    icon: 'https://daisy.{{ core_apps_template_metadata_domain }}/favicon.svg'
+                  - title: Grafana
+                    description: Dashboards & Visualisation
+                    url: 'https://grafana.{{ core_apps_template_metadata_domain }}'
+                    icon: 'https://grafana.{{ core_apps_template_metadata_domain }}/public/build/img/grafana_icon.svg'
+                  - title: Home Assistant
+                    description: IOT & Automation
+                    url: 'https://ha.{{ core_apps_template_metadata_domain }}'
+                    icon: 'https://ha.{{ core_apps_template_metadata_domain }}/static/icons/favicon-192x192.png'
+
+              - title: Infrastructure
+                color: 35 80 55
+                links:
+                  - title: Authentik
+                    description: Identity Provider
+                    url: 'https://authentik.{{ core_apps_template_metadata_domain }}'
+                    # use dashboard icons
+                    icon: di:authentik
+                  - title: Azure
+                    description: Cloud Portal
+                    url: 'https://portal.azure.com'
+                    # use dashboard icons
+                    icon: di:azure
+                  - title: Pihole
+                    description: DNS Server
+                    url: 'https://pihole.{{ core_apps_template_metadata_domain }}'
+                    icon: 'https://pihole.{{ core_apps_template_metadata_domain }}/admin/img/favicons/favicon.ico'
+                  - title: Prometheus
+                    description: Metrics Server
+                    url: 'https://prometheus.{{ core_apps_template_metadata_domain }}'
+                    icon: 'https://prometheus.{{ core_apps_template_metadata_domain }}/favicon.svg'
+                  - title: Proxmox
+                    description: VM Hypervisor
+                    url: 'https://proxmox.{{ core_apps_template_metadata_domain }}:8006'
+                    icon: 'https://proxmox.{{ core_apps_template_metadata_domain }}:8006/pve2/images/logo-128.png'
+                  - title: Traefik
+                    description: Reverse Proxy
+                    url: 'https://proxy.{{ core_apps_template_metadata_domain }}/dashboard/'
+                    icon: 'https://proxy.{{ core_apps_template_metadata_domain }}/dashboard/favicon.ico'
