@@ -22,16 +22,6 @@ locals {
       icon = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg"
     },
 
-    homarr = {
-      name = "Homarr",
-      slug = "homarr",
-      url  = "https://home.${var.domain_name}/api/auth/callback/oidc",
-      groups = [
-        authentik_group.groups["homarr-editors"].id,
-        authentik_group.groups["homarr-admins"].id,
-      ],
-    },
-
     home_assistant = {
       name = "Home Assistant",
       slug = "home-assistant",

@@ -4,7 +4,6 @@ core_apps_compose_service_path:
   traefik: '{{ core_apps_base_docker_path }}/traefik'
   pihole: '{{ core_apps_base_docker_path }}/pihole'
   daisy: '{{ core_apps_base_docker_path }}/daisy'
-  homarr: '{{ core_apps_base_docker_path }}/homarr'
   authentik: '{{ core_apps_base_docker_path }}/authentik'
   authentik_media: '{{ core_apps_base_docker_path }}/authentik/data/media/public'
   prometheus: '{{ core_apps_base_docker_path }}/prometheus'

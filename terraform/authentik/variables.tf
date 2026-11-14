@@ -38,8 +38,6 @@ variable "client_id_special_chars" {
 variable "user_groups" {
   type = set(string)
   default = [
-    "homarr-editors",
-    "homarr-admins",
     "home-assistant-users",
     "home-assistant-admins",
     "grafana-viewers",

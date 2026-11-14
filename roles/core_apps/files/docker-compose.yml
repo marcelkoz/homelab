@@ -112,30 +112,6 @@ services:
       - 'traefik.http.routers.grafana.rule=Host(`grafana.${METADATA_DOMAIN}`)'
       - 'traefik.http.services.grafana.loadbalancer.server.port=3000'
 
-  # https://homarr.dev/docs/getting-started/installation/docker/
-  homarr:
-    image: "$IMAGE_SOURCE_HOMARR:$IMAGE_TAG_HOMARR"
-    container_name: homarr
-    volumes:
-      - ./homarr/appdata:/appdata
-    environment:
-      PORT: 80
-      SECRET_ENCRYPTION_KEY: ${HOMARR_ENCRYPTION_KEY:?secret key required}
-      AUTH_PROVIDERS: oidc
-      AUTH_OIDC_ISSUER: "${METADATA_SSO_BASE_URL}/application/o/${HOMARR_OIDC_SLUG}/"
-      AUTH_OIDC_URI: "${METADATA_SSO_BASE_URL}/application/o/authorize"
-      AUTH_OIDC_CLIENT_NAME: authentik
-      AUTH_OIDC_CLIENT_ID: ${HOMARR_OIDC_CLIENT_ID}
-      AUTH_OIDC_CLIENT_SECRET: ${HOMARR_OIDC_CLIENT_SECRET}
-      AUTH_OIDC_FORCE_USERINFO: true
-    networks:
-      - proxy
-    restart: unless-stopped
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.home.rule=Host(`home.${METADATA_DOMAIN}`)'
-      - 'traefik.http.services.home.loadbalancer.server.port=80'
-
   # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
   pihole:
     image: "$IMAGE_SOURCE_PIHOLE:$IMAGE_TAG_PIHOLE"
