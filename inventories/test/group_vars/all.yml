@@ -1,2 +1,3 @@
 ansible_user: ansible
 global_deployment_environment: test
+global_timezone: Europe/London

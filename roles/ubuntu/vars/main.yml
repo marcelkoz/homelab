@@ -1,5 +1,3 @@
-ubuntu_timezone: 'Europe/London'
-
 ubuntu_standard_file_mode: '0644'
 ubuntu_restricted_file_mode: '0600'
 ubuntu_special_file_mode:

@@ -6,7 +6,7 @@
 
 - name: Set the timezone
   community.general.timezone:
-    name: '{{ ubuntu_timezone }}'
+    name: '{{ global_timezone }}'
 
 - name: Create timesyncd.conf.d directory
   ansible.builtin.file:

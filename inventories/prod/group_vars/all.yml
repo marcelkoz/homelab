@@ -1,2 +1,3 @@
 ansible_user: ansible
 global_deployment_environment: prod
+global_timezone: Europe/London

@@ -13,7 +13,8 @@ core_apps_glance_pages:
             hide-header: true
             hour-format: 24h
             timezones:
-              - timezone: Europe/London
+              # TODO: use a separate timezone variable for glance?
+              - timezone: '{{ global_timezone }}'
                 label: United Kingdom
           - type: bookmarks
             groups:
