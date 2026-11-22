@@ -50,5 +50,12 @@ core_apps_sftp_bind_mount_path: /mnt/data/sftp
 core_apps_sftp_jail_path: /srv/ssh/jail
 core_apps_sftp_authorised_ssh_keys_path: /etc/ssh/authorized_keys
 
+core_apps_pihole_listening_mode: ALL
+core_apps_pihole_forward_private_ranges: false
+core_apps_pihole_upstream_dns:
+  - '1.1.1.1'
+  - '1.0.0.1'
+  - '8.8.8.8'
+  - '8.8.4.4'
 core_apps_pihole_data_retention: 31
 core_apps_pihole_dnssec: true
