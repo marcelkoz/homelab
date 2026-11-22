@@ -1,4 +1,3 @@
-
 core_apps_base_docker_path: /home/ansible/docker
 core_apps_compose_service_path:
   traefik: '{{ core_apps_base_docker_path }}/traefik'

@@ -115,6 +115,7 @@ services:
       GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.${METADATA_DOMAIN}/application/o/token/"
       GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.${METADATA_DOMAIN}/application/o/userinfo/"
       GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.${METADATA_DOMAIN}/application/o/${GRAFANA_OIDC_SLUG}/end-session/"
+      # noqa yaml[line-length]
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || contains(groups[*], 'grafana-viewers') && 'Viewer'"
       GF_SERVER_ROOT_URL: https://grafana.${METADATA_DOMAIN}
     networks:
