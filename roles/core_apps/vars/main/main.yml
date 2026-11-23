@@ -54,3 +54,5 @@ core_apps_pihole_listening_mode: ALL
 core_apps_pihole_forward_private_ranges: false
 core_apps_pihole_data_retention: 31
 core_apps_pihole_dnssec: true
+
+core_apps_traefik_test_environment: '{{ global_deployment_environment != "prod" }}'
