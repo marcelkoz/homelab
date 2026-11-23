@@ -87,12 +87,14 @@
     src: templates/rclone.conf.j2
     dest: /root/.config/rclone/rclone.conf
     mode: '{{ core_apps_restricted_file_mode }}'
+  no_log: true
 
 - name: Template azure service principle file
   ansible.builtin.template:
     src: templates/backups-sp.json.j2
     dest: '{{ core_apps_backups_config_path }}/{{ core_apps_backups_azure_service_principle_file_name }}'
     mode: '{{ core_apps_restricted_file_mode }}'
+  no_log: true
 
 - name: Enable backup service timer
   ansible.builtin.systemd_service:

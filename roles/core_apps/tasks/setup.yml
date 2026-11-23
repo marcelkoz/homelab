@@ -76,6 +76,7 @@
     src: templates/.env.j2
     dest: '{{ core_apps_base_docker_path }}/.env'
     mode: '{{ core_apps_restricted_file_mode }}'
+  no_log: true
 
 - name: Template glance configuration
   ansible.builtin.template:
@@ -96,6 +97,7 @@
     mode: '{{ core_apps_restricted_file_mode }}'
   loop:
     - 'templates/pihole.env.j2'
+  no_log: true
 
 - name: Copy traefik configuration template
   ansible.builtin.template:
