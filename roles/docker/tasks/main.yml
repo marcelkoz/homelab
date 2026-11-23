@@ -32,6 +32,15 @@
     state: present
     update_cache: true
 
+- name: Template daemon.json file
+  ansible.builtin.template:
+    src: templates/daemon.json.j2
+    dest: /etc/docker/daemon.json
+    # TODO: remove hardcoded mode
+    mode: '0644'
+  notify:
+    - Restart docker
+
 - name: Enable and start docker service
   ansible.builtin.service:
     name: docker

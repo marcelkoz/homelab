@@ -1,0 +1,6 @@
+docker_daemon_config:
+  dns: '{{ global_dns_upstream_servers }}'
+  log-driver: local
+  log-opts:
+    max-size: '10m'
+    max-file: '3'

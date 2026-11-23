@@ -5,3 +5,6 @@ global_dns_upstream_servers:
   - '1.0.0.1'
   - '8.8.8.8'
   - '8.8.4.4'
+global_json_config:
+  sort_keys: true
+  indent: 2
