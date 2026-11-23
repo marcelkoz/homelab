@@ -83,13 +83,11 @@
     dest: '{{ core_apps_compose_service_path.glance }}/glance.yml'
     mode: '{{ core_apps_restricted_file_mode }}'
 
-- name: Copy pihole configuration
-  ansible.builtin.copy:
-    src: '{{ item }}'
-    dest: '{{ core_apps_compose_service_path.pihole }}'
+- name: Override resolve.conf for pihole
+  ansible.builtin.template:
+    src: templates/etc-resolv.conf.j2
+    dest: '{{ core_apps_compose_service_path.pihole }}/etc-resolv.conf'
     mode: '{{ core_apps_restricted_file_mode }}'
-  loop:
-    - 'files/etc-resolv.conf'
 
 - name: Copy pihole configuration template
   ansible.builtin.template:

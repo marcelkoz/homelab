@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+
+{% for server in global_dns_upstream_servers %}
+nameserver {{ server }}
+{% endfor %}

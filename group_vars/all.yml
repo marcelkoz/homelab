@@ -1,2 +1,7 @@
 ansible_user: ansible
 global_timezone: Europe/London
+global_dns_upstream_servers:
+  - '1.1.1.1'
+  - '1.0.0.1'
+  - '8.8.8.8'
+  - '8.8.4.4'
