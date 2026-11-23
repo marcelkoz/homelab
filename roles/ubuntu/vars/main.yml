@@ -1,5 +1,5 @@
-ubuntu_standard_file_mode: '0644'
-ubuntu_restricted_file_mode: '0600'
+ubuntu_standard_file_mode: '{{ global_standard_file_mode }}'
+ubuntu_restricted_file_mode: '{{ global_restricted_file_mode }}'
 ubuntu_special_file_mode:
   shadow: '0640'
   cron: '0700'

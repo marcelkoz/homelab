@@ -6,11 +6,11 @@ core_apps_allowed_tcp_ports:
 core_apps_allowed_udp_ports:
   - 53 # dns
 
-core_apps_standard_file_mode: '0644'
-core_apps_restricted_file_mode: '0400'
-core_apps_restricted_directory_mode: '0700'
+core_apps_standard_file_mode: '{{ global_standard_file_mode }}'
+core_apps_restricted_file_mode: '{{ global_restricted_readonly_file_mode }}'
+core_apps_restricted_directory_mode: '{{ global_restricted_directory_mode }}'
 core_apps_special_file_mode:
-  traefik_certs: '0600'
+  traefik_certs: '{{ global_restricted_file_mode }}'
 
 core_apps_docker_user: 1000
 core_apps_docker_group: 1000
@@ -45,7 +45,7 @@ core_apps_backups_authentik_database_user: weeman
 core_apps_sftp_users:
   - opnsense
 core_apps_sftp_group: sftponly
-core_apps_sftp_directory_mode: '0755'
+core_apps_sftp_directory_mode: '{{ global_standard_directory_mode }}'
 core_apps_sftp_bind_mount_path: /mnt/data/sftp
 core_apps_sftp_jail_path: /srv/ssh/jail
 core_apps_sftp_authorised_ssh_keys_path: /etc/ssh/authorized_keys

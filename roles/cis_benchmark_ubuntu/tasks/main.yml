@@ -24,7 +24,7 @@
   ansible.builtin.file:
     path: '{{ cis_benchmark_ubuntu_remote_output_directory }}'
     state: directory
-    mode: '0700'
+    mode: '{{ global_restricted_directory_mode }}'
 
 - name: Create name for output files
   ansible.builtin.set_fact:

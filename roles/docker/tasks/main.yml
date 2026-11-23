@@ -36,8 +36,7 @@
   ansible.builtin.template:
     src: templates/daemon.json.j2
     dest: /etc/docker/daemon.json
-    # TODO: remove hardcoded mode
-    mode: '0644'
+    mode: '{{ global_standard_file_mode }}'
   notify:
     - Restart docker
 

@@ -8,3 +8,15 @@ global_dns_upstream_servers:
 global_json_config:
   sort_keys: true
   indent: 2
+
+# rw- r-- r--
+global_standard_file_mode: '0644'
+# rwx r-x r-x
+global_standard_directory_mode: '0755'
+
+# rw- --- ---
+global_restricted_file_mode: '0600'
+# r-- --- ---
+global_restricted_readonly_file_mode: '0400'
+# rwx --- ---
+global_restricted_directory_mode: '0700'

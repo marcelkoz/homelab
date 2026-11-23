@@ -4,7 +4,7 @@
   ansible.builtin.get_url:
     url: 'https://pkgs.netbird.io/debian/public.key'
     dest: '/usr/share/keyrings/netbird-archive-keyring.asc'
-    mode: '0644'
+    mode: '{{ global_standard_file_mode }}'
 
 - name: Add netbird apt repository
   ansible.builtin.apt_repository:
@@ -42,7 +42,7 @@
   ansible.builtin.file:
     path: '{{ netbird_server_install_dir }}'
     state: directory
-    mode: '0700'
+    mode: '{{ global_restricted_directory_mode }}'
     owner: root
     group: root
 

@@ -2,7 +2,7 @@
   ansible.builtin.template:
     src: templates/daisy-git-key.j2
     dest: '{{ core_apps_base_docker_path }}/daisy_git_key'
-    mode: '0400'
+    mode: '{{ core_apps_restricted_file_mode }}'
   no_log: true
 
 - name: Pull Daisy git repository

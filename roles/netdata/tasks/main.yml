@@ -33,5 +33,5 @@
   ansible.builtin.template:
     src: templates/netdata.conf.j2
     dest: /etc/netdata/netdata.conf
-    mode: '0644'
+    mode: '{{ global_standard_file_mode }}'
   notify: Netdata config changed
