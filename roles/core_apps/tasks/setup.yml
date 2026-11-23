@@ -90,22 +90,18 @@
     dest: '{{ core_apps_compose_service_path.pihole }}/etc-resolv.conf'
     mode: '{{ core_apps_restricted_file_mode }}'
 
-- name: Copy pihole configuration template
+- name: Template pihole configuration
   ansible.builtin.template:
-    src: '{{ item }}'
+    src: templates/pihole.env.j2
     dest: '{{ core_apps_compose_service_path.pihole }}/pihole.env'
     mode: '{{ core_apps_restricted_file_mode }}'
-  loop:
-    - 'templates/pihole.env.j2'
   no_log: true
 
-- name: Copy traefik configuration template
+- name: Template traefik configuration
   ansible.builtin.template:
-    src: '{{ item }}'
+    src: templates/traefik.yml.j2
     dest: '{{ core_apps_compose_service_path.traefik }}/traefik.yml'
     mode: '{{ core_apps_restricted_file_mode }}'
-  loop:
-    - 'templates/traefik.yml.j2'
 
 - name: Create traefik directories
   ansible.builtin.file:
