@@ -12,10 +12,10 @@
     proto: udp
   loop: '{{ core_apps_allowed_udp_ports }}'
 
-- name: Disable systemd resolved default dns stub listener
-  ansible.builtin.copy:
-    src: 'files/etc-systemd-resolved.conf'
-    dest: '/etc/systemd/resolved.conf'
+- name: Template systemd resolved to remove default dns stub listener
+  ansible.builtin.template:
+    src: templates/etc-systemd-resolved.conf.j2
+    dest: /etc/systemd/resolved.conf
     mode: '{{ core_apps_standard_file_mode }}'
   notify:
     - Systemd resolved config changed

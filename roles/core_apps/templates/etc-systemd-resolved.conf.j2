@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+[Resolve]
+DNS=127.0.0.1
+FallbackDNS={{ global_dns_upstream_servers | join(" ") }}
+DNSStubListener=no
