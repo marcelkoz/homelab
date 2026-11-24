@@ -56,3 +56,11 @@ core_apps_pihole_data_retention: 31
 core_apps_pihole_dnssec: true
 
 core_apps_traefik_test_environment: '{{ global_deployment_environment != "prod" }}'
+
+core_apps_template_subdomain_authentik: authentik
+core_apps_template_subdomain_daisy: daisy
+core_apps_template_subdomain_glance: home
+core_apps_template_subdomain_grafana: grafana
+core_apps_template_subdomain_pihole: pihole
+core_apps_template_subdomain_prometheus: prometheus
+core_apps_template_subdomain_traefik: proxy

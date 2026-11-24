@@ -23,12 +23,12 @@ core_apps_glance_pages:
                 links:
                   - title: Daisy
                     description: File Transfer
-                    url: 'https://daisy.{{ core_apps_template_metadata_domain }}'
-                    icon: 'https://daisy.{{ core_apps_template_metadata_domain }}/favicon.svg'
+                    url: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_daisy }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}'
+                    icon: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_daisy }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}/favicon.svg'
                   - title: Grafana
                     description: Dashboards & Visualisation
-                    url: 'https://grafana.{{ core_apps_template_metadata_domain }}'
-                    icon: 'https://grafana.{{ core_apps_template_metadata_domain }}/public/build/img/grafana_icon.svg'
+                    url: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_grafana }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}'
+                    icon: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_grafana }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}/public/build/img/grafana_icon.svg'
                   - title: Home Assistant
                     description: IOT & Automation
                     url: 'https://ha.{{ core_apps_template_metadata_domain }}'
@@ -39,7 +39,7 @@ core_apps_glance_pages:
                 links:
                   - title: Authentik
                     description: Identity Provider
-                    url: 'https://authentik.{{ core_apps_template_metadata_domain }}'
+                    url: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_authentik }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}'
                     # use dashboard icons
                     icon: di:authentik
                   - title: Azure
@@ -49,17 +49,17 @@ core_apps_glance_pages:
                     icon: di:azure
                   - title: Pihole
                     description: DNS Server
-                    url: 'https://pihole.{{ core_apps_template_metadata_domain }}'
-                    icon: 'https://pihole.{{ core_apps_template_metadata_domain }}/admin/img/favicons/favicon.ico'
+                    url: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_pihole }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}'
+                    icon: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_pihole }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}/admin/img/favicons/favicon.ico'
                   - title: Prometheus
                     description: Metrics Server
-                    url: 'https://prometheus.{{ core_apps_template_metadata_domain }}'
-                    icon: 'https://prometheus.{{ core_apps_template_metadata_domain }}/favicon.svg'
+                    url: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_prometheus }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}'
+                    icon: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_prometheus }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}/favicon.svg'
                   - title: Proxmox
                     description: VM Hypervisor
                     url: 'https://proxmox.{{ core_apps_template_metadata_domain }}:8006'
                     icon: 'https://proxmox.{{ core_apps_template_metadata_domain }}:8006/pve2/images/logo-128.png'
                   - title: Traefik
                     description: Reverse Proxy
-                    url: 'https://proxy.{{ core_apps_template_metadata_domain }}/dashboard/'
-                    icon: 'https://proxy.{{ core_apps_template_metadata_domain }}/dashboard/favicon.ico'
+                    url: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_traefik }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}/dashboard/'
+                    icon: '{{ core_apps_template_metadata_url_scheme }}://{{ core_apps_template_subdomain_traefik }}.{{ core_apps_template_metadata_domain }}{{ core_apps_template_metadata_url_port }}/dashboard/favicon.ico'

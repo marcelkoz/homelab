@@ -11,6 +11,17 @@ ENV_VARS = {
     "metadata": {
         "domain": "",
         "sso_base_url": "",
+        "url_port": "",
+        "url_scheme": "",
+    },
+    "subdomain": {
+        "authentik": "",
+        "daisy": "",
+        "glance": "",
+        "grafana": "",
+        "pihole": "",
+        "prometheus": "",
+        "traefik": "",
     },
     "image_source": {
         "authentik": "ghcr.io/goauthentik/server",

@@ -1,1 +1,4 @@
 global_deployment_environment: test
+core_apps_template_metadata_domain: localhost
+core_apps_template_metadata_url_scheme: http
+core_apps_template_metadata_url_port: ':8080'
