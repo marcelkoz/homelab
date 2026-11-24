@@ -122,6 +122,16 @@ packer fmt . && packer validate --var-file=ubuntu.pkrvars.hcl .
 packer build --var-file=ubuntu.pkrvars.hcl ubuntu-2404-server.pkr.hcl
 ```
 
+### SSH Tunnel
+
+Access the test environment services via `localhost`:
+
+```bash
+ssh -N -L 8080:localhost:80 ansible@[TEST HOST]
+```
+
+Services are then available at `http://SERVICE.localhost:8080`, e.g. `http://home.localhost:8080`.
+
 ### Backups
 
 #### Restore Authentik Database
