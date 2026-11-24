@@ -103,25 +103,6 @@ terraform plan # or terraform apply
 ```
 
 
-
-### Packer
-
-```bash
-cd packer
-packer init .
-
-touch ubuntu.pkrvars.hcl
-export PROXMOX_URL=[URL]
-export PROXMOX_TOKEN=[API TOKEN]
-
-packer build --var-file=ubuntu.pkrvars.hcl ubuntu-2404-server.pkr.hcl
-```
-
-```bash
-packer fmt . && packer validate --var-file=ubuntu.pkrvars.hcl .
-packer build --var-file=ubuntu.pkrvars.hcl ubuntu-2404-server.pkr.hcl
-```
-
 ### SSH Tunnel
 
 Access the test environment services via `localhost`:
