@@ -20,25 +20,20 @@ ansible-vault create runtime/test/secrets.yml
 
 Note: The templates directory contains a sample secrets file.
 
-Run using vault secrets (with vault password file):
+Load the inventory, secrets and vault options into `$ANSIBLE_ARGS` by sourcing
+`scripts/ansible-args.sh`. Do not execute it.
 
 ```bash
-ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --vault-password-file runtime/prod/vault_pass.txt -e@runtime/prod/secrets.yml'
-ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --vault-password-file runtime/test/vault_pass.txt -e@runtime/test/secrets.yml'
-ansible-playbook $ANSIBLE_ARGS_ENV site.yml
+source scripts/ansible-args.sh prod/test pass # vault password file
+source scripts/ansible-args.sh prod/test prompt # ask for the vault password
+ansible-playbook $ANSIBLE_ARGS site.yml
 ```
 
-Run using vault secrets (with vault password prompt):
-
-```bash
-ANSIBLE_ARGS_PROD='-i inventories/prod/hosts.yml --ask-vault-password -e@runtime/prod/secrets.yml'
-ANSIBLE_ARGS_TEST='-i inventories/test/hosts.yml --ask-vault-password -e@runtime/test/secrets.yml'
-ansible-playbook $ANSIBLE_ARGS_ENV site.yml
-```
+Use `test` instead of `prod` for the test environment.
 
 Run the pihole bootstrap DNS playbook:
 
-```ansible-playbook $ANSIBLE_ARGS_ENV pihole_dns.yml -e @./runtime/prod_pihole_dns.yml```
+```ansible-playbook $ANSIBLE_ARGS pihole_dns.yml -e @./runtime/prod_pihole_dns.yml```
 
 #### Useful Commands
 
@@ -52,19 +47,19 @@ List of available tasks.
 
 List of hosts.
 
-`ansible-playbook $ANSIBLE_ARGS_ENV site.yml --list-hosts`
+`ansible-playbook $ANSIBLE_ARGS site.yml --list-hosts`
 
 Run specific tags.
 
-`ansible-playbook $ANSIBLE_ARGS_ENV site.yml --tags TAG1,TAG2`
+`ansible-playbook $ANSIBLE_ARGS site.yml --tags TAG1,TAG2`
 
 Skip specific tags.
 
-`ansible-playbook $ANSIBLE_ARGS_ENV site.yml --skip-tags TAG1,TAG2`
+`ansible-playbook $ANSIBLE_ARGS site.yml --skip-tags TAG1,TAG2`
 
 Run specific host group.
 
-`ansible-playbook $ANSIBLE_ARGS_ENV site.yml -l HOSTGROUP`
+`ansible-playbook $ANSIBLE_ARGS site.yml -l HOSTGROUP`
 
 
 
