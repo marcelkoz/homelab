@@ -14,6 +14,11 @@
     - gitea
     - grafana-loki
 
+- name: Delete old pihole resolv.conf override
+  ansible.builtin.file:
+    path: '{{ core_apps_compose_service_path.pihole }}/etc-resolv.conf'
+    state: absent
+
 - name: Delete old backups service principal file
   ansible.builtin.file:
     path: '{{ core_apps_backups_config_path }}/{{ global_deployment_environment }}-{{ core_apps_backups_azure_service_principle_file_name }}'

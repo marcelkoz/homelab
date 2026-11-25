@@ -132,7 +132,6 @@ services:
     container_name: pihole
     volumes:
       - ./pihole/etc-pihole:/etc/pihole
-      - ./pihole/etc-resolv.conf:/etc/resolv.conf
     env_file:
       - ./pihole/pihole.env
     ports:
@@ -148,8 +147,6 @@ services:
     cap_add:
       - CAP_CHOWN
       - CAP_SYS_NICE
-    dns:
-      - 127.0.0.1
 
   # https://prometheus.io/docs/prometheus/latest/installation/
   prometheus:
