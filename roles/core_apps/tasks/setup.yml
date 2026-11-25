@@ -83,12 +83,16 @@
     src: templates/glance.yml.j2
     dest: '{{ core_apps_compose_service_path.glance }}/glance.yml'
     mode: '{{ core_apps_restricted_file_mode }}'
+  notify:
+    - Glance configuration changed
 
 - name: Override resolve.conf for pihole
   ansible.builtin.template:
     src: templates/etc-resolv.conf.j2
     dest: '{{ core_apps_compose_service_path.pihole }}/etc-resolv.conf'
     mode: '{{ core_apps_restricted_file_mode }}'
+  notify:
+    - Pihole environment changed
 
 - name: Template pihole configuration
   ansible.builtin.template:
@@ -96,12 +100,16 @@
     dest: '{{ core_apps_compose_service_path.pihole }}/pihole.env'
     mode: '{{ core_apps_restricted_file_mode }}'
   no_log: true
+  notify:
+    - Pihole environment changed
 
 - name: Template traefik configuration
   ansible.builtin.template:
     src: templates/traefik.yml.j2
     dest: '{{ core_apps_compose_service_path.traefik }}/traefik.yml'
     mode: '{{ core_apps_restricted_file_mode }}'
+  notify:
+    - Traefik configuration changed
 
 - name: Create traefik directories
   ansible.builtin.file:
@@ -131,3 +139,5 @@
     mode: '{{ core_apps_restricted_file_mode }}'
     owner: '{{ core_apps_prometheus_docker_user }}'
     group: '{{ core_apps_prometheus_docker_group }}'
+  notify:
+    - Prometheus configuration changed
