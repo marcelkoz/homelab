@@ -1,4 +1,7 @@
 core_apps_base_docker_path: /home/ansible/docker
+core_apps_proxy_network_subnet: 192.168.200.0/24
+core_apps_pihole_ip: 192.168.200.53
+
 core_apps_compose_service_path:
   traefik: '{{ core_apps_base_docker_path }}/traefik'
   pihole: '{{ core_apps_base_docker_path }}/pihole'

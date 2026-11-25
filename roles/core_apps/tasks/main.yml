@@ -2,6 +2,8 @@
 - name: Add docker role required for installing docker
   ansible.builtin.include_role:
     name: docker
+  vars:
+    docker_dns_servers: '{{ [core_apps_pihole_ip] + global_dns_upstream_servers }}'
 
 - name: Setup docker environment
   ansible.builtin.include_tasks: setup.yml

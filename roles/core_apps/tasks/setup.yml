@@ -65,10 +65,10 @@
   loop:
     - '{{ core_apps_compose_service_path.prometheus }}'
 
-- name: Copy docker compose configuration
-  ansible.builtin.copy:
-    src: files/docker-compose.yml
-    dest: '{{ core_apps_base_docker_path }}'
+- name: Template docker compose configuration
+  ansible.builtin.template:
+    src: templates/docker-compose.yml.j2
+    dest: '{{ core_apps_base_docker_path }}/docker-compose.yml'
     mode: '{{ core_apps_restricted_file_mode }}'
 
 - name: Template docker .env file

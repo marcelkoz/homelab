@@ -1,5 +1,7 @@
+docker_dns_servers: '{{ global_dns_upstream_servers }}'
+
 docker_daemon_config:
-  dns: '{{ global_dns_upstream_servers }}'
+  dns: '{{ docker_dns_servers }}'
   log-driver: local
   log-opts:
     max-size: '10m'
